@@ -1,0 +1,19 @@
+# Same semantics as server/config/application.conf
+
+[server]
+port = 8081
+host = "0.0.0.0"
+
+[database]
+path = "data/server.db"
+max_pool_size = 10
+flush_rate = 10
+
+[publishing]
+cpu_stats_frequency_ms = 1000
+ram_stats_frequency_ms = 1000
+broadcast_capacity = 60
+
+[monitoring]
+sample_interval_ms = 1000
+stats_log_interval_secs = 60

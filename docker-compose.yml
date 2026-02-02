@@ -1,0 +1,21 @@
+services:
+  homeserver-rust:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    deploy:
+      resources:
+        limits:
+          memory: 256M
+    ports:
+      - "8081:8081"
+    environment:
+      - TZ=Asia/Kolkata
+      - CONFIG_FILE=/app/config/application.toml
+      - RUST_LOG=info
+    group_add:
+      - "959"
+    volumes:
+      - ./data:/app/data
+      - ./config.toml:/app/config/application.toml
+      - /var/run/docker.sock:/var/run/docker.sock
