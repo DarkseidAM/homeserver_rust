@@ -1,6 +1,5 @@
 /target/
 /server_data/
-Cargo.lock
 config.toml.local
 *.db
 *.db-shm
