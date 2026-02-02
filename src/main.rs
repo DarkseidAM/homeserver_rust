@@ -1,16 +1,20 @@
 use anyhow::Result;
 use homeserver::*;
-use std::sync::atomic::AtomicUsize;
 use std::sync::Arc;
+use std::sync::atomic::AtomicUsize;
 use tokio::sync::broadcast;
-use tracing_subscriber::fmt::time::FormatTime;
 use tracing_subscriber::EnvFilter;
+use tracing_subscriber::fmt::time::FormatTime;
 
 struct LocalTimer;
 
 impl FormatTime for LocalTimer {
     fn format_time(&self, w: &mut tracing_subscriber::fmt::format::Writer<'_>) -> std::fmt::Result {
-        write!(w, "{}", chrono::Local::now().format("%Y-%m-%dT%H:%M:%S%.3f%:z"))
+        write!(
+            w,
+            "{}",
+            chrono::Local::now().format("%Y-%m-%dT%H:%M:%S%.3f%:z")
+        )
     }
 }
 
@@ -23,13 +27,13 @@ async fn main() -> Result<()> {
         .init();
 
     let app_config = config::AppConfig::load()?;
-    let (tx, _) = broadcast::channel::<models::FullSystemSnapshot>(app_config.publishing.broadcast_capacity);
+    let (tx, _) =
+        broadcast::channel::<models::FullSystemSnapshot>(app_config.publishing.broadcast_capacity);
 
     let sysinfo_repo = Arc::new(sysinfo_repo::SysinfoRepo::new());
     let docker_repo = Arc::new(docker_repo::DockerRepo::connect()?);
-    let history_repo = Arc::new(
-        history_repo::HistoryRepo::connect(&app_config.database.path).await?,
-    );
+    let history_repo =
+        Arc::new(history_repo::HistoryRepo::connect(&app_config.database.path).await?);
     history_repo.init().await?;
 
     let ws_system_connections = Arc::new(AtomicUsize::new(0));

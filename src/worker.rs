@@ -4,10 +4,10 @@ use crate::docker_repo::DockerRepo;
 use crate::history_repo::HistoryRepo;
 use crate::models::FullSystemSnapshot;
 use crate::sysinfo_repo::SysinfoRepo;
-use std::sync::atomic::AtomicUsize;
 use std::sync::Arc;
+use std::sync::atomic::AtomicUsize;
 use tokio::sync::broadcast;
-use tokio::time::{interval, Duration, Instant};
+use tokio::time::{Duration, Instant, interval};
 
 const PRUNE_INTERVAL_TICKS: u64 = 3600;
 /// Rate limit for "no receivers" warning (avoid logging every second when no one is on /ws/system)
@@ -128,7 +128,9 @@ pub fn spawn(deps: WorkerDeps, config: WorkerConfig) -> tokio::task::JoinHandle<
                 let should_warn = last_no_receivers_warn
                     .is_none_or(|t| t.elapsed() >= NO_RECEIVERS_WARN_INTERVAL);
                 if should_warn {
-                    tracing::warn!("No active WebSocket clients; broadcast channel has no receivers");
+                    tracing::warn!(
+                        "No active WebSocket clients; broadcast channel has no receivers"
+                    );
                     last_no_receivers_warn = Some(Instant::now());
                 }
             }
@@ -159,7 +161,8 @@ pub fn spawn(deps: WorkerDeps, config: WorkerConfig) -> tokio::task::JoinHandle<
             stats_log_ticks += 1;
             if stats_log_ticks >= stats_log_interval_secs {
                 tracing::info!(
-                    ws_system_clients = ws_system_connections.load(std::sync::atomic::Ordering::Relaxed),
+                    ws_system_clients =
+                        ws_system_connections.load(std::sync::atomic::Ordering::Relaxed),
                     snapshots_saved_total = snapshots_saved_total,
                     snapshots_pruned_total = snapshots_pruned_total,
                     "app stats"

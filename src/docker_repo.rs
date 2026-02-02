@@ -1,9 +1,9 @@
 // Docker container stats via bollard
 
 use crate::models::ContainerStats;
+use bollard::Docker;
 use bollard::query_parameters::{ListContainersOptions, StatsOptions};
 use bollard::secret::ContainerStatsResponse;
-use bollard::Docker;
 use futures_util::StreamExt;
 use std::collections::HashMap;
 use std::sync::Arc;
@@ -29,7 +29,7 @@ impl DockerRepo {
     pub async fn list_running_and_refresh_stats(&self) -> Vec<ContainerStats> {
         let mut filters = HashMap::new();
         filters.insert("status".to_string(), vec!["running".to_string()]);
-        
+
         let filter = ListContainersOptions {
             all: false,
             filters: Some(filters),
@@ -117,11 +117,12 @@ impl DockerRepo {
         // Safely extract CPU stats
         let cpu_stats = s.cpu_stats.as_ref()?;
         let precpu_stats = s.precpu_stats.as_ref()?;
-        
+
         let cpu_usage = cpu_stats.cpu_usage.as_ref()?;
         let precpu_usage = precpu_stats.cpu_usage.as_ref()?;
-        
-        let cpu_delta = cpu_usage.total_usage.unwrap_or(0) as i64 - precpu_usage.total_usage.unwrap_or(0) as i64;
+
+        let cpu_delta = cpu_usage.total_usage.unwrap_or(0) as i64
+            - precpu_usage.total_usage.unwrap_or(0) as i64;
         let system_delta_check = cpu_stats.system_cpu_usage.unwrap_or(0) as i64
             - precpu_stats.system_cpu_usage.unwrap_or(0) as i64;
         let online = cpu_stats.online_cpus.unwrap_or(1) as f64;
@@ -132,15 +133,10 @@ impl DockerRepo {
         };
 
         // Safely extract memory stats
-        let mem_usage = s.memory_stats
-            .as_ref()
-            .and_then(|m| m.usage)
-            .unwrap_or(0);
-        let mem_limit = s.memory_stats
-            .as_ref()
-            .and_then(|m| m.limit)
-            .unwrap_or(0);
-        let mem_max = s.memory_stats
+        let mem_usage = s.memory_stats.as_ref().and_then(|m| m.usage).unwrap_or(0);
+        let mem_limit = s.memory_stats.as_ref().and_then(|m| m.limit).unwrap_or(0);
+        let mem_max = s
+            .memory_stats
             .as_ref()
             .and_then(|m| m.max_usage)
             .unwrap_or(0);
@@ -157,16 +153,24 @@ impl DockerRepo {
         });
 
         // Safely extract block I/O stats
-        let (block_read, block_write) = s.blkio_stats
+        let (block_read, block_write) = s
+            .blkio_stats
             .as_ref()
             .and_then(|b| b.io_service_bytes_recursive.as_ref())
             .map_or((0u64, 0u64), |b| {
                 let mut read = 0u64;
                 let mut write = 0u64;
                 for e in b {
-                    if e.op.as_ref().is_some_and(|op| op.eq_ignore_ascii_case("read")) {
+                    if e.op
+                        .as_ref()
+                        .is_some_and(|op| op.eq_ignore_ascii_case("read"))
+                    {
                         read += e.value.unwrap_or(0);
-                    } else if e.op.as_ref().is_some_and(|op| op.eq_ignore_ascii_case("write")) {
+                    } else if e
+                        .op
+                        .as_ref()
+                        .is_some_and(|op| op.eq_ignore_ascii_case("write"))
+                    {
                         write += e.value.unwrap_or(0);
                     }
                 }
@@ -174,11 +178,8 @@ impl DockerRepo {
             });
 
         // Safely extract PID stats
-        let pids = s.pids_stats
-            .as_ref()
-            .and_then(|p| p.current)
-            .unwrap_or(0);
-        
+        let pids = s.pids_stats.as_ref().and_then(|p| p.current).unwrap_or(0);
+
         // Safely check throttling
         let throttled = cpu_stats
             .throttling_data

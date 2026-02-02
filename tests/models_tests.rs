@@ -77,9 +77,7 @@ fn test_full_system_snapshot_serialization() {
             partitions: vec![],
             disks: vec![],
         },
-        network: NetworkStats {
-            interfaces: vec![],
-        },
+        network: NetworkStats { interfaces: vec![] },
         system: SystemStats {
             os_family: "Linux".into(),
             os_manufacturer: String::new(),
@@ -123,9 +121,7 @@ fn test_full_system_snapshot_wincode_roundtrip() {
             partitions: vec![],
             disks: vec![],
         },
-        network: NetworkStats {
-            interfaces: vec![],
-        },
+        network: NetworkStats { interfaces: vec![] },
         system: SystemStats {
             os_family: "Linux".into(),
             os_manufacturer: String::new(),

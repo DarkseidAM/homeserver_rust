@@ -63,14 +63,20 @@ fn test_config_validation_rejects_flush_rate_zero() {
 
 #[test]
 fn test_config_validation_rejects_cpu_stats_frequency_zero() {
-    let bad = VALID_CONFIG.replace("cpu_stats_frequency_ms = 1000", "cpu_stats_frequency_ms = 0");
+    let bad = VALID_CONFIG.replace(
+        "cpu_stats_frequency_ms = 1000",
+        "cpu_stats_frequency_ms = 0",
+    );
     let err = AppConfig::load_from_str(&bad).unwrap_err();
     assert!(err.to_string().contains("cpu_stats_frequency_ms"));
 }
 
 #[test]
 fn test_config_validation_rejects_ram_stats_frequency_zero() {
-    let bad = VALID_CONFIG.replace("ram_stats_frequency_ms = 1000", "ram_stats_frequency_ms = 0");
+    let bad = VALID_CONFIG.replace(
+        "ram_stats_frequency_ms = 1000",
+        "ram_stats_frequency_ms = 0",
+    );
     let err = AppConfig::load_from_str(&bad).unwrap_err();
     assert!(err.to_string().contains("ram_stats_frequency_ms"));
 }
@@ -91,7 +97,10 @@ fn test_config_validation_rejects_sample_interval_zero() {
 
 #[test]
 fn test_config_validation_rejects_stats_log_interval_zero() {
-    let bad = VALID_CONFIG.replace("stats_log_interval_secs = 60", "stats_log_interval_secs = 0");
+    let bad = VALID_CONFIG.replace(
+        "stats_log_interval_secs = 60",
+        "stats_log_interval_secs = 0",
+    );
     let err = AppConfig::load_from_str(&bad).unwrap_err();
     assert!(err.to_string().contains("stats_log_interval_secs"));
 }

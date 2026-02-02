@@ -8,8 +8,8 @@
 // schema_version table and run ALTER/CREATE as needed before opening the pool.
 
 use crate::models::{CpuStats, FullSystemSnapshot, RamStats};
-use sqlx::sqlite::{SqliteConnectOptions, SqlitePool, SqlitePoolOptions};
 use sqlx::Row;
+use sqlx::sqlite::{SqliteConnectOptions, SqlitePool, SqlitePoolOptions};
 use std::path::Path;
 use std::str::FromStr;
 
@@ -59,9 +59,11 @@ impl HistoryRepo {
         .execute(&self.pool)
         .await?;
 
-        sqlx::query("CREATE INDEX IF NOT EXISTS idx_history_created_at ON system_history(created_at)")
-            .execute(&self.pool)
-            .await?;
+        sqlx::query(
+            "CREATE INDEX IF NOT EXISTS idx_history_created_at ON system_history(created_at)",
+        )
+        .execute(&self.pool)
+        .await?;
 
         Ok(())
     }
@@ -110,7 +112,10 @@ impl HistoryRepo {
     }
 
     /// Fetch the most recent snapshots (for inspection/debug). Deserializes BLOB columns with wincode.
-    pub async fn get_recent_snapshots(&self, limit: u32) -> anyhow::Result<Vec<FullSystemSnapshot>> {
+    pub async fn get_recent_snapshots(
+        &self,
+        limit: u32,
+    ) -> anyhow::Result<Vec<FullSystemSnapshot>> {
         let rows = sqlx::query(
             "SELECT created_at, cpu_load, memory_used, container_data, storage_data, network_data, system_data
              FROM system_history ORDER BY id DESC LIMIT $1",

@@ -25,9 +25,7 @@ fn minimal_snapshot(timestamp: u64) -> FullSystemSnapshot {
             partitions: vec![],
             disks: vec![],
         },
-        network: NetworkStats {
-            interfaces: vec![],
-        },
+        network: NetworkStats { interfaces: vec![] },
         system: SystemStats {
             os_family: "Linux".into(),
             os_manufacturer: String::new(),

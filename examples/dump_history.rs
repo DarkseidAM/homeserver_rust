@@ -10,11 +10,11 @@ use std::env;
 #[tokio::main]
 async fn main() -> anyhow::Result<()> {
     let args: Vec<String> = env::args().collect();
-    let path = args.get(1).map(String::as_str).unwrap_or("./data/server.db");
-    let limit: u32 = args
-        .get(2)
-        .and_then(|s| s.parse().ok())
-        .unwrap_or(5);
+    let path = args
+        .get(1)
+        .map(String::as_str)
+        .unwrap_or("./data/server.db");
+    let limit: u32 = args.get(2).and_then(|s| s.parse().ok()).unwrap_or(5);
 
     let repo = HistoryRepo::connect(path).await?;
     let snapshots = repo.get_recent_snapshots(limit).await?;

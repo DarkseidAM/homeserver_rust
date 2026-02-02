@@ -1,11 +1,11 @@
 // Worker integration test: spawn, tick, shutdown, assert history flushed
 
-use homeserver::worker::{spawn, WorkerConfig, WorkerDeps};
+use homeserver::docker_repo::DockerRepo;
 use homeserver::history_repo::HistoryRepo;
 use homeserver::sysinfo_repo::SysinfoRepo;
-use homeserver::docker_repo::DockerRepo;
-use std::sync::atomic::AtomicUsize;
+use homeserver::worker::{WorkerConfig, WorkerDeps, spawn};
 use std::sync::Arc;
+use std::sync::atomic::AtomicUsize;
 use tokio::sync::broadcast;
 
 #[tokio::test]

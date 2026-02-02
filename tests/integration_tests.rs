@@ -4,8 +4,8 @@ use axum_test::TestServer;
 use homeserver::config::AppConfig;
 use homeserver::models::{CpuStats, FullSystemSnapshot, RamStats};
 use homeserver::routes;
-use std::sync::atomic::AtomicUsize;
 use std::sync::Arc;
+use std::sync::atomic::AtomicUsize;
 use tokio::sync::broadcast;
 
 const TEST_CONFIG: &str = r#"
@@ -32,7 +32,10 @@ fn test_app_config() -> AppConfig {
     AppConfig::load_from_str(TEST_CONFIG).unwrap()
 }
 
-fn test_app() -> (axum::Router, broadcast::Sender<homeserver::models::FullSystemSnapshot>) {
+fn test_app() -> (
+    axum::Router,
+    broadcast::Sender<homeserver::models::FullSystemSnapshot>,
+) {
     let config = test_app_config();
     let (tx, _) = broadcast::channel(config.publishing.broadcast_capacity);
     let app = routes::app(
@@ -50,10 +53,7 @@ fn test_server_with_http() -> (
     broadcast::Sender<homeserver::models::FullSystemSnapshot>,
 ) {
     let (app, tx) = test_app();
-    let server = TestServer::builder()
-        .http_transport()
-        .build(app)
-        .unwrap();
+    let server = TestServer::builder().http_transport().build(app).unwrap();
     (server, tx)
 }
 
@@ -67,21 +67,36 @@ async fn test_root_endpoint() {
 }
 
 // --- WebSocket message tests (require http_transport + ws feature) ---
+// Receive until we get valid JSON (server may send Ping first).
+
+async fn receive_first_json_text<T: serde::de::DeserializeOwned>(
+    ws: &mut axum_test::TestWebSocket,
+) -> T {
+    let deadline = tokio::time::Instant::now() + tokio::time::Duration::from_secs(3);
+    loop {
+        let text = ws.receive_text().await;
+        if let Ok(v) = serde_json::from_str::<T>(&text) {
+            return v;
+        }
+        assert!(
+            tokio::time::Instant::now() < deadline,
+            "timed out waiting for JSON"
+        );
+    }
+}
 
 #[tokio::test]
 async fn test_ws_cpu_receives_json() {
     let (server, _) = test_server_with_http();
     let mut ws = server.get_websocket("/ws/cpu").await.into_websocket().await;
-    let text = ws.receive_text().await;
-    let _cpu: CpuStats = serde_json::from_str(&text).expect("first /ws/cpu message should be CpuStats JSON");
+    let _cpu: CpuStats = receive_first_json_text(&mut ws).await;
 }
 
 #[tokio::test]
 async fn test_ws_ram_receives_json() {
     let (server, _) = test_server_with_http();
     let mut ws = server.get_websocket("/ws/ram").await.into_websocket().await;
-    let text = ws.receive_text().await;
-    let _ram: RamStats = serde_json::from_str(&text).expect("first /ws/ram message should be RamStats JSON");
+    let _ram: RamStats = receive_first_json_text(&mut ws).await;
 }
 
 #[tokio::test]
@@ -107,9 +122,7 @@ async fn test_ws_system_receives_broadcast_snapshot() {
             partitions: vec![],
             disks: vec![],
         },
-        network: homeserver::models::NetworkStats {
-            interfaces: vec![],
-        },
+        network: homeserver::models::NetworkStats { interfaces: vec![] },
         system: homeserver::models::SystemStats {
             os_family: "Linux".into(),
             os_manufacturer: String::new(),
@@ -124,14 +137,18 @@ async fn test_ws_system_receives_broadcast_snapshot() {
             fan_speeds: vec![],
         },
     };
-    let mut ws = server.get_websocket("/ws/system").await.into_websocket().await;
+    let mut ws = server
+        .get_websocket("/ws/system")
+        .await
+        .into_websocket()
+        .await;
     let tx_clone = tx.clone();
     let snapshot_clone = snapshot.clone();
     tokio::spawn(async move {
         tokio::time::sleep(tokio::time::Duration::from_millis(100)).await;
         let _ = tx_clone.send(snapshot_clone);
     });
-    let received: FullSystemSnapshot = ws.receive_json().await;
+    let received: FullSystemSnapshot = receive_first_json_text(&mut ws).await;
     assert_eq!(received.timestamp, 42);
     assert_eq!(received.ram.used, 50);
 }

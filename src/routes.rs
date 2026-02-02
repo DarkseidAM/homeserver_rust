@@ -3,20 +3,20 @@
 use crate::config::AppConfig;
 use crate::models::FullSystemSnapshot;
 use crate::sysinfo_repo::SysinfoRepo;
-use bytes::Bytes;
 use axum::{
+    Router,
     extract::{
-        ws::{Message, WebSocket, WebSocketUpgrade},
         State,
+        ws::{Message, WebSocket, WebSocketUpgrade},
     },
     response::IntoResponse,
     routing::get,
-    Router,
 };
-use std::sync::atomic::AtomicUsize;
+use bytes::Bytes;
 use std::sync::Arc;
+use std::sync::atomic::AtomicUsize;
 use tokio::sync::broadcast;
-use tokio::time::{timeout, Duration};
+use tokio::time::{Duration, timeout};
 
 pub fn app(
     stats_tx: broadcast::Sender<FullSystemSnapshot>,
