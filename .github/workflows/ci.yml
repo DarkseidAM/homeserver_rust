@@ -24,7 +24,7 @@ jobs:
       - name: Cache cargo registry and target
         uses: Swatinem/rust-cache@v2
         with:
-          shared-key: "ci"
+          shared-key: "ci-check-and-test"
 
       - name: Check formatting
         run: cargo fmt --all -- --check
@@ -47,7 +47,7 @@ jobs:
       - name: Cache cargo registry and target
         uses: Swatinem/rust-cache@v2
         with:
-          shared-key: "ci"
+          shared-key: "ci-build"
 
       - name: Build
         run: cargo build --release

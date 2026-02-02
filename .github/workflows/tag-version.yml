@@ -19,6 +19,7 @@ jobs:
       contents: write
     outputs:
       tag: ${{ steps.version.outputs.tag }}
+      version: ${{ steps.version.outputs.version }}
     steps:
       - uses: actions/checkout@v4
         with:
@@ -66,10 +67,10 @@ jobs:
         uses: docker/metadata-action@v5
         with:
           images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+          # workflow_run leaves github.ref as branch; pass version from tag job so we get versioned tags
           tags: |
-            type=semver,pattern={{version}}
-            type=semver,pattern={{major}}.{{minor}}
-            type=semver,pattern={{major}}
+            type=raw,value=${{ needs.tag.outputs.tag }}
+            type=raw,value=${{ needs.tag.outputs.version }}
             type=raw,value=latest
 
       - name: Build and push Docker image
