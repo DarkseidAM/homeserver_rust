@@ -60,33 +60,41 @@ async fn main() -> Result<()> {
     let listener = tokio::net::TcpListener::bind(&addr).await?;
     tracing::info!("Listening on http://{}", addr);
 
-    tokio::select! {
-        result = axum::serve(listener, app) => {
-            result?;
-        }
-        _ = async {
-            #[cfg(unix)]
-            {
-                let mut sigterm = match tokio::signal::unix::signal(tokio::signal::unix::SignalKind::terminate()) {
-                    Ok(s) => s,
-                    Err(_) => {
-                        let _ = tokio::signal::ctrl_c().await;
-                        return;
+    let in_container = std::path::Path::new("/.dockerenv").exists()
+        || std::env::var("CONTAINER").as_deref() == Ok("1");
+
+    if in_container {
+        // In Docker: run server until error or SIGTERM (no signal handler; avoids immediate exit)
+        axum::serve(listener, app).await?;
+    } else {
+        tokio::select! {
+            result = axum::serve(listener, app) => {
+                result?;
+            }
+            _ = async {
+                #[cfg(unix)]
+                {
+                    let mut sigterm = match tokio::signal::unix::signal(tokio::signal::unix::SignalKind::terminate()) {
+                        Ok(s) => s,
+                        Err(_) => {
+                            let _ = tokio::signal::ctrl_c().await;
+                            return;
+                        }
+                    };
+                    tokio::select! {
+                        _ = tokio::signal::ctrl_c() => {}
+                        _ = sigterm.recv() => {}
                     }
-                };
-                tokio::select! {
-                    _ = tokio::signal::ctrl_c() => {}
-                    _ = sigterm.recv() => {}
                 }
+                #[cfg(not(unix))]
+                {
+                    tokio::signal::ctrl_c().await
+                }
+            } => {
+                tracing::info!("Received shutdown signal");
+                let _ = shutdown_tx.send(());
+                let _ = worker_handle.await;
             }
-            #[cfg(not(unix))]
-            {
-                tokio::signal::ctrl_c().await
-            }
-        } => {
-            tracing::info!("Received shutdown signal");
-            let _ = shutdown_tx.send(());
-            let _ = worker_handle.await;
         }
     }
 

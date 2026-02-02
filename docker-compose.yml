@@ -3,6 +3,10 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
+    restart: unless-stopped
+    tty: true
+    stdin_open: true
+    container_name: homeserver-rust
     deploy:
       resources:
         limits:

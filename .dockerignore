@@ -1,5 +1,14 @@
 target/
 server_data/
 .git/
+.github/
 .idea/
+.vscode/
 *.md
+.gitignore
+.dockerignore
+docker-compose.yml
+tests/
+.env
+.env.*
+data/
