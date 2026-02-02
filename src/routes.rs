@@ -3,6 +3,7 @@
 use crate::config::AppConfig;
 use crate::models::FullSystemSnapshot;
 use crate::sysinfo_repo::SysinfoRepo;
+use crate::version::{NAME, VERSION};
 use axum::{
     Router,
     extract::{
@@ -32,6 +33,7 @@ pub fn app(
     };
     Router::new()
         .route("/", get(|| async { "Ktor: Hello from Rust homeserver!" }))
+        .route("/version", get(version_handler))
         .route("/ws/cpu", get(ws_cpu))
         .route("/ws/ram", get(ws_ram))
         .route("/ws/system", get(ws_system))
@@ -44,6 +46,14 @@ struct AppState {
     sysinfo_repo: Arc<SysinfoRepo>,
     ws_system_connections: Arc<AtomicUsize>,
     config: AppConfig,
+}
+
+/// GET /version — returns service name and version (from Cargo.toml at build time).
+async fn version_handler() -> impl IntoResponse {
+    axum::Json(serde_json::json!({
+        "name": NAME,
+        "version": VERSION,
+    }))
 }
 
 /// Ping interval for WebSocket connection health (8.1).

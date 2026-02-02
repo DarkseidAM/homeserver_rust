@@ -66,6 +66,17 @@ async fn test_root_endpoint() {
     response.assert_text("Ktor: Hello from Rust homeserver!");
 }
 
+#[tokio::test]
+async fn test_version_endpoint() {
+    let (app, _) = test_app();
+    let server = TestServer::new(app).unwrap();
+    let response = server.get("/version").await;
+    response.assert_status_ok();
+    let json: serde_json::Value = response.json();
+    assert_eq!(json.get("name").and_then(|v| v.as_str()), Some("homeserver"));
+    assert!(json.get("version").and_then(|v| v.as_str()).is_some());
+}
+
 // --- WebSocket message tests (require http_transport + ws feature) ---
 // Receive until we get valid JSON (server may send Ping first).
 
