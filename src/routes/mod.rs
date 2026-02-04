@@ -7,6 +7,7 @@ use axum::{Router, routing::get};
 use std::sync::Arc;
 use std::sync::atomic::AtomicUsize;
 use tokio::sync::broadcast;
+use tower_http::cors::{Any, CorsLayer};
 
 use crate::config::AppConfig;
 use crate::models::{FullSystemSnapshot, SystemInfo};
@@ -42,5 +43,6 @@ pub fn app(
         .route("/ws/cpu", get(ws::ws_cpu)) // WS /ws/cpu
         .route("/ws/ram", get(ws::ws_ram)) // WS /ws/ram
         .route("/ws/system", get(ws::ws_system)) // WS /ws/system
+        .layer(CorsLayer::new().allow_origin(Any))
         .with_state(state)
 }

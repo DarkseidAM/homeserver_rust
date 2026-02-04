@@ -189,13 +189,13 @@ async fn test_ws_system_receives_broadcast_snapshot() {
     let deadline = tokio::time::Instant::now() + tokio::time::Duration::from_secs(3);
     loop {
         let text = ws.receive_text().await;
-        if let Ok(v) = serde_json::from_str::<serde_json::Value>(&text) {
-            if v.get("timestamp").is_some() {
-                let received: FullSystemSnapshot = serde_json::from_str(&text).unwrap();
-                assert_eq!(received.timestamp, 42);
-                assert_eq!(received.ram.used, 50);
-                break;
-            }
+        if let Ok(v) = serde_json::from_str::<serde_json::Value>(&text)
+            && v.get("timestamp").is_some()
+        {
+            let received: FullSystemSnapshot = serde_json::from_str(&text).unwrap();
+            assert_eq!(received.timestamp, 42);
+            assert_eq!(received.ram.used, 50);
+            break;
         }
         assert!(
             tokio::time::Instant::now() < deadline,

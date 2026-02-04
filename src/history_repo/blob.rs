@@ -12,8 +12,15 @@ pub(super) fn with_version_prefix(version: u8, payload: Vec<u8>) -> Vec<u8> {
     out
 }
 
-pub(super) fn blob_payload(bytes: &[u8]) -> &[u8] {
-    if bytes.is_empty() { bytes } else { &bytes[1..] }
+/// Payload after version byte. If first byte matches `expected_version`, return rest; else legacy (whole blob).
+pub(super) fn blob_payload(bytes: &[u8], expected_version: u8) -> &[u8] {
+    if bytes.is_empty() {
+        bytes
+    } else if bytes[0] == expected_version {
+        &bytes[1..]
+    } else {
+        bytes
+    }
 }
 
 pub(super) fn blob_version(bytes: &[u8]) -> u8 {

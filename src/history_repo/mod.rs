@@ -169,24 +169,28 @@ impl HistoryRepo {
             let network_data: Vec<u8> = row.try_get("network_data")?;
             let system_data: Vec<u8> = row.try_get("system_data")?;
 
-            let containers = wincode::deserialize(blob::blob_payload(&container_data))
-                .map_err(|e| anyhow::anyhow!("wincode deserialize containers: {}", e))?;
-            let storage = wincode::deserialize(blob::blob_payload(&storage_data))
-                .map_err(|e| anyhow::anyhow!("wincode deserialize storage: {}", e))?;
-            let network = wincode::deserialize(blob::blob_payload(&network_data))
-                .map_err(|e| anyhow::anyhow!("wincode deserialize network: {}", e))?;
+            let containers =
+                wincode::deserialize(blob::blob_payload(&container_data, blob::BLOB_VERSION))
+                    .map_err(|e| anyhow::anyhow!("wincode deserialize containers: {}", e))?;
+            let storage =
+                wincode::deserialize(blob::blob_payload(&storage_data, blob::BLOB_VERSION))
+                    .map_err(|e| anyhow::anyhow!("wincode deserialize storage: {}", e))?;
+            let network =
+                wincode::deserialize(blob::blob_payload(&network_data, blob::BLOB_VERSION))
+                    .map_err(|e| anyhow::anyhow!("wincode deserialize network: {}", e))?;
 
             let system = match blob::blob_version(&system_data) {
-                blob::BLOB_VERSION_SYSTEM_DYNAMIC => {
-                    wincode::deserialize(blob::blob_payload(&system_data)).map_err(|e| {
-                        anyhow::anyhow!("wincode deserialize system (dynamic): {}", e)
-                    })?
-                }
+                blob::BLOB_VERSION_SYSTEM_DYNAMIC => wincode::deserialize(blob::blob_payload(
+                    &system_data,
+                    blob::BLOB_VERSION_SYSTEM_DYNAMIC,
+                ))
+                .map_err(|e| anyhow::anyhow!("wincode deserialize system (dynamic): {}", e))?,
                 _ => {
-                    let full: SystemStats = wincode::deserialize(blob::blob_payload(&system_data))
-                        .map_err(|e| {
-                            anyhow::anyhow!("wincode deserialize system (legacy): {}", e)
-                        })?;
+                    let full: SystemStats =
+                        wincode::deserialize(blob::blob_payload(&system_data, blob::BLOB_VERSION))
+                            .map_err(|e| {
+                                anyhow::anyhow!("wincode deserialize system (legacy): {}", e)
+                            })?;
                     SystemStatsDynamic {
                         uptime_secs: full.uptime_secs,
                         process_count: full.process_count,
