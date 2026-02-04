@@ -2,12 +2,34 @@
 
 use crate::models::*;
 use std::sync::Arc;
+use std::time::Instant;
 use sysinfo::{Disks, Networks, System};
+
+/// Read network interface link speed from /sys/class/net/<interface>/speed (Linux).
+/// Returns speed in bits per second (like OSHI), or 0 if unavailable.
+fn get_interface_speed(interface_name: &str) -> u64 {
+    #[cfg(target_os = "linux")]
+    {
+        let path = format!("/sys/class/net/{}/speed", interface_name);
+        if let Ok(content) = std::fs::read_to_string(&path)
+            && let Ok(mbps) = content.trim().parse::<i64>()
+        {
+            // Convert Mbps to bits/sec (negative values mean unknown/unavailable)
+            if mbps > 0 {
+                return (mbps as u64) * 1_000_000;
+            }
+        }
+    }
+    // On non-Linux or if file doesn't exist/parse fails, return 0
+    0
+}
 
 pub struct SysinfoRepo {
     sys: Arc<std::sync::Mutex<System>>,
     disks: Arc<std::sync::Mutex<Disks>>,
     networks: Arc<std::sync::Mutex<Networks>>,
+    /// Previous network snapshot and timestamp for rate calculation (bytes/sec).
+    last_network: Arc<std::sync::Mutex<Option<(NetworkStats, Instant)>>>,
 }
 
 impl Default for SysinfoRepo {
@@ -26,6 +48,7 @@ impl SysinfoRepo {
             sys: Arc::new(std::sync::Mutex::new(sys)),
             disks: Arc::new(std::sync::Mutex::new(disks)),
             networks: Arc::new(std::sync::Mutex::new(networks)),
+            last_network: Arc::new(std::sync::Mutex::new(None)),
         }
     }
 
@@ -143,12 +166,13 @@ impl SysinfoRepo {
 
     pub async fn get_network_stats(&self) -> anyhow::Result<NetworkStats> {
         let networks = self.networks.clone();
+        let last_network = self.last_network.clone();
         tokio::task::spawn_blocking(move || {
             let mut networks_guard = networks
                 .lock()
                 .map_err(|e| anyhow::anyhow!("sysinfo networks lock poisoned: {}", e))?;
             networks_guard.refresh(true);
-            let interfaces: Vec<InterfaceStat> = networks_guard
+            let mut interfaces: Vec<InterfaceStat> = networks_guard
                 .list()
                 .iter()
                 .map(|(name, data)| InterfaceStat {
@@ -171,10 +195,35 @@ impl SysinfoRepo {
                     bytes_recv: data.received(),
                     packets_sent: data.packets_transmitted(),
                     packets_recv: data.packets_received(),
-                    speed: 0,
+                    speed: get_interface_speed(name),
+                    received_bytes_per_sec: 0.0,
+                    transmitted_bytes_per_sec: 0.0,
                     is_up: true,
                 })
                 .collect();
+
+            let now = Instant::now();
+            if let Ok(mut guard) = last_network.lock() {
+                if let Some((ref prev, prev_ts)) = *guard {
+                    let dt_secs = now.duration_since(prev_ts).as_secs_f64();
+                    if dt_secs > 0.0 {
+                        for iface in &mut interfaces {
+                            if let Some(p) = prev.interfaces.iter().find(|i| i.name == iface.name) {
+                                let drx = iface.bytes_recv.saturating_sub(p.bytes_recv);
+                                let dtx = iface.bytes_sent.saturating_sub(p.bytes_sent);
+                                iface.received_bytes_per_sec = drx as f64 / dt_secs;
+                                iface.transmitted_bytes_per_sec = dtx as f64 / dt_secs;
+                            }
+                        }
+                    }
+                }
+                *guard = Some((
+                    NetworkStats {
+                        interfaces: interfaces.clone(),
+                    },
+                    now,
+                ));
+            }
 
             Ok(NetworkStats { interfaces })
         })

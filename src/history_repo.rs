@@ -1,5 +1,7 @@
 // SQLite history (same schema as Kotlin server).
 // Uses sqlx for async + connection pooling. Data stored as BLOB (wincode, bincode-compatible).
+// BLOB layout: [version: u8][payload]. Version 0 = legacy (no prefix); version 1 = current.
+// This allows schema evolution: future versions can add V2 and migrate on read.
 //
 // Inspecting BLOB data: run `cargo run --example dump_history -- [DB_PATH] [LIMIT]` to print
 // recent snapshots as JSON (e.g. `cargo run --example dump_history -- ./data/history.db 5`).
@@ -14,6 +16,28 @@ use std::path::Path;
 use std::str::FromStr;
 
 const SEVEN_DAYS_MS: i64 = 7 * 24 * 60 * 60 * 1000;
+
+/// Current BLOB format version. Prefixed to all new blobs for schema evolution.
+const BLOB_VERSION: u8 = 1;
+
+/// Prepend version byte to serialized payload for schema evolution.
+fn with_version_prefix(payload: Vec<u8>) -> Vec<u8> {
+    let mut out = Vec::with_capacity(1 + payload.len());
+    out.push(BLOB_VERSION);
+    out.extend_from_slice(&payload);
+    out
+}
+
+/// Strip version prefix if present; return slice to wincode payload (legacy or versioned).
+fn blob_payload(bytes: &[u8]) -> &[u8] {
+    if bytes.is_empty() {
+        bytes
+    } else if bytes[0] == BLOB_VERSION {
+        &bytes[1..]
+    } else {
+        bytes
+    }
+}
 
 pub struct HistoryRepo {
     pool: SqlitePool,
@@ -74,14 +98,18 @@ impl HistoryRepo {
         }
         let mut tx = self.pool.begin().await?;
         for s in snapshots {
-            let container_data =
-                wincode::serialize(&s.containers).map_err(|e| anyhow::anyhow!("wincode: {}", e))?;
-            let storage_data =
-                wincode::serialize(&s.storage).map_err(|e| anyhow::anyhow!("wincode: {}", e))?;
-            let network_data =
-                wincode::serialize(&s.network).map_err(|e| anyhow::anyhow!("wincode: {}", e))?;
-            let system_data =
-                wincode::serialize(&s.system).map_err(|e| anyhow::anyhow!("wincode: {}", e))?;
+            let container_data = with_version_prefix(
+                wincode::serialize(&s.containers).map_err(|e| anyhow::anyhow!("wincode: {}", e))?,
+            );
+            let storage_data = with_version_prefix(
+                wincode::serialize(&s.storage).map_err(|e| anyhow::anyhow!("wincode: {}", e))?,
+            );
+            let network_data = with_version_prefix(
+                wincode::serialize(&s.network).map_err(|e| anyhow::anyhow!("wincode: {}", e))?,
+            );
+            let system_data = with_version_prefix(
+                wincode::serialize(&s.system).map_err(|e| anyhow::anyhow!("wincode: {}", e))?,
+            );
             sqlx::query(
                 "INSERT INTO system_history (created_at, cpu_load, memory_used, container_data, storage_data, network_data, system_data) VALUES ($1, $2, $3, $4, $5, $6, $7)",
             )
@@ -134,13 +162,13 @@ impl HistoryRepo {
             let network_data: Vec<u8> = row.try_get("network_data")?;
             let system_data: Vec<u8> = row.try_get("system_data")?;
 
-            let containers = wincode::deserialize(&container_data)
+            let containers = wincode::deserialize(blob_payload(&container_data))
                 .map_err(|e| anyhow::anyhow!("wincode deserialize containers: {}", e))?;
-            let storage = wincode::deserialize(&storage_data)
+            let storage = wincode::deserialize(blob_payload(&storage_data))
                 .map_err(|e| anyhow::anyhow!("wincode deserialize storage: {}", e))?;
-            let network = wincode::deserialize(&network_data)
+            let network = wincode::deserialize(blob_payload(&network_data))
                 .map_err(|e| anyhow::anyhow!("wincode deserialize network: {}", e))?;
-            let system = wincode::deserialize(&system_data)
+            let system = wincode::deserialize(blob_payload(&system_data))
                 .map_err(|e| anyhow::anyhow!("wincode deserialize system: {}", e))?;
 
             out.push(FullSystemSnapshot {

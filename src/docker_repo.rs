@@ -5,7 +5,7 @@ use bollard::Docker;
 use bollard::query_parameters::{ListContainersOptions, StatsOptions};
 use bollard::secret::ContainerStatsResponse;
 use futures_util::StreamExt;
-use std::collections::HashMap;
+use std::collections::{HashMap, HashSet};
 use std::sync::Arc;
 use tokio::sync::RwLock;
 use tracing::warn;
@@ -44,9 +44,9 @@ impl DockerRepo {
             }
         };
 
-        let mut streams = self.active_streams.write().await;
-        let mut running_ids: Vec<String> = Vec::new();
-
+        // Build running (id, name) and running set without holding any lock
+        let mut running_ids = Vec::with_capacity(containers.len());
+        let mut id_to_name = HashMap::with_capacity(containers.len());
         for c in &containers {
             let id = c.id.as_ref().cloned().unwrap_or_default();
             let name = c
@@ -57,21 +57,57 @@ impl DockerRepo {
                 .unwrap_or_else(|| id.clone());
             let name = name.trim_start_matches('/').to_string();
             running_ids.push(id.clone());
-
-            if let std::collections::hash_map::Entry::Vacant(e) = streams.entry(id.clone()) {
-                let handle = self.start_monitoring(id, name).await;
-                e.insert(handle);
-            }
+            id_to_name.insert(id.clone(), name);
         }
+        let running_set: HashSet<String> = running_ids.iter().cloned().collect();
 
-        // Remove stopped containers and abort their tasks
-        let keys: Vec<String> = streams.keys().cloned().collect();
-        for k in keys {
-            if !running_ids.contains(&k) {
-                if let Some(handle) = streams.remove(&k) {
+        // Brief read lock to get current stream keys
+        let current_keys: Vec<String> = {
+            let r = self.active_streams.read().await;
+            r.keys().cloned().collect()
+        };
+
+        // Compute diff: to_add = running but not in streams, to_remove = in streams but not running
+        let to_add: Vec<(String, String)> = running_ids
+            .into_iter()
+            .filter(|id| !current_keys.contains(id))
+            .map(|id| {
+                let name = id_to_name.get(&id).cloned().unwrap_or_else(|| id.clone());
+                (id, name)
+            })
+            .collect();
+        let to_remove: Vec<String> = current_keys
+            .into_iter()
+            .filter(|id| !running_set.contains(id))
+            .collect();
+
+        // Spawn new monitors without holding the write lock
+        let new_handles: Vec<(String, tokio::task::JoinHandle<()>)> = {
+            let mut out = Vec::with_capacity(to_add.len());
+            for (id, name) in to_add {
+                let handle = self.start_monitoring(id.clone(), name).await;
+                out.push((id, handle));
+            }
+            out
+        };
+
+        // Brief write lock: insert new streams, remove stopped
+        {
+            let mut streams = self.active_streams.write().await;
+            for (id, handle) in new_handles {
+                streams.insert(id, handle);
+            }
+            for id in &to_remove {
+                if let Some(handle) = streams.remove(id) {
                     handle.abort();
                 }
-                self.live_stats.write().await.remove(&k);
+            }
+        }
+        // Brief write lock: clean live_stats for removed containers
+        if !to_remove.is_empty() {
+            let mut live = self.live_stats.write().await;
+            for id in &to_remove {
+                live.remove(id);
             }
         }
 
@@ -192,7 +228,7 @@ impl DockerRepo {
             cpu_percent,
             memory_usage_bytes: mem_usage,
             memory_limit_bytes: mem_limit,
-            state: "running".into(),
+            state: crate::models::ContainerState::Running,
             network_rx_bytes: network_rx,
             network_tx_bytes: network_tx,
             block_read_bytes: block_read,

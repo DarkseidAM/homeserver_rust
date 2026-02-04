@@ -177,14 +177,19 @@ async fn stream_system(
     loop {
         tokio::select! {
             result = rx.recv() => {
-                let snapshot = match result {
-                    Ok(s) => s,
-                    Err(_) => break,
-                };
-                let json = serde_json::to_string(&snapshot)?;
-                let r = timeout(WS_SEND_TIMEOUT, socket.send(Message::Text(json.into()))).await;
-                if r.is_err() || r.unwrap_or(Ok(())).is_err() {
-                    break;
+                match result {
+                    Ok(snapshot) => {
+                        let json = serde_json::to_string(&snapshot)?;
+                        let r = timeout(WS_SEND_TIMEOUT, socket.send(Message::Text(json.into()))).await;
+                        if r.is_err() || r.unwrap_or(Ok(())).is_err() {
+                            break;
+                        }
+                    }
+                    Err(broadcast::error::RecvError::Lagged(n)) => {
+                        tracing::warn!("WebSocket /ws/system client lagged, skipped {} messages", n);
+                        // Continue loop; next recv() returns the latest snapshot
+                    }
+                    Err(broadcast::error::RecvError::Closed) => break,
                 }
             }
             _ = ping_interval.tick() => {

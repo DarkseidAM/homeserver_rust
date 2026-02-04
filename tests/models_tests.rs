@@ -39,7 +39,7 @@ fn test_container_stats_serialization() {
         cpu_percent: 1.5,
         memory_usage_bytes: 1000,
         memory_limit_bytes: 256 * 1024 * 1024,
-        state: "running".into(),
+        state: ContainerState::Running,
         network_rx_bytes: 0,
         network_tx_bytes: 0,
         block_read_bytes: 0,
@@ -217,6 +217,8 @@ fn test_interface_stat_json_roundtrip() {
         packets_sent: 10,
         packets_recv: 20,
         speed: 1000,
+        received_bytes_per_sec: 0.0,
+        transmitted_bytes_per_sec: 0.0,
         is_up: true,
     };
     let json = serde_json::to_string(&i).unwrap();
@@ -239,6 +241,8 @@ fn test_network_stats_json_and_wincode_roundtrip() {
             packets_sent: 0,
             packets_recv: 0,
             speed: 0,
+            received_bytes_per_sec: 0.0,
+            transmitted_bytes_per_sec: 0.0,
             is_up: true,
         }],
     };
