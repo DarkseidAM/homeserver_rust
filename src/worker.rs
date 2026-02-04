@@ -2,7 +2,7 @@
 
 use crate::docker_repo::DockerRepo;
 use crate::history_repo::HistoryRepo;
-use crate::models::FullSystemSnapshot;
+use crate::models::{FullSystemSnapshot, SystemInfo};
 use crate::sysinfo_repo::SysinfoRepo;
 use std::sync::Arc;
 use std::sync::atomic::AtomicUsize;
@@ -16,6 +16,7 @@ const NO_RECEIVERS_WARN_INTERVAL: Duration = Duration::from_secs(60);
 /// Repos, channels, and shutdown for the worker.
 pub struct WorkerDeps {
     pub sysinfo_repo: Arc<SysinfoRepo>,
+    pub system_info: Arc<SystemInfo>,
     pub docker_repo: Arc<DockerRepo>,
     pub history_repo: Arc<HistoryRepo>,
     pub tx: broadcast::Sender<FullSystemSnapshot>,
@@ -33,6 +34,7 @@ pub struct WorkerConfig {
 pub fn spawn(deps: WorkerDeps, config: WorkerConfig) -> tokio::task::JoinHandle<()> {
     let WorkerDeps {
         sysinfo_repo,
+        system_info,
         docker_repo,
         history_repo,
         tx,
@@ -61,7 +63,9 @@ pub fn spawn(deps: WorkerDeps, config: WorkerConfig) -> tokio::task::JoinHandle<
                 _ = tick.tick() => {}
                 _ = &mut shutdown_rx => {
                     if !snapshot_buffer.is_empty()
-                        && let Err(e) = history_repo.save_snapshots(&snapshot_buffer).await
+                        && let Err(e) = history_repo
+                            .save_snapshots(&snapshot_buffer, system_info.as_ref())
+                            .await
                     {
                         tracing::warn!("Failed to save snapshots on shutdown: {}", e);
                     }
@@ -139,7 +143,10 @@ pub fn spawn(deps: WorkerDeps, config: WorkerConfig) -> tokio::task::JoinHandle<
             flush_ticks += 1;
             if flush_ticks >= flush_rate && !snapshot_buffer.is_empty() {
                 let n = snapshot_buffer.len();
-                if let Err(e) = history_repo.save_snapshots(&snapshot_buffer).await {
+                if let Err(e) = history_repo
+                    .save_snapshots(&snapshot_buffer, system_info.as_ref())
+                    .await
+                {
                     tracing::warn!("Failed to save snapshots: {}", e);
                 } else {
                     snapshots_saved_total += n as u64;

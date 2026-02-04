@@ -78,13 +78,7 @@ fn test_full_system_snapshot_serialization() {
             disks: vec![],
         },
         network: NetworkStats { interfaces: vec![] },
-        system: SystemStats {
-            os_family: "Linux".into(),
-            os_manufacturer: String::new(),
-            os_version: String::new(),
-            system_manufacturer: String::new(),
-            system_model: String::new(),
-            processor_name: String::new(),
+        system: SystemStatsDynamic {
             uptime_secs: 0,
             process_count: 0,
             thread_count: 0,
@@ -122,13 +116,7 @@ fn test_full_system_snapshot_wincode_roundtrip() {
             disks: vec![],
         },
         network: NetworkStats { interfaces: vec![] },
-        system: SystemStats {
-            os_family: "Linux".into(),
-            os_manufacturer: String::new(),
-            os_version: String::new(),
-            system_manufacturer: String::new(),
-            system_model: String::new(),
-            processor_name: String::new(),
+        system: SystemStatsDynamic {
             uptime_secs: 0,
             process_count: 0,
             thread_count: 0,

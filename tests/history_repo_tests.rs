@@ -4,6 +4,17 @@ use homeserver::history_repo::HistoryRepo;
 use homeserver::models::*;
 use tempfile::TempDir;
 
+fn minimal_system_info() -> SystemInfo {
+    SystemInfo {
+        os_family: "Linux".into(),
+        os_manufacturer: String::new(),
+        os_version: String::new(),
+        system_manufacturer: String::new(),
+        system_model: String::new(),
+        processor_name: String::new(),
+    }
+}
+
 fn minimal_snapshot(timestamp: u64) -> FullSystemSnapshot {
     FullSystemSnapshot {
         timestamp,
@@ -26,13 +37,7 @@ fn minimal_snapshot(timestamp: u64) -> FullSystemSnapshot {
             disks: vec![],
         },
         network: NetworkStats { interfaces: vec![] },
-        system: SystemStats {
-            os_family: "Linux".into(),
-            os_manufacturer: String::new(),
-            os_version: String::new(),
-            system_manufacturer: String::new(),
-            system_model: String::new(),
-            processor_name: String::new(),
+        system: SystemStatsDynamic {
             uptime_secs: 0,
             process_count: 0,
             thread_count: 0,
@@ -68,9 +73,11 @@ async fn history_repo_save_and_get_recent() {
         minimal_snapshot(2000),
         minimal_snapshot(3000),
     ];
-    repo.save_snapshots(&snapshots).await.unwrap();
+    repo.save_snapshots(&snapshots, &minimal_system_info())
+        .await
+        .unwrap();
 
-    let recent = repo.get_recent_snapshots(10).await.unwrap();
+    let (_info, recent) = repo.get_recent_snapshots(10).await.unwrap();
     assert_eq!(recent.len(), 3);
     assert_eq!(recent[0].timestamp, 1000);
     assert_eq!(recent[1].timestamp, 2000);
@@ -78,7 +85,7 @@ async fn history_repo_save_and_get_recent() {
     assert_eq!(recent[0].cpu.usage_percent, 10.0);
     assert_eq!(recent[0].ram.used, 512);
 
-    let limited = repo.get_recent_snapshots(2).await.unwrap();
+    let (_info2, limited) = repo.get_recent_snapshots(2).await.unwrap();
     assert_eq!(limited.len(), 2);
     assert_eq!(limited[0].timestamp, 2000);
     assert_eq!(limited[1].timestamp, 3000);
@@ -92,9 +99,11 @@ async fn history_repo_save_empty_no_op() {
 
     let repo = HistoryRepo::connect(path_str).await.unwrap();
     repo.init().await.unwrap();
-    repo.save_snapshots(&[]).await.unwrap();
+    repo.save_snapshots(&[], &minimal_system_info())
+        .await
+        .unwrap();
 
-    let recent = repo.get_recent_snapshots(10).await.unwrap();
+    let (_info, recent) = repo.get_recent_snapshots(10).await.unwrap();
     assert!(recent.is_empty());
 }
 
@@ -113,14 +122,17 @@ async fn history_repo_prune_old_data() {
         .as_millis() as u64;
     let old_ms = now_ms - (8 * 24 * 60 * 60 * 1000); // 8 days ago
 
-    repo.save_snapshots(&[minimal_snapshot(old_ms), minimal_snapshot(now_ms)])
-        .await
-        .unwrap();
-    let recent_before = repo.get_recent_snapshots(10).await.unwrap();
+    repo.save_snapshots(
+        &[minimal_snapshot(old_ms), minimal_snapshot(now_ms)],
+        &minimal_system_info(),
+    )
+    .await
+    .unwrap();
+    let (_info, recent_before) = repo.get_recent_snapshots(10).await.unwrap();
     assert_eq!(recent_before.len(), 2);
 
     repo.prune_old_data().await.unwrap();
-    let recent_after = repo.get_recent_snapshots(10).await.unwrap();
+    let (_info2, recent_after) = repo.get_recent_snapshots(10).await.unwrap();
     assert_eq!(recent_after.len(), 1);
     assert_eq!(recent_after[0].timestamp, now_ms);
 }

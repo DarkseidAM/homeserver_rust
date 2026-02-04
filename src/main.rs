@@ -31,6 +31,12 @@ async fn main() -> Result<()> {
         broadcast::channel::<models::FullSystemSnapshot>(app_config.publishing.broadcast_capacity);
 
     let sysinfo_repo = Arc::new(sysinfo_repo::SysinfoRepo::new());
+    let system_info = Arc::new(
+        sysinfo_repo
+            .get_system_info()
+            .await
+            .map_err(|e| anyhow::anyhow!("system info: {}", e))?,
+    );
     let docker_repo = Arc::new(docker_repo::DockerRepo::connect()?);
     let history_repo =
         Arc::new(history_repo::HistoryRepo::connect(&app_config.database.path).await?);
@@ -42,6 +48,7 @@ async fn main() -> Result<()> {
     let worker_handle = worker::spawn(
         worker::WorkerDeps {
             sysinfo_repo: sysinfo_repo.clone(),
+            system_info: system_info.clone(),
             docker_repo: docker_repo.clone(),
             history_repo: history_repo.clone(),
             tx: tx.clone(),
@@ -55,7 +62,13 @@ async fn main() -> Result<()> {
         },
     );
 
-    let app = routes::app(tx, sysinfo_repo, ws_system_connections, app_config.clone());
+    let app = routes::app(
+        tx,
+        sysinfo_repo,
+        system_info,
+        ws_system_connections,
+        app_config.clone(),
+    );
     let addr = format!("{}:{}", app_config.server.host, app_config.server.port);
     let listener = tokio::net::TcpListener::bind(&addr).await?;
     tracing::info!("Listening on http://{}", addr);

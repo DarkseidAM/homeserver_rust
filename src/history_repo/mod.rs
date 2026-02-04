@@ -1,15 +1,10 @@
-// SQLite history (same schema as Kotlin server).
-// Uses sqlx for async + connection pooling. Data stored as BLOB (wincode, bincode-compatible).
-// BLOB layout: [version: u8][payload]. Version 0 = legacy (no prefix); version 1 = current.
-// This allows schema evolution: future versions can add V2 and migrate on read.
-//
-// Inspecting BLOB data: run `cargo run --example dump_history -- [DB_PATH] [LIMIT]` to print
-// recent snapshots as JSON (e.g. `cargo run --example dump_history -- ./data/history.db 5`).
-//
-// Future schema migrations: run versioned migrations (e.g. sqlx-cli migrate) or check a
-// schema_version table and run ALTER/CREATE as needed before opening the pool.
+// SQLite history. system_info table stores static SystemInfo once; merge when loading.
 
-use crate::models::{CpuStats, FullSystemSnapshot, RamStats};
+mod blob;
+
+use crate::models::{
+    CpuStats, FullSystemSnapshot, RamStats, SystemInfo, SystemStats, SystemStatsDynamic,
+};
 use sqlx::Row;
 use sqlx::sqlite::{SqliteConnectOptions, SqlitePool, SqlitePoolOptions};
 use std::path::Path;
@@ -17,34 +12,11 @@ use std::str::FromStr;
 
 const SEVEN_DAYS_MS: i64 = 7 * 24 * 60 * 60 * 1000;
 
-/// Current BLOB format version. Prefixed to all new blobs for schema evolution.
-const BLOB_VERSION: u8 = 1;
-
-/// Prepend version byte to serialized payload for schema evolution.
-fn with_version_prefix(payload: Vec<u8>) -> Vec<u8> {
-    let mut out = Vec::with_capacity(1 + payload.len());
-    out.push(BLOB_VERSION);
-    out.extend_from_slice(&payload);
-    out
-}
-
-/// Strip version prefix if present; return slice to wincode payload (legacy or versioned).
-fn blob_payload(bytes: &[u8]) -> &[u8] {
-    if bytes.is_empty() {
-        bytes
-    } else if bytes[0] == BLOB_VERSION {
-        &bytes[1..]
-    } else {
-        bytes
-    }
-}
-
 pub struct HistoryRepo {
     pool: SqlitePool,
 }
 
 impl HistoryRepo {
-    /// Connect to SQLite at `path`, create parent dir and DB if missing, enable WAL + pragmas.
     pub async fn connect(path: &str) -> anyhow::Result<Self> {
         if let Some(parent) = Path::new(path).parent() {
             std::fs::create_dir_all(parent)?;
@@ -58,7 +30,6 @@ impl HistoryRepo {
         Ok(Self { pool })
     }
 
-    /// Create tables if they don't exist. Single schema: BLOB columns (wincode).
     pub async fn init(&self) -> anyhow::Result<()> {
         sqlx::query(
             "CREATE TABLE IF NOT EXISTS schema_version (key TEXT PRIMARY KEY, value INTEGER NOT NULL)",
@@ -89,25 +60,47 @@ impl HistoryRepo {
         .execute(&self.pool)
         .await?;
 
+        sqlx::query(
+            "CREATE TABLE IF NOT EXISTS system_info (id INTEGER PRIMARY KEY CHECK (id = 1), data BLOB NOT NULL)",
+        )
+        .execute(&self.pool)
+        .await?;
+
         Ok(())
     }
 
-    pub async fn save_snapshots(&self, snapshots: &[FullSystemSnapshot]) -> anyhow::Result<()> {
+    pub async fn save_snapshots(
+        &self,
+        snapshots: &[FullSystemSnapshot],
+        system_info: &SystemInfo,
+    ) -> anyhow::Result<()> {
         if snapshots.is_empty() {
             return Ok(());
         }
         let mut tx = self.pool.begin().await?;
+
+        let info_blob = wincode::serialize(system_info)
+            .map_err(|e| anyhow::anyhow!("wincode system_info: {}", e))?;
+        sqlx::query("INSERT OR REPLACE INTO system_info (id, data) VALUES (1, $1)")
+            .bind(&info_blob)
+            .execute(&mut *tx)
+            .await?;
+
         for s in snapshots {
-            let container_data = with_version_prefix(
+            let container_data = blob::with_version_prefix(
+                blob::BLOB_VERSION,
                 wincode::serialize(&s.containers).map_err(|e| anyhow::anyhow!("wincode: {}", e))?,
             );
-            let storage_data = with_version_prefix(
+            let storage_data = blob::with_version_prefix(
+                blob::BLOB_VERSION,
                 wincode::serialize(&s.storage).map_err(|e| anyhow::anyhow!("wincode: {}", e))?,
             );
-            let network_data = with_version_prefix(
+            let network_data = blob::with_version_prefix(
+                blob::BLOB_VERSION,
                 wincode::serialize(&s.network).map_err(|e| anyhow::anyhow!("wincode: {}", e))?,
             );
-            let system_data = with_version_prefix(
+            let system_data = blob::with_version_prefix(
+                blob::BLOB_VERSION_SYSTEM_DYNAMIC,
                 wincode::serialize(&s.system).map_err(|e| anyhow::anyhow!("wincode: {}", e))?,
             );
             sqlx::query(
@@ -139,11 +132,25 @@ impl HistoryRepo {
         Ok(())
     }
 
-    /// Fetch the most recent snapshots (for inspection/debug). Deserializes BLOB columns with wincode.
+    pub async fn get_stored_system_info(&self) -> anyhow::Result<Option<SystemInfo>> {
+        let row = sqlx::query("SELECT data FROM system_info WHERE id = 1")
+            .fetch_optional(&self.pool)
+            .await?;
+        let Some(row) = row else {
+            return Ok(None);
+        };
+        let data: Vec<u8> = row.try_get("data")?;
+        let info = wincode::deserialize(&data)
+            .map_err(|e| anyhow::anyhow!("wincode deserialize system_info: {}", e))?;
+        Ok(Some(info))
+    }
+
     pub async fn get_recent_snapshots(
         &self,
         limit: u32,
-    ) -> anyhow::Result<Vec<FullSystemSnapshot>> {
+    ) -> anyhow::Result<(Option<SystemInfo>, Vec<FullSystemSnapshot>)> {
+        let stored_info = self.get_stored_system_info().await?;
+
         let rows = sqlx::query(
             "SELECT created_at, cpu_load, memory_used, container_data, storage_data, network_data, system_data
              FROM system_history ORDER BY id DESC LIMIT $1",
@@ -162,14 +169,33 @@ impl HistoryRepo {
             let network_data: Vec<u8> = row.try_get("network_data")?;
             let system_data: Vec<u8> = row.try_get("system_data")?;
 
-            let containers = wincode::deserialize(blob_payload(&container_data))
+            let containers = wincode::deserialize(blob::blob_payload(&container_data))
                 .map_err(|e| anyhow::anyhow!("wincode deserialize containers: {}", e))?;
-            let storage = wincode::deserialize(blob_payload(&storage_data))
+            let storage = wincode::deserialize(blob::blob_payload(&storage_data))
                 .map_err(|e| anyhow::anyhow!("wincode deserialize storage: {}", e))?;
-            let network = wincode::deserialize(blob_payload(&network_data))
+            let network = wincode::deserialize(blob::blob_payload(&network_data))
                 .map_err(|e| anyhow::anyhow!("wincode deserialize network: {}", e))?;
-            let system = wincode::deserialize(blob_payload(&system_data))
-                .map_err(|e| anyhow::anyhow!("wincode deserialize system: {}", e))?;
+
+            let system = match blob::blob_version(&system_data) {
+                blob::BLOB_VERSION_SYSTEM_DYNAMIC => {
+                    wincode::deserialize(blob::blob_payload(&system_data)).map_err(|e| {
+                        anyhow::anyhow!("wincode deserialize system (dynamic): {}", e)
+                    })?
+                }
+                _ => {
+                    let full: SystemStats = wincode::deserialize(blob::blob_payload(&system_data))
+                        .map_err(|e| {
+                            anyhow::anyhow!("wincode deserialize system (legacy): {}", e)
+                        })?;
+                    SystemStatsDynamic {
+                        uptime_secs: full.uptime_secs,
+                        process_count: full.process_count,
+                        thread_count: full.thread_count,
+                        cpu_voltage: full.cpu_voltage,
+                        fan_speeds: full.fan_speeds,
+                    }
+                }
+            };
 
             out.push(FullSystemSnapshot {
                 timestamp: created_at as u64,
@@ -193,6 +219,6 @@ impl HistoryRepo {
             });
         }
         out.reverse();
-        Ok(out)
+        Ok((stored_info, out))
     }
 }

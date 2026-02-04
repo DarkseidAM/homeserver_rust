@@ -1,34 +1,16 @@
-// System stats via sysinfo (OSHI equivalent)
+// System stats via sysinfo
+
+mod linux;
 
 use crate::models::*;
 use std::sync::Arc;
 use std::time::Instant;
 use sysinfo::{Disks, Networks, System};
 
-/// Read network interface link speed from /sys/class/net/<interface>/speed (Linux).
-/// Returns speed in bits per second (like OSHI), or 0 if unavailable.
-fn get_interface_speed(interface_name: &str) -> u64 {
-    #[cfg(target_os = "linux")]
-    {
-        let path = format!("/sys/class/net/{}/speed", interface_name);
-        if let Ok(content) = std::fs::read_to_string(&path)
-            && let Ok(mbps) = content.trim().parse::<i64>()
-        {
-            // Convert Mbps to bits/sec (negative values mean unknown/unavailable)
-            if mbps > 0 {
-                return (mbps as u64) * 1_000_000;
-            }
-        }
-    }
-    // On non-Linux or if file doesn't exist/parse fails, return 0
-    0
-}
-
 pub struct SysinfoRepo {
     sys: Arc<std::sync::Mutex<System>>,
     disks: Arc<std::sync::Mutex<Disks>>,
     networks: Arc<std::sync::Mutex<Networks>>,
-    /// Previous network snapshot and timestamp for rate calculation (bytes/sec).
     last_network: Arc<std::sync::Mutex<Option<(NetworkStats, Instant)>>>,
 }
 
@@ -65,10 +47,13 @@ impl SysinfoRepo {
             let usage = sys.global_cpu_usage() as f64;
             let physical = System::physical_core_count().unwrap_or(0) as u32;
             let logical = sys.cpus().len() as u32;
-            let name = sys
-                .cpus()
-                .first()
-                .map(|c| c.name().to_string())
+            let name = linux::read_cpu_model_linux()
+                .or_else(|| {
+                    sys.cpus()
+                        .first()
+                        .map(|c| c.name().to_string())
+                        .filter(|s| !s.is_empty() && s != "cpu0")
+                })
                 .unwrap_or_else(|| "Unknown".into());
 
             Ok(CpuStats {
@@ -195,7 +180,7 @@ impl SysinfoRepo {
                     bytes_recv: data.received(),
                     packets_sent: data.packets_transmitted(),
                     packets_recv: data.packets_received(),
-                    speed: get_interface_speed(name),
+                    speed: linux::get_interface_speed(name),
                     received_bytes_per_sec: 0.0,
                     transmitted_bytes_per_sec: 0.0,
                     is_up: true,
@@ -231,7 +216,40 @@ impl SysinfoRepo {
         .map_err(|e| anyhow::anyhow!("sysinfo task join: {}", e))?
     }
 
-    pub async fn get_system_stats(&self) -> anyhow::Result<SystemStats> {
+    pub async fn get_system_info(&self) -> anyhow::Result<SystemInfo> {
+        let sys = self.sys.clone();
+        tokio::task::spawn_blocking(move || {
+            let sys = sys
+                .lock()
+                .map_err(|e| anyhow::anyhow!("sysinfo lock poisoned: {}", e))?;
+            let name = System::name().unwrap_or_else(|| std::env::consts::OS.into());
+            let os_version = System::os_version().unwrap_or_default();
+            let host_name = System::host_name().unwrap_or_default();
+            let cpu_name = linux::read_cpu_model_linux()
+                .or_else(|| {
+                    sys.cpus()
+                        .first()
+                        .map(|c| c.name().to_string())
+                        .filter(|s| !s.is_empty() && s != "cpu0")
+                })
+                .unwrap_or_else(|| "Unknown".into());
+            let os_manufacturer = linux::read_os_manufacturer_linux().unwrap_or_default();
+            let system_manufacturer = linux::read_sys_vendor_linux().unwrap_or_default();
+            Ok(SystemInfo {
+                os_family: name,
+                os_manufacturer,
+                os_version,
+                system_manufacturer,
+                system_model: host_name,
+                processor_name: cpu_name,
+            })
+        })
+        .await
+        .map_err(|e| anyhow::anyhow!("sysinfo task join: {}", e))?
+    }
+
+    /// Returns dynamic-only system metrics (wire format). Static identity is GET /api/info.
+    pub async fn get_system_stats(&self) -> anyhow::Result<SystemStatsDynamic> {
         let sys = self.sys.clone();
         tokio::task::spawn_blocking(move || {
             let mut sys = sys
@@ -239,28 +257,18 @@ impl SysinfoRepo {
                 .map_err(|e| anyhow::anyhow!("sysinfo lock poisoned: {}", e))?;
             sys.refresh_memory();
             sys.refresh_cpu_all();
-
-            let name = System::name().unwrap_or_else(|| std::env::consts::OS.into());
-            let os_version = System::os_version().unwrap_or_default();
-            let host_name = System::host_name().unwrap_or_default();
-            let cpu_name = sys
-                .cpus()
-                .first()
-                .map(|c| c.name().to_string())
-                .unwrap_or_else(|| "Unknown".into());
             let uptime = System::uptime();
             let process_count = sys.processes().len() as u32;
-
-            Ok(SystemStats {
-                os_family: name,
-                os_manufacturer: String::new(),
-                os_version,
-                system_manufacturer: String::new(),
-                system_model: host_name,
-                processor_name: cpu_name,
+            let thread_count = sys
+                .processes()
+                .values()
+                .map(|p| 1 + p.tasks().map(|t| t.len()).unwrap_or(0))
+                .sum::<usize>()
+                .min(u32::MAX as usize) as u32;
+            Ok(SystemStatsDynamic {
                 uptime_secs: uptime,
                 process_count,
-                thread_count: 0,
+                thread_count,
                 cpu_voltage: 0.0,
                 fan_speeds: vec![],
             })

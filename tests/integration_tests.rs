@@ -2,7 +2,7 @@
 
 use axum_test::TestServer;
 use homeserver::config::AppConfig;
-use homeserver::models::{CpuStats, FullSystemSnapshot, RamStats};
+use homeserver::models::{CpuStats, FullSystemSnapshot, RamStats, SystemInfo};
 use homeserver::routes;
 use std::sync::Arc;
 use std::sync::atomic::AtomicUsize;
@@ -32,6 +32,17 @@ fn test_app_config() -> AppConfig {
     AppConfig::load_from_str(TEST_CONFIG).unwrap()
 }
 
+fn test_system_info() -> Arc<SystemInfo> {
+    Arc::new(SystemInfo {
+        os_family: "Linux".to_string(),
+        os_manufacturer: String::new(),
+        os_version: String::new(),
+        system_manufacturer: String::new(),
+        system_model: "test-host".to_string(),
+        processor_name: "TestCPU".to_string(),
+    })
+}
+
 fn test_app() -> (
     axum::Router,
     broadcast::Sender<homeserver::models::FullSystemSnapshot>,
@@ -41,6 +52,7 @@ fn test_app() -> (
     let app = routes::app(
         tx.clone(),
         Arc::new(homeserver::sysinfo_repo::SysinfoRepo::new()),
+        test_system_info(),
         Arc::new(AtomicUsize::new(0)),
         config,
     );
@@ -78,6 +90,24 @@ async fn test_version_endpoint() {
         Some("homeserver")
     );
     assert!(json.get("version").and_then(|v| v.as_str()).is_some());
+}
+
+#[tokio::test]
+async fn test_api_info_endpoint() {
+    let (app, _) = test_app();
+    let server = TestServer::new(app).unwrap();
+    let response = server.get("/api/info").await;
+    response.assert_status_ok();
+    let json: serde_json::Value = response.json();
+    assert_eq!(json.get("osFamily").and_then(|v| v.as_str()), Some("Linux"));
+    assert_eq!(
+        json.get("systemModel").and_then(|v| v.as_str()),
+        Some("test-host")
+    );
+    assert_eq!(
+        json.get("processorName").and_then(|v| v.as_str()),
+        Some("TestCPU")
+    );
 }
 
 // --- WebSocket message tests (require http_transport + ws feature) ---
@@ -137,13 +167,7 @@ async fn test_ws_system_receives_broadcast_snapshot() {
             disks: vec![],
         },
         network: homeserver::models::NetworkStats { interfaces: vec![] },
-        system: homeserver::models::SystemStats {
-            os_family: "Linux".into(),
-            os_manufacturer: String::new(),
-            os_version: String::new(),
-            system_manufacturer: String::new(),
-            system_model: String::new(),
-            processor_name: String::new(),
+        system: homeserver::models::SystemStatsDynamic {
             uptime_secs: 0,
             process_count: 0,
             thread_count: 0,
@@ -162,7 +186,20 @@ async fn test_ws_system_receives_broadcast_snapshot() {
         tokio::time::sleep(tokio::time::Duration::from_millis(100)).await;
         let _ = tx_clone.send(snapshot_clone);
     });
-    let received: FullSystemSnapshot = receive_first_json_text(&mut ws).await;
-    assert_eq!(received.timestamp, 42);
-    assert_eq!(received.ram.used, 50);
+    let deadline = tokio::time::Instant::now() + tokio::time::Duration::from_secs(3);
+    loop {
+        let text = ws.receive_text().await;
+        if let Ok(v) = serde_json::from_str::<serde_json::Value>(&text) {
+            if v.get("timestamp").is_some() {
+                let received: FullSystemSnapshot = serde_json::from_str(&text).unwrap();
+                assert_eq!(received.timestamp, 42);
+                assert_eq!(received.ram.used, 50);
+                break;
+            }
+        }
+        assert!(
+            tokio::time::Instant::now() < deadline,
+            "timed out waiting for snapshot"
+        );
+    }
 }

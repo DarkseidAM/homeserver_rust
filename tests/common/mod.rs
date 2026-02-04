@@ -26,13 +26,7 @@ pub fn minimal_snapshot(timestamp: u64) -> FullSystemSnapshot {
         network: NetworkStats {
             interfaces: vec![],
         },
-        system: SystemStats {
-            os_family: String::new(),
-            os_manufacturer: String::new(),
-            os_version: String::new(),
-            system_manufacturer: String::new(),
-            system_model: String::new(),
-            processor_name: String::new(),
+        system: SystemStatsDynamic {
             uptime_secs: 0,
             process_count: 0,
             thread_count: 0,
