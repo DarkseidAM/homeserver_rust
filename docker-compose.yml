@@ -14,11 +14,11 @@ services:
     ports:
       - "8081:8081"
     environment:
-      - TZ=Asia/Kolkata
+      - TZ=${TZ:-Asia/Kolkata}
       - CONFIG_FILE=/app/config/application.toml
       - RUST_LOG=info
-    group_add:
-      - "959"
+      - PUID=${PUID}
+      - PGID=${PGID}
     volumes:
       - ./data:/app/data
       - ./config.toml:/app/config/application.toml

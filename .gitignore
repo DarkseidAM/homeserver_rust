@@ -4,3 +4,4 @@ config.toml.local
 *.db
 *.db-shm
 *.db-wal
+.env

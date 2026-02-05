@@ -27,19 +27,21 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     curl \
     && rm -rf /var/lib/apt/lists/*
 
-# Create non-root user
-RUN useradd -r -u 1000 -m -s /sbin/nologin serveruser
-
 WORKDIR /app
 
 # Copy binary from builder
 COPY --from=builder /build/target/release/homeserver /app/homeserver
 # Copy default config
 COPY config.toml /app/config.toml
+# Copy entrypoint script
+COPY docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
 
-# Create data directory with proper ownership
-RUN mkdir -p /app/data && chown -R serveruser:serveruser /app
+# Create data directory (ownership will be fixed by entrypoint)
+RUN mkdir -p /app/data
 
-USER serveruser
+# Make entrypoint executable
+RUN chmod +x /usr/local/bin/docker-entrypoint.sh
 
-ENTRYPOINT ["/usr/bin/tini", "--", "/app/homeserver"]
+# Run as root initially - entrypoint will switch to correct user
+ENTRYPOINT ["/usr/local/bin/docker-entrypoint.sh"]
+CMD ["/app/homeserver"]
