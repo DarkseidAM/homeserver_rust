@@ -12,6 +12,7 @@ use std::sync::Arc;
 use std::sync::atomic::AtomicUsize;
 use tokio::sync::broadcast;
 use tokio::time::{Duration, timeout};
+use tracing::instrument;
 
 use super::AppState;
 use crate::models::FullSystemSnapshot;
@@ -37,11 +38,16 @@ pub(super) async fn ws_cpu(
     let interval_ms = state.config.publishing.cpu_stats_frequency_ms;
     ws.on_upgrade(move |socket| async move {
         if let Err(e) = stream_cpu(socket, repo, interval_ms).await {
-            tracing::info!("CPU stream error: {}", e);
+            tracing::info!(
+                error = %e,
+                stream = "cpu",
+                "CPU stream error"
+            );
         }
     })
 }
 
+#[instrument(skip(socket, repo), fields(stream = "cpu", interval_ms))]
 async fn stream_cpu(
     mut socket: WebSocket,
     repo: Arc<SysinfoRepo>,
@@ -81,11 +87,16 @@ pub(super) async fn ws_ram(
     let interval_ms = state.config.publishing.ram_stats_frequency_ms;
     ws.on_upgrade(move |socket| async move {
         if let Err(e) = stream_ram(socket, repo, interval_ms).await {
-            tracing::info!("RAM stream error: {}", e);
+            tracing::info!(
+                error = %e,
+                stream = "ram",
+                "RAM stream error"
+            );
         }
     })
 }
 
+#[instrument(skip(socket, repo), fields(stream = "ram", interval_ms))]
 async fn stream_ram(
     mut socket: WebSocket,
     repo: Arc<SysinfoRepo>,
@@ -127,20 +138,28 @@ pub(super) async fn ws_system(
     ws.on_upgrade(move |socket| async move {
         let mut rx = tx.subscribe();
         if let Err(e) = stream_system(socket, &mut rx, conn_count, system_info).await {
-            tracing::info!("System stream error: {}", e);
+            tracing::info!(
+                error = %e,
+                stream = "system",
+                "System stream error"
+            );
         }
     })
 }
 
+#[instrument(skip(socket, rx, conn_count, system_info), fields(stream = "system"))]
 async fn stream_system(
     mut socket: WebSocket,
     rx: &mut broadcast::Receiver<FullSystemSnapshot>,
     conn_count: Arc<AtomicUsize>,
     system_info: Arc<crate::models::SystemInfo>,
 ) -> anyhow::Result<()> {
-    conn_count.fetch_add(1, std::sync::atomic::Ordering::Relaxed);
-    let _guard = WsSystemGuard(conn_count);
-    tracing::info!("Client connected to System stream");
+    let current_connections = conn_count.fetch_add(1, std::sync::atomic::Ordering::Relaxed) + 1;
+    let _guard = WsSystemGuard(conn_count.clone());
+    tracing::info!(
+        connections = current_connections,
+        "Client connected to System stream"
+    );
 
     let welcome = serde_json::json!({ "type": "info", "systemInfo": system_info.as_ref() });
     let welcome_json = serde_json::to_string(&welcome)?;
@@ -167,7 +186,11 @@ async fn stream_system(
                         }
                     }
                     Err(broadcast::error::RecvError::Lagged(n)) => {
-                        tracing::warn!("WebSocket /ws/system client lagged, skipped {} messages", n);
+                        tracing::warn!(
+                            messages_skipped = n,
+                            stream = "system",
+                            "WebSocket client lagged"
+                        );
                     }
                     Err(broadcast::error::RecvError::Closed) => break,
                 }

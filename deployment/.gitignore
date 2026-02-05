@@ -1,0 +1,13 @@
+# Ignore actual environment file (use .env.example as template)
+.env
+
+# Ignore data directory (contains SQLite database)
+data/
+
+# Ignore Docker volumes
+*.db
+*.db-shm
+*.db-wal
+
+# Ignore logs
+*.log

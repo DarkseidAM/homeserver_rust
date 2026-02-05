@@ -1,0 +1,25 @@
+[server]
+port = 8081
+host = "0.0.0.0"
+
+[database]
+# Path to SQLite database (relative to container, use /app/data for persistence)
+path = "data/server.db"
+max_pool_size = 10
+# Flush snapshots to database every N ticks
+flush_rate = 10
+# Prune history older than N days (default: 3)
+retention_days = 3
+
+[publishing]
+# Frequency for individual stat streams (WebSocket endpoints)
+cpu_stats_frequency_ms = 1000
+ram_stats_frequency_ms = 1000
+# Max snapshots in broadcast channel (for /ws/system)
+broadcast_capacity = 60
+
+[monitoring]
+# How often to collect system snapshots (milliseconds)
+sample_interval_ms = 1000
+# How often to log app stats at INFO level (seconds)
+stats_log_interval_secs = 60

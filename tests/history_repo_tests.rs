@@ -53,7 +53,7 @@ async fn history_repo_connect_and_init() {
     let path = dir.path().join("history.db");
     let path_str = path.to_str().unwrap();
 
-    let repo = HistoryRepo::connect(path_str).await.unwrap();
+    let repo = HistoryRepo::connect(path_str, 3).await.unwrap();
     repo.init().await.unwrap();
     // Second init is no-op (IF NOT EXISTS)
     repo.init().await.unwrap();
@@ -65,7 +65,7 @@ async fn history_repo_save_and_get_recent() {
     let path = dir.path().join("history.db");
     let path_str = path.to_str().unwrap();
 
-    let repo = HistoryRepo::connect(path_str).await.unwrap();
+    let repo = HistoryRepo::connect(path_str, 3).await.unwrap();
     repo.init().await.unwrap();
 
     let snapshots = vec![
@@ -97,7 +97,7 @@ async fn history_repo_save_empty_no_op() {
     let path = dir.path().join("history.db");
     let path_str = path.to_str().unwrap();
 
-    let repo = HistoryRepo::connect(path_str).await.unwrap();
+    let repo = HistoryRepo::connect(path_str, 3).await.unwrap();
     repo.init().await.unwrap();
     repo.save_snapshots(&[], &minimal_system_info())
         .await
@@ -113,14 +113,14 @@ async fn history_repo_prune_old_data() {
     let path = dir.path().join("history.db");
     let path_str = path.to_str().unwrap();
 
-    let repo = HistoryRepo::connect(path_str).await.unwrap();
+    let repo = HistoryRepo::connect(path_str, 3).await.unwrap();
     repo.init().await.unwrap();
 
     let now_ms = std::time::SystemTime::now()
         .duration_since(std::time::UNIX_EPOCH)
         .unwrap()
         .as_millis() as u64;
-    let old_ms = now_ms - (8 * 24 * 60 * 60 * 1000); // 8 days ago
+    let old_ms = now_ms - (4 * 24 * 60 * 60 * 1000); // 4 days ago (will be pruned with 3 day retention)
 
     repo.save_snapshots(
         &[minimal_snapshot(old_ms), minimal_snapshot(now_ms)],

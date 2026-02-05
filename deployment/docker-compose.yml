@@ -1,0 +1,36 @@
+services:
+  homeserver-rust:
+    image: ghcr.io/darkseidam/homeserver-rust:latest
+    restart: unless-stopped
+    container_name: homeserver-rust
+    deploy:
+      resources:
+        limits:
+          memory: 256M
+    ports:
+      - "8081:8081"
+    environment:
+      - TZ=${TZ:-UTC}
+      - CONFIG_FILE=/app/config/application.toml
+      - RUST_LOG=${RUST_LOG:-warn}
+      - PUID=${PUID:-1000}
+      - PGID=${PGID:-1000}
+    volumes:
+      # Data directory for SQLite database
+      - ./data:/app/data
+      # Configuration file
+      - ./config.toml:/app/config/application.toml:ro
+      # Docker socket for container monitoring
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+        compress: "true"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8081/api/info"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s

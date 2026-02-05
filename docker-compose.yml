@@ -23,3 +23,9 @@ services:
       - ./data:/app/data
       - ./config.toml:/app/config/application.toml
       - /var/run/docker.sock:/var/run/docker.sock
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+        compress: "true"

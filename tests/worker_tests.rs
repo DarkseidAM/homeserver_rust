@@ -26,7 +26,7 @@ async fn worker_spawn_ticks_and_shutdown_flushes_history() {
     let dir = tempfile::TempDir::new().unwrap();
     let db_path = dir.path().join("history.db");
     let path_str = db_path.to_str().unwrap();
-    let history_repo = Arc::new(HistoryRepo::connect(path_str).await.unwrap());
+    let history_repo = Arc::new(HistoryRepo::connect(path_str, 3).await.unwrap());
     history_repo.init().await.unwrap();
 
     let (tx, _rx) = broadcast::channel(10);

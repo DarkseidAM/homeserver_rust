@@ -18,7 +18,7 @@ async fn main() -> anyhow::Result<()> {
         .unwrap_or("./data/server.db");
     let limit: u32 = args.get(2).and_then(|s| s.parse().ok()).unwrap_or(5);
 
-    let repo = HistoryRepo::connect(path).await?;
+    let repo = HistoryRepo::connect(path, 3).await?;
     let (stored_info, snapshots) = repo.get_recent_snapshots(limit).await?;
 
     let display: Vec<FullSystemSnapshotDisplay> = snapshots

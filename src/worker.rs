@@ -58,6 +58,9 @@ pub fn spawn(deps: WorkerDeps, config: WorkerConfig) -> tokio::task::JoinHandle<
         let mut snapshots_pruned_total: u64 = 0;
         let mut last_no_receivers_warn: Option<Instant> = None;
 
+        let worker_span = tracing::span!(tracing::Level::DEBUG, "worker", sample_interval_ms);
+        let _guard = worker_span.enter();
+
         loop {
             tokio::select! {
                 _ = tick.tick() => {}
@@ -67,8 +70,14 @@ pub fn spawn(deps: WorkerDeps, config: WorkerConfig) -> tokio::task::JoinHandle<
                             .save_snapshots(&snapshot_buffer, system_info.as_ref())
                             .await
                     {
-                        tracing::warn!("Failed to save snapshots on shutdown: {}", e);
+                        tracing::warn!(
+                            error = %e,
+                            operation = "save_snapshots",
+                            snapshots_count = snapshot_buffer.len(),
+                            "Failed to save snapshots on shutdown"
+                        );
                     }
+                    tracing::debug!("Worker shutting down");
                     break;
                 }
             }
@@ -77,21 +86,33 @@ pub fn spawn(deps: WorkerDeps, config: WorkerConfig) -> tokio::task::JoinHandle<
                 .duration_since(std::time::UNIX_EPOCH)
                 .map(|d| d.as_millis() as u64)
                 .unwrap_or_else(|e| {
-                    tracing::warn!("system time error: {}", e);
+                    tracing::warn!(
+                        error = %e,
+                        operation = "get_timestamp",
+                        "system time error"
+                    );
                     0
                 });
 
             let cpu = match sysinfo_repo.get_cpu_stats().await {
                 Ok(c) => c,
                 Err(e) => {
-                    tracing::warn!("CPU stats failed: {}", e);
+                    tracing::warn!(
+                        error = %e,
+                        operation = "get_cpu_stats",
+                        "CPU stats failed"
+                    );
                     continue;
                 }
             };
             let ram = match sysinfo_repo.get_ram_stats().await {
                 Ok(c) => c,
                 Err(e) => {
-                    tracing::warn!("RAM stats failed: {}", e);
+                    tracing::warn!(
+                        error = %e,
+                        operation = "get_ram_stats",
+                        "RAM stats failed"
+                    );
                     continue;
                 }
             };
@@ -99,21 +120,33 @@ pub fn spawn(deps: WorkerDeps, config: WorkerConfig) -> tokio::task::JoinHandle<
             let storage = match sysinfo_repo.get_storage_stats().await {
                 Ok(c) => c,
                 Err(e) => {
-                    tracing::warn!("storage stats failed: {}", e);
+                    tracing::warn!(
+                        error = %e,
+                        operation = "get_storage_stats",
+                        "storage stats failed"
+                    );
                     continue;
                 }
             };
             let network = match sysinfo_repo.get_network_stats().await {
                 Ok(c) => c,
                 Err(e) => {
-                    tracing::warn!("network stats failed: {}", e);
+                    tracing::warn!(
+                        error = %e,
+                        operation = "get_network_stats",
+                        "network stats failed"
+                    );
                     continue;
                 }
             };
             let system = match sysinfo_repo.get_system_stats().await {
                 Ok(c) => c,
                 Err(e) => {
-                    tracing::warn!("system stats failed: {}", e);
+                    tracing::warn!(
+                        error = %e,
+                        operation = "get_system_stats",
+                        "system stats failed"
+                    );
                     continue;
                 }
             };
@@ -133,6 +166,7 @@ pub fn spawn(deps: WorkerDeps, config: WorkerConfig) -> tokio::task::JoinHandle<
                     .is_none_or(|t| t.elapsed() >= NO_RECEIVERS_WARN_INTERVAL);
                 if should_warn {
                     tracing::warn!(
+                        operation = "broadcast_snapshot",
                         "No active WebSocket clients; broadcast channel has no receivers"
                     );
                     last_no_receivers_warn = Some(Instant::now());
@@ -147,8 +181,18 @@ pub fn spawn(deps: WorkerDeps, config: WorkerConfig) -> tokio::task::JoinHandle<
                     .save_snapshots(&snapshot_buffer, system_info.as_ref())
                     .await
                 {
-                    tracing::warn!("Failed to save snapshots: {}", e);
+                    tracing::warn!(
+                        error = %e,
+                        operation = "save_snapshots",
+                        snapshots_count = n,
+                        "Failed to save snapshots"
+                    );
                 } else {
+                    tracing::debug!(
+                        operation = "save_snapshots",
+                        snapshots_count = n,
+                        "Snapshots saved"
+                    );
                     snapshots_saved_total += n as u64;
                 }
                 snapshot_buffer.clear();
@@ -158,8 +202,13 @@ pub fn spawn(deps: WorkerDeps, config: WorkerConfig) -> tokio::task::JoinHandle<
             prune_ticks += 1;
             if prune_ticks >= PRUNE_INTERVAL_TICKS {
                 if let Err(e) = history_repo.prune_old_data().await {
-                    tracing::warn!("Failed to prune old data: {}", e);
+                    tracing::warn!(
+                        error = %e,
+                        operation = "prune_old_data",
+                        "Failed to prune old data"
+                    );
                 } else {
+                    tracing::debug!(operation = "prune_old_data", "Old data pruned successfully");
                     snapshots_pruned_total += 1;
                 }
                 prune_ticks = 0;

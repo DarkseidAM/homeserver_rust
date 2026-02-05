@@ -42,13 +42,41 @@ pub struct ContainerStats {
     #[serde(default)]
     pub network_tx_bytes: u64,
     #[serde(default)]
+    pub network_rx_packets: u64,
+    #[serde(default)]
+    pub network_tx_packets: u64,
+    #[serde(default)]
+    pub network_rx_errors: u64,
+    #[serde(default)]
+    pub network_tx_errors: u64,
+    #[serde(default)]
+    pub network_rx_dropped: u64,
+    #[serde(default)]
+    pub network_tx_dropped: u64,
+    #[serde(default)]
     pub block_read_bytes: u64,
     #[serde(default)]
     pub block_write_bytes: u64,
     #[serde(default)]
+    pub block_read_ops: u64,
+    #[serde(default)]
+    pub block_write_ops: u64,
+    #[serde(default)]
     pub pids: u64,
     #[serde(default)]
+    pub pids_limit: u64,
+    #[serde(default)]
     pub cpu_throttled: bool,
+    #[serde(default)]
+    pub cpu_throttled_periods: u64,
+    #[serde(default)]
+    pub cpu_throttled_time_ns: u64,
+    #[serde(default)]
+    pub cpu_kernel_percent: f64,
+    #[serde(default)]
+    pub cpu_user_percent: f64,
+    #[serde(default)]
+    pub online_cpus: u32,
     #[serde(default)]
     pub memory_max_usage_bytes: u64,
 }

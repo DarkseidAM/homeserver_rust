@@ -1,47 +1,104 @@
 # Homeserver (Rust)
 
-System and Docker stats over WebSockets, SQLite history.
+A robust, efficient, and modern system monitoring agent and dashboard backend written in Rust. It serves as a direct, high-performance replacement for the legacy Kotlin-based homeserver.
 
-## Run
+![Version](https://img.shields.io/badge/version-0.5.0-blue.svg)
+![License](https://img.shields.io/badge/license-MIT-green.svg)
 
-```bash
-cargo run
+## Features
+
+*   **Real-time Monitoring**: Streams CPU, RAM, Disk, Network, and System stats via WebSockets.
+*   **Docker Integration**: Auto-discovers running containers and streams per-container metrics (CPU, Memory, I/O, Network) in real-time.
+*   **Historical Data**: Persists system snapshots to a local SQLite database for historical graphing.
+*   **Efficient Architecture**:
+    *   **Async Core**: Built on Tokio and Axum for high concurrency.
+    *   **Non-Blocking**: Optimized CPU sampling logic to prevent blocking the runtime.
+    *   **Binary Storage**: Uses `wincode` binary serialization for database efficiency, reducing storage footprint by ~50% compared to JSON.
+    *   **WAL Mode**: SQLite configured in Write-Ahead Logging mode for better concurrent performance.
+*   **Portable Deployment**:
+    *   **Dynamic Permissions**: Smart entrypoint script automatically detects Docker socket GID, ensuring it runs on any Linux host without permission errors.
+    *   **Multi-Arch**: Dockerfile supports building small, secure images (Debian-slim base).
+
+## Architecture
+
+*   **Runtime**: [Tokio](https://tokio.rs/) (Async I/O)
+*   **Web Framework**: [Axum](https://github.com/tokio-rs/axum) (HTTP & WebSockets)
+*   **Database**: [SQLx](https://github.com/launchbadge/sqlx) (SQLite)
+*   **System Info**: `sysinfo` crate + custom Linux `/proc` parsing.
+*   **Docker**: `bollard` crate (Docker API).
+*   **Serialization**: `serde` (API JSON) + `wincode` (DB BLOBs).
+
+## Configuration (`config.toml`)
+
+```toml
+[server]
+port = 8081
+host = "0.0.0.0"
+
+[database]
+path = "data/server.db"
+max_pool_size = 10
+flush_rate = 10        # Flush to DB every N ticks
+retention_days = 3     # Prune history older than N days
+
+[publishing]
+cpu_stats_frequency_ms = 1000
+ram_stats_frequency_ms = 1000
+broadcast_capacity = 60
+
+[monitoring]
+sample_interval_ms = 1000
+stats_log_interval_secs = 60
 ```
 
-Config: `config.toml` in the current directory, or set `CONFIG_FILE` to a path.
+## Deployment
 
-## Endpoints
+### Option 1: Pre-built Image from GitHub Container Registry (Recommended)
 
-**GET**
-
-- `GET /` – health
-- `GET /version` – service name and version
-- `GET /api/info` – static system identity (OS, hostname, CPU name; fetch once)
-
-**WebSocket**
-
-- `WS /ws/cpu` – CPU stats stream (interval from `publishing.cpu_stats_frequency_ms`)
-- `WS /ws/ram` – RAM stats stream (interval from `publishing.ram_stats_frequency_ms`)
-- `WS /ws/system` – full system snapshot stream (CPU, RAM, containers, storage, network, system)
-
-## Config (`config.toml`)
-
-- `server.port`, `server.host`
-- `database.path`, `database.flush_rate`
-- `publishing.cpu_stats_frequency_ms`, `ram_stats_frequency_ms`
-
-## Build release
+Use the production-ready deployment files in the `deployment/` folder:
 
 ```bash
-cargo build --release
-./target/release/homeserver
+cd deployment
+cp .env.example .env
+# Edit .env and docker-compose.yml to customize
+docker compose up -d
 ```
 
-## Docker
+See [`deployment/README.md`](./deployment/README.md) for detailed instructions.
 
-To run in Docker (Unix socket for Docker required):
+### Option 2: Build from Source
+
+For development or custom builds:
 
 ```bash
-docker build -f Dockerfile .
-docker run --rm -v /var/run/docker.sock:/var/run/docker.sock -p 8080:8080 homeserver-rust
+docker compose up -d
 ```
+
+**Note:** Both methods mount `/var/run/docker.sock` so the container can monitor other containers. The entrypoint script (`docker-entrypoint.sh`) automatically handles the permissions, so **no manual GID configuration is needed**.
+
+## Development
+
+1.  **Prerequisites**: Rust 1.93+, Docker (optional, for container stats).
+2.  **Build**:
+    ```bash
+    cargo build --release
+    ```
+3.  **Run**:
+    ```bash
+    cargo run
+    ```
+4.  **Tests**:
+    ```bash
+    cargo test
+    ```
+
+## Database Schema & Migrations
+
+The application uses a **Blob-based History** approach:
+*   **Table `system_history`**: Stores `created_at` (timestamp), `cpu_load`, `memory_used`, and several BLOB columns (`container_data`, `storage_data`, etc.).
+*   **Serialization**: Complex nested objects (like container lists) are serialized into binary (`wincode`) before storage.
+*   **Versioning**: Data blobs are prefixed with a version byte. This allows the application to "read-repair" or adapt old data formats on the fly without requiring complex SQL migration scripts for the binary content.
+
+## License
+
+MIT

@@ -9,15 +9,15 @@ use sqlx::Row;
 use sqlx::sqlite::{SqliteConnectOptions, SqlitePool, SqlitePoolOptions};
 use std::path::Path;
 use std::str::FromStr;
-
-const SEVEN_DAYS_MS: i64 = 7 * 24 * 60 * 60 * 1000;
+use tracing::instrument;
 
 pub struct HistoryRepo {
     pool: SqlitePool,
+    retention_ms: i64,
 }
 
 impl HistoryRepo {
-    pub async fn connect(path: &str) -> anyhow::Result<Self> {
+    pub async fn connect(path: &str, retention_days: u32) -> anyhow::Result<Self> {
         if let Some(parent) = Path::new(path).parent() {
             std::fs::create_dir_all(parent)?;
         }
@@ -27,7 +27,8 @@ impl HistoryRepo {
             .busy_timeout(std::time::Duration::from_secs(5))
             .synchronous(sqlx::sqlite::SqliteSynchronous::Normal);
         let pool = SqlitePoolOptions::new().connect_with(opts).await?;
-        Ok(Self { pool })
+        let retention_ms = (retention_days as i64) * 24 * 60 * 60 * 1000;
+        Ok(Self { pool, retention_ms })
     }
 
     pub async fn init(&self) -> anyhow::Result<()> {
@@ -69,6 +70,7 @@ impl HistoryRepo {
         Ok(())
     }
 
+    #[instrument(skip(self, snapshots, system_info), fields(repo = "history", operation = "save_snapshots", snapshots_count = snapshots.len()))]
     pub async fn save_snapshots(
         &self,
         snapshots: &[FullSystemSnapshot],
@@ -120,11 +122,12 @@ impl HistoryRepo {
         Ok(())
     }
 
+    #[instrument(skip(self), fields(repo = "history", operation = "prune_old_data"))]
     pub async fn prune_old_data(&self) -> anyhow::Result<()> {
         let cutoff = (std::time::SystemTime::now()
             .duration_since(std::time::UNIX_EPOCH)?
             .as_millis() as i64)
-            - SEVEN_DAYS_MS;
+            - self.retention_ms;
         sqlx::query("DELETE FROM system_history WHERE created_at < $1")
             .bind(cutoff)
             .execute(&self.pool)

@@ -9,7 +9,7 @@ use futures_util::StreamExt;
 use std::collections::{HashMap, HashSet};
 use std::sync::Arc;
 use tokio::sync::RwLock;
-use tracing::warn;
+use tracing::instrument;
 
 pub struct DockerRepo {
     docker: Docker,
@@ -38,9 +38,20 @@ impl DockerRepo {
         };
 
         let containers = match self.docker.list_containers(Some(filter)).await {
-            Ok(c) => c,
+            Ok(c) => {
+                tracing::debug!(
+                    operation = "list_containers",
+                    containers_count = c.len(),
+                    "Listed running containers"
+                );
+                c
+            }
             Err(e) => {
-                warn!("Docker list_containers failed: {}", e);
+                tracing::warn!(
+                    error = %e,
+                    operation = "list_containers",
+                    "Docker list_containers failed"
+                );
                 return self.get_cached_stats().await;
             }
         };
@@ -79,10 +90,26 @@ impl DockerRepo {
             .filter(|id| !running_set.contains(id))
             .collect();
 
+        if !to_add.is_empty() {
+            tracing::info!(
+                operation = "start_monitoring",
+                containers_count = to_add.len(),
+                container_names = ?to_add.iter().map(|(_, n)| n.as_str()).collect::<Vec<_>>(),
+                "Starting monitoring for new containers"
+            );
+        }
+        if !to_remove.is_empty() {
+            tracing::info!(
+                operation = "stop_monitoring",
+                containers_count = to_remove.len(),
+                "Stopping monitoring for removed containers"
+            );
+        }
+
         let new_handles: Vec<(String, tokio::task::JoinHandle<()>)> = {
             let mut out = Vec::with_capacity(to_add.len());
             for (id, name) in to_add {
-                let handle = self.start_monitoring(id.clone(), name).await;
+                let handle = self.start_monitoring(id.clone(), name);
                 out.push((id, handle));
             }
             out
@@ -109,38 +136,103 @@ impl DockerRepo {
         self.get_cached_stats().await
     }
 
-    async fn start_monitoring(&self, id: String, name: String) -> tokio::task::JoinHandle<()> {
+    #[instrument(skip(self), fields(container_id = %id, container_name = %name))]
+    fn start_monitoring(&self, id: String, name: String) -> tokio::task::JoinHandle<()> {
         let docker = self.docker.clone();
         let live_stats = self.live_stats.clone();
         let active_streams = self.active_streams.clone();
 
+        tracing::info!(
+            operation = "start_monitoring",
+            "Starting Docker stats stream for container"
+        );
+
         tokio::spawn(async move {
+            let span = tracing::span!(
+                tracing::Level::DEBUG,
+                "docker_stats_stream",
+                container_id = %id,
+                container_name = %name
+            );
+            let _guard = span.enter();
+
             let options = StatsOptions {
                 stream: true,
                 ..Default::default()
             };
             let mut stream = docker.stats(&id, Some(options));
 
+            let mut stats_count = 0u64;
             while let Some(result) = stream.next().await {
                 match result {
                     Ok(s) => {
                         if let Some(stats) = stats::process_statistics(&s, &id, &name) {
+                            stats_count += 1;
+                            // Log key metrics periodically (every 10th stat update) at debug level
+                            if stats_count.is_multiple_of(10) {
+                                let memory_percent = if stats.memory_limit_bytes > 0 {
+                                    (stats.memory_usage_bytes as f64
+                                        / stats.memory_limit_bytes as f64)
+                                        * 100.0
+                                } else {
+                                    0.0
+                                };
+                                tracing::debug!(
+                                    container_id = %id,
+                                    container_name = %name,
+                                    cpu_percent = stats.cpu_percent,
+                                    memory_usage_mb = stats.memory_usage_bytes / 1024 / 1024,
+                                    memory_limit_mb = stats.memory_limit_bytes / 1024 / 1024,
+                                    memory_percent = memory_percent,
+                                    network_rx_mb = stats.network_rx_bytes / 1024 / 1024,
+                                    network_tx_mb = stats.network_tx_bytes / 1024 / 1024,
+                                    block_read_mb = stats.block_read_bytes / 1024 / 1024,
+                                    block_write_mb = stats.block_write_bytes / 1024 / 1024,
+                                    pids = stats.pids,
+                                    cpu_throttled = stats.cpu_throttled,
+                                    "Container stats update"
+                                );
+                            }
                             live_stats.write().await.insert(id.clone(), stats);
+                        } else {
+                            tracing::debug!(
+                                container_id = %id,
+                                container_name = %name,
+                                "Failed to process container stats (missing data)"
+                            );
                         }
                     }
                     Err(e) => {
-                        tracing::warn!("Stats stream error for container {}: {}", name, e);
+                        tracing::warn!(
+                            error = %e,
+                            container_id = %id,
+                            container_name = %name,
+                            operation = "docker_stats_stream",
+                            "Stats stream error for container"
+                        );
                         break;
                     }
                 }
             }
-            tracing::info!("Stats stream ended for container {}", name);
+            tracing::info!(
+                container_id = %id,
+                container_name = %name,
+                operation = "docker_stats_stream",
+                stats_updates_count = stats_count,
+                "Stats stream ended for container"
+            );
             active_streams.write().await.remove(&id);
         })
     }
 
     async fn get_cached_stats(&self) -> Vec<ContainerStats> {
         let live = self.live_stats.read().await;
-        live.values().cloned().collect()
+        let stats: Vec<ContainerStats> = live.values().cloned().collect();
+        tracing::debug!(
+            operation = "get_cached_stats",
+            containers_count = stats.len(),
+            "Retrieved cached container stats"
+        );
+        stats
     }
 }

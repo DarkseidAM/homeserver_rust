@@ -1,0 +1,65 @@
+services:
+  homeserver-rust:
+    image: ghcr.io/darkseidam/homeserver-rust:latest
+    restart: always
+    container_name: homeserver-rust
+    
+    # Resource limits
+    deploy:
+      resources:
+        limits:
+          cpus: '1.0'
+          memory: 256M
+        reservations:
+          cpus: '0.25'
+          memory: 128M
+    
+    # Network configuration
+    ports:
+      - "127.0.0.1:8081:8081"  # Only bind to localhost (use reverse proxy)
+    
+    # Environment
+    environment:
+      - TZ=${TZ:-UTC}
+      - CONFIG_FILE=/app/config/application.toml
+      - RUST_LOG=${RUST_LOG:-warn}
+      - PUID=${PUID:-1000}
+      - PGID=${PGID:-1000}
+    
+    # Volumes
+    volumes:
+      - ./data:/app/data
+      - ./config.toml:/app/config/application.toml:ro
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    
+    # Logging with rotation
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+        compress: "true"
+        labels: "production"
+    
+    # Health check
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8081/api/info"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    
+    # Security
+    security_opt:
+      - no-new-privileges:true
+    read_only: false  # Needs write access for SQLite
+    tmpfs:
+      - /tmp:rw,noexec,nosuid,size=10m
+    
+    # Labels for monitoring/management
+    labels:
+      - "com.homeserver.service=monitoring"
+      - "com.homeserver.environment=production"
+      - "traefik.enable=true"  # Example for Traefik integration
+      - "traefik.http.routers.homeserver.rule=Host(`monitor.example.com`)"
+      - "traefik.http.services.homeserver.loadbalancer.server.port=8081"

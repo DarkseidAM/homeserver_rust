@@ -38,8 +38,13 @@ async fn main() -> Result<()> {
             .map_err(|e| anyhow::anyhow!("system info: {}", e))?,
     );
     let docker_repo = Arc::new(docker_repo::DockerRepo::connect()?);
-    let history_repo =
-        Arc::new(history_repo::HistoryRepo::connect(&app_config.database.path).await?);
+    let history_repo = Arc::new(
+        history_repo::HistoryRepo::connect(
+            &app_config.database.path,
+            app_config.database.retention_days,
+        )
+        .await?,
+    );
     history_repo.init().await?;
 
     let ws_system_connections = Arc::new(AtomicUsize::new(0));

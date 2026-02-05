@@ -6,12 +6,14 @@ use crate::models::*;
 use std::sync::Arc;
 use std::time::Instant;
 use sysinfo::{Disks, Networks, System};
+use tracing::instrument;
 
 pub struct SysinfoRepo {
     sys: Arc<std::sync::Mutex<System>>,
     disks: Arc<std::sync::Mutex<Disks>>,
     networks: Arc<std::sync::Mutex<Networks>>,
     last_network: Arc<std::sync::Mutex<Option<(NetworkStats, Instant)>>>,
+    last_cpu_refresh: Arc<std::sync::Mutex<Option<(Instant, f64)>>>,
 }
 
 impl Default for SysinfoRepo {
@@ -31,20 +33,45 @@ impl SysinfoRepo {
             disks: Arc::new(std::sync::Mutex::new(disks)),
             networks: Arc::new(std::sync::Mutex::new(networks)),
             last_network: Arc::new(std::sync::Mutex::new(None)),
+            last_cpu_refresh: Arc::new(std::sync::Mutex::new(None)),
         }
     }
 
+    #[instrument(skip(self), fields(repo = "sysinfo", operation = "get_cpu_stats"))]
     pub async fn get_cpu_stats(&self) -> anyhow::Result<CpuStats> {
         let sys = self.sys.clone();
+        let last_cpu_refresh = self.last_cpu_refresh.clone();
         tokio::task::spawn_blocking(move || {
             let mut sys = sys
                 .lock()
                 .map_err(|e| anyhow::anyhow!("sysinfo lock poisoned: {}", e))?;
-            sys.refresh_cpu_all();
-            std::thread::sleep(sysinfo::MINIMUM_CPU_UPDATE_INTERVAL);
-            sys.refresh_cpu_all();
 
-            let usage = sys.global_cpu_usage() as f64;
+            let now = Instant::now();
+            let usage = if let Ok(mut guard) = last_cpu_refresh.lock() {
+                if let Some((prev_ts, prev_usage)) = *guard {
+                    let dt = now.duration_since(prev_ts);
+                    if dt >= sysinfo::MINIMUM_CPU_UPDATE_INTERVAL {
+                        // Enough time has passed, refresh and get new usage
+                        sys.refresh_cpu_all();
+                        let new_usage = sys.global_cpu_usage() as f64;
+                        *guard = Some((now, new_usage));
+                        new_usage
+                    } else {
+                        // Not enough time has passed, return cached usage without blocking
+                        prev_usage
+                    }
+                } else {
+                    // First call: refresh to establish baseline
+                    sys.refresh_cpu_all();
+                    *guard = Some((now, 0.0));
+                    0.0
+                }
+            } else {
+                // Lock failed, refresh and return 0.0
+                sys.refresh_cpu_all();
+                0.0
+            };
+
             let physical = System::physical_core_count().unwrap_or(0) as u32;
             let logical = sys.cpus().len() as u32;
             let name = linux::read_cpu_model_linux()
@@ -68,6 +95,7 @@ impl SysinfoRepo {
         .map_err(|e| anyhow::anyhow!("sysinfo task join: {}", e))?
     }
 
+    #[instrument(skip(self), fields(repo = "sysinfo", operation = "get_ram_stats"))]
     pub async fn get_ram_stats(&self) -> anyhow::Result<RamStats> {
         let sys = self.sys.clone();
         tokio::task::spawn_blocking(move || {
@@ -96,6 +124,7 @@ impl SysinfoRepo {
         .map_err(|e| anyhow::anyhow!("sysinfo task join: {}", e))?
     }
 
+    #[instrument(skip(self), fields(repo = "sysinfo", operation = "get_storage_stats"))]
     pub async fn get_storage_stats(&self) -> anyhow::Result<StorageStats> {
         let disks = self.disks.clone();
         tokio::task::spawn_blocking(move || {
@@ -149,6 +178,7 @@ impl SysinfoRepo {
         .map_err(|e| anyhow::anyhow!("sysinfo task join: {}", e))?
     }
 
+    #[instrument(skip(self), fields(repo = "sysinfo", operation = "get_network_stats"))]
     pub async fn get_network_stats(&self) -> anyhow::Result<NetworkStats> {
         let networks = self.networks.clone();
         let last_network = self.last_network.clone();
@@ -216,6 +246,7 @@ impl SysinfoRepo {
         .map_err(|e| anyhow::anyhow!("sysinfo task join: {}", e))?
     }
 
+    #[instrument(skip(self), fields(repo = "sysinfo", operation = "get_system_info"))]
     pub async fn get_system_info(&self) -> anyhow::Result<SystemInfo> {
         let sys = self.sys.clone();
         tokio::task::spawn_blocking(move || {
@@ -249,6 +280,7 @@ impl SysinfoRepo {
     }
 
     /// Returns dynamic-only system metrics (wire format). Static identity is GET /api/info.
+    #[instrument(skip(self), fields(repo = "sysinfo", operation = "get_system_stats"))]
     pub async fn get_system_stats(&self) -> anyhow::Result<SystemStatsDynamic> {
         let sys = self.sys.clone();
         tokio::task::spawn_blocking(move || {
