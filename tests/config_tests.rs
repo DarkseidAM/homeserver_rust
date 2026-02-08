@@ -123,3 +123,72 @@ fn test_config_load_from_file_via_env() {
     assert_eq!(config.server.port, 8081);
     assert_eq!(config.database.path, "data/server.db");
 }
+
+#[test]
+fn test_config_aggregation_defaults_when_omitted() {
+    let config = AppConfig::load_from_str(VALID_CONFIG).expect("valid");
+    assert!(config.database.enable_aggregation);
+    assert_eq!(config.database.aggregation_interval_secs, 3600);
+    assert_eq!(config.database.raw_retention_hours, 1);
+    assert_eq!(config.database.minute_retention_hours, 24);
+}
+
+const VALID_CONFIG_WITH_AGGREGATION: &str = r#"
+[server]
+port = 8081
+host = "0.0.0.0"
+
+[database]
+path = "data/server.db"
+max_pool_size = 10
+flush_rate = 10
+retention_days = 3
+enable_aggregation = true
+aggregation_interval_secs = 3600
+raw_retention_hours = 1
+minute_retention_hours = 24
+
+[publishing]
+cpu_stats_frequency_ms = 1000
+ram_stats_frequency_ms = 1000
+broadcast_capacity = 60
+
+[monitoring]
+sample_interval_ms = 1000
+stats_log_interval_secs = 60
+"#;
+
+#[test]
+fn test_config_loads_with_aggregation() {
+    let config = AppConfig::load_from_str(VALID_CONFIG_WITH_AGGREGATION).expect("valid");
+    assert!(config.database.enable_aggregation);
+    assert_eq!(config.database.aggregation_interval_secs, 3600);
+    assert_eq!(config.database.raw_retention_hours, 1);
+    assert_eq!(config.database.minute_retention_hours, 24);
+}
+
+#[test]
+fn test_config_validation_rejects_aggregation_interval_zero_when_enabled() {
+    let bad = VALID_CONFIG_WITH_AGGREGATION.replace(
+        "aggregation_interval_secs = 3600",
+        "aggregation_interval_secs = 0",
+    );
+    let err = AppConfig::load_from_str(&bad).unwrap_err();
+    assert!(err.to_string().contains("aggregation_interval_secs"));
+}
+
+#[test]
+fn test_config_validation_rejects_raw_retention_hours_zero_when_enabled() {
+    let bad =
+        VALID_CONFIG_WITH_AGGREGATION.replace("raw_retention_hours = 1", "raw_retention_hours = 0");
+    let err = AppConfig::load_from_str(&bad).unwrap_err();
+    assert!(err.to_string().contains("raw_retention_hours"));
+}
+
+#[test]
+fn test_config_validation_rejects_minute_retention_hours_zero_when_enabled() {
+    let bad = VALID_CONFIG_WITH_AGGREGATION
+        .replace("minute_retention_hours = 24", "minute_retention_hours = 0");
+    let err = AppConfig::load_from_str(&bad).unwrap_err();
+    assert!(err.to_string().contains("minute_retention_hours"));
+}

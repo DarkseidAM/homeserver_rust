@@ -6,15 +6,16 @@ use homeserver::models::{CpuStats, FullSystemSnapshot, RamStats, SystemInfo};
 use homeserver::routes;
 use std::sync::Arc;
 use std::sync::atomic::AtomicUsize;
+use tempfile::TempDir;
 use tokio::sync::broadcast;
 
-const TEST_CONFIG: &str = r#"
+const TEST_CONFIG_TEMPLATE: &str = r#"
 [server]
 port = 8081
 host = "0.0.0.0"
 
 [database]
-path = "data/test.db"
+path = "DB_PATH_PLACEHOLDER"
 max_pool_size = 2
 flush_rate = 5
 
@@ -28,8 +29,9 @@ sample_interval_ms = 1000
 stats_log_interval_secs = 60
 "#;
 
-fn test_app_config() -> AppConfig {
-    AppConfig::load_from_str(TEST_CONFIG).unwrap()
+fn test_app_config(db_path: &str) -> AppConfig {
+    let config_str = TEST_CONFIG_TEMPLATE.replace("DB_PATH_PLACEHOLDER", db_path);
+    AppConfig::load_from_str(&config_str).unwrap()
 }
 
 fn test_system_info() -> Arc<SystemInfo> {
@@ -43,35 +45,48 @@ fn test_system_info() -> Arc<SystemInfo> {
     })
 }
 
-fn test_app() -> (
+async fn test_app() -> (
     axum::Router,
     broadcast::Sender<homeserver::models::FullSystemSnapshot>,
+    TempDir,
 ) {
-    let config = test_app_config();
+    let dir = TempDir::new().unwrap();
+    let db_path = dir.path().join("test.db");
+    let config = test_app_config(db_path.to_str().unwrap());
     let (tx, _) = broadcast::channel(config.publishing.broadcast_capacity);
+    let history_repo = Arc::new(
+        homeserver::history_repo::HistoryRepo::connect(
+            &config.database.path,
+            config.database.retention_days,
+        )
+        .await
+        .unwrap(),
+    );
+    history_repo.init().await.unwrap();
     let app = routes::app(
         tx.clone(),
         Arc::new(homeserver::sysinfo_repo::SysinfoRepo::new()),
         test_system_info(),
         Arc::new(AtomicUsize::new(0)),
         config,
+        history_repo,
     );
-    (app, tx)
+    (app, tx, dir)
 }
 
 /// Build TestServer with http_transport (required for WebSocket tests).
-fn test_server_with_http() -> (
+async fn test_server_with_http() -> (
     TestServer,
     broadcast::Sender<homeserver::models::FullSystemSnapshot>,
 ) {
-    let (app, tx) = test_app();
+    let (app, tx, _dir) = test_app().await;
     let server = TestServer::builder().http_transport().build(app).unwrap();
     (server, tx)
 }
 
 #[tokio::test]
 async fn test_root_endpoint() {
-    let (app, _) = test_app();
+    let (app, _, _dir) = test_app().await;
     let server = TestServer::new(app).unwrap();
     let response = server.get("/").await;
     response.assert_status_ok();
@@ -80,7 +95,7 @@ async fn test_root_endpoint() {
 
 #[tokio::test]
 async fn test_version_endpoint() {
-    let (app, _) = test_app();
+    let (app, _, _dir) = test_app().await;
     let server = TestServer::new(app).unwrap();
     let response = server.get("/version").await;
     response.assert_status_ok();
@@ -94,7 +109,7 @@ async fn test_version_endpoint() {
 
 #[tokio::test]
 async fn test_api_info_endpoint() {
-    let (app, _) = test_app();
+    let (app, _, _dir) = test_app().await;
     let server = TestServer::new(app).unwrap();
     let response = server.get("/api/info").await;
     response.assert_status_ok();
@@ -108,6 +123,29 @@ async fn test_api_info_endpoint() {
         json.get("processorName").and_then(|v| v.as_str()),
         Some("TestCPU")
     );
+}
+
+#[tokio::test]
+async fn test_api_history_endpoint() {
+    let (app, _, _dir) = test_app().await;
+    let server = TestServer::new(app).unwrap();
+    let response = server.get("/api/history").await;
+    response.assert_status_ok();
+    let json: serde_json::Value = response.json();
+    assert!(json.is_array(), "history returns array");
+    let arr = json.as_array().unwrap();
+    assert!(
+        arr.is_empty() || arr[0].get("timestamp").is_some(),
+        "elements have timestamp"
+    );
+
+    let response = server
+        .get("/api/history?from=0&to=9999999999999&resolution=1m")
+        .await;
+    response.assert_status_ok();
+
+    let response = server.get("/api/history?from=100&to=50").await;
+    response.assert_status(axum::http::StatusCode::BAD_REQUEST);
 }
 
 // --- WebSocket message tests (require http_transport + ws feature) ---
@@ -131,21 +169,21 @@ async fn receive_first_json_text<T: serde::de::DeserializeOwned>(
 
 #[tokio::test]
 async fn test_ws_cpu_receives_json() {
-    let (server, _) = test_server_with_http();
+    let (server, _) = test_server_with_http().await;
     let mut ws = server.get_websocket("/ws/cpu").await.into_websocket().await;
     let _cpu: CpuStats = receive_first_json_text(&mut ws).await;
 }
 
 #[tokio::test]
 async fn test_ws_ram_receives_json() {
-    let (server, _) = test_server_with_http();
+    let (server, _) = test_server_with_http().await;
     let mut ws = server.get_websocket("/ws/ram").await.into_websocket().await;
     let _ram: RamStats = receive_first_json_text(&mut ws).await;
 }
 
 #[tokio::test]
 async fn test_ws_system_receives_broadcast_snapshot() {
-    let (server, tx) = test_server_with_http();
+    let (server, tx) = test_server_with_http().await;
     let snapshot = FullSystemSnapshot {
         timestamp: 42,
         cpu: CpuStats {

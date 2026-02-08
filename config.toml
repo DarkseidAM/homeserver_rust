@@ -9,6 +9,11 @@ path = "data/server.db"
 max_pool_size = 10
 flush_rate = 10
 retention_days = 3
+# Downsampling: keep 1s for raw_retention_hours, then 1-min, then 5-min (see docs/downsampling-and-mobile-api.md)
+enable_aggregation = true
+aggregation_interval_secs = 3600
+raw_retention_hours = 1
+minute_retention_hours = 24
 
 [publishing]
 cpu_stats_frequency_ms = 1000

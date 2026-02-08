@@ -10,6 +10,7 @@ use tokio::sync::broadcast;
 use tower_http::cors::{Any, CorsLayer};
 
 use crate::config::AppConfig;
+use crate::history_repo::HistoryRepo;
 use crate::models::{FullSystemSnapshot, SystemInfo};
 use crate::sysinfo_repo::SysinfoRepo;
 
@@ -20,6 +21,7 @@ pub(crate) struct AppState {
     pub(crate) system_info: Arc<SystemInfo>,
     pub(crate) ws_system_connections: Arc<AtomicUsize>,
     pub(crate) config: AppConfig,
+    pub(crate) history_repo: Arc<HistoryRepo>,
 }
 
 pub fn app(
@@ -28,6 +30,7 @@ pub fn app(
     system_info: Arc<SystemInfo>,
     ws_system_connections: Arc<AtomicUsize>,
     config: AppConfig,
+    history_repo: Arc<HistoryRepo>,
 ) -> Router {
     let state = AppState {
         stats_tx,
@@ -35,11 +38,13 @@ pub fn app(
         system_info,
         ws_system_connections,
         config,
+        history_repo,
     };
     Router::new()
         .route("/", get(|| async { "Ktor: Hello from Rust homeserver!" })) // GET /
         .route("/version", get(http::version_handler)) // GET /version
         .route("/api/info", get(http::api_info_handler)) // GET /api/info
+        .route("/api/history", get(http::api_history_handler)) // GET /api/history?from=&to=&resolution=
         .route("/ws/cpu", get(ws::ws_cpu)) // WS /ws/cpu
         .route("/ws/ram", get(ws::ws_ram)) // WS /ws/ram
         .route("/ws/system", get(ws::ws_system)) // WS /ws/system

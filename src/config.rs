@@ -21,10 +21,34 @@ pub struct DatabaseConfig {
     pub flush_rate: u64,
     #[serde(default = "default_retention_days")]
     pub retention_days: u32,
+    #[serde(default = "default_enable_aggregation")]
+    pub enable_aggregation: bool,
+    #[serde(default = "default_aggregation_interval_secs")]
+    pub aggregation_interval_secs: u64,
+    #[serde(default = "default_raw_retention_hours")]
+    pub raw_retention_hours: u32,
+    #[serde(default = "default_minute_retention_hours")]
+    pub minute_retention_hours: u32,
 }
 
 fn default_retention_days() -> u32 {
     3
+}
+
+fn default_enable_aggregation() -> bool {
+    true
+}
+
+fn default_aggregation_interval_secs() -> u64 {
+    3600
+}
+
+fn default_raw_retention_hours() -> u32 {
+    1
+}
+
+fn default_minute_retention_hours() -> u32 {
+    24
 }
 
 #[derive(Debug, Clone, Deserialize)]
@@ -81,6 +105,23 @@ impl AppConfig {
             "database.retention_days must be > 0, got {}",
             self.database.retention_days
         );
+        if self.database.enable_aggregation {
+            anyhow::ensure!(
+                self.database.aggregation_interval_secs > 0,
+                "database.aggregation_interval_secs must be > 0 when enable_aggregation is true, got {}",
+                self.database.aggregation_interval_secs
+            );
+            anyhow::ensure!(
+                self.database.raw_retention_hours > 0,
+                "database.raw_retention_hours must be > 0 when enable_aggregation is true, got {}",
+                self.database.raw_retention_hours
+            );
+            anyhow::ensure!(
+                self.database.minute_retention_hours > 0,
+                "database.minute_retention_hours must be > 0 when enable_aggregation is true, got {}",
+                self.database.minute_retention_hours
+            );
+        }
         anyhow::ensure!(
             self.publishing.cpu_stats_frequency_ms > 0,
             "publishing.cpu_stats_frequency_ms must be > 0, got {}",

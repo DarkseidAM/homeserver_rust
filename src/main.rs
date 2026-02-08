@@ -47,6 +47,20 @@ async fn main() -> Result<()> {
     );
     history_repo.init().await?;
 
+    if app_config.database.enable_aggregation {
+        let agg_config = aggregation_worker::AggregationWorkerConfig {
+            aggregation_interval_secs: app_config.database.aggregation_interval_secs,
+            raw_retention_hours: app_config.database.raw_retention_hours,
+            minute_retention_hours: app_config.database.minute_retention_hours,
+            retention_days: app_config.database.retention_days,
+        };
+        if let Err(e) = backfill::run_backfill(history_repo.clone(), &agg_config).await {
+            tracing::error!(error = %e, "backfill failed (continuing)");
+        }
+        let agg_handle = aggregation_worker::spawn(history_repo.clone(), agg_config);
+        drop(agg_handle);
+    }
+
     let ws_system_connections = Arc::new(AtomicUsize::new(0));
     let (shutdown_tx, shutdown_rx) = tokio::sync::oneshot::channel();
 
@@ -73,6 +87,7 @@ async fn main() -> Result<()> {
         system_info,
         ws_system_connections,
         app_config.clone(),
+        history_repo,
     );
     let addr = format!("{}:{}", app_config.server.host, app_config.server.port);
     let listener = tokio::net::TcpListener::bind(&addr).await?;
