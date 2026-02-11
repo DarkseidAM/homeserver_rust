@@ -8,6 +8,7 @@ WORKDIR /build
 RUN apt-get update && apt-get install -y --no-install-recommends \
     pkg-config \
     libssl-dev \
+    make \
     && rm -rf /var/lib/apt/lists/*
 
 # Copy source and build (single stage; dummy-build cache was causing bin to link stale lib)
