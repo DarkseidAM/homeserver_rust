@@ -60,6 +60,8 @@ async fn main() -> Result<()> {
             raw_retention_hours: app_config.database.raw_retention_hours,
             minute_retention_hours: app_config.database.minute_retention_hours,
             retention_days: app_config.database.retention_days,
+            vacuum_schedule: app_config.database.vacuum_schedule.clone(),
+            vacuum_interval_secs: app_config.database.vacuum_interval_secs,
         };
         if let Err(e) = backfill::run_backfill(history_repo.clone(), &agg_config).await {
             tracing::error!(error = %e, "backfill failed (continuing)");
@@ -69,8 +71,21 @@ async fn main() -> Result<()> {
     }
 
     let ws_system_connections = Arc::new(AtomicUsize::new(0));
+    let snapshots_saved_total = Arc::new(std::sync::atomic::AtomicU64::new(0));
     let (shutdown_tx, shutdown_rx) = tokio::sync::oneshot::channel();
 
+    let writer_capacity = worker::writer_channel_capacity(app_config.database.flush_rate);
+    let (write_tx, write_rx) = tokio::sync::mpsc::channel(writer_capacity);
+    let writer_handle = worker::spawn_history_writer(
+        write_rx,
+        history_repo.clone(),
+        system_info.clone(),
+        worker::HistoryWriterConfig {
+            flush_rate: app_config.database.flush_rate,
+            flush_interval_secs: app_config.database.flush_interval_secs,
+        },
+        snapshots_saved_total.clone(),
+    );
     let worker_handle = worker::spawn(
         worker::WorkerDeps {
             sysinfo_repo: sysinfo_repo.clone(),
@@ -78,13 +93,15 @@ async fn main() -> Result<()> {
             docker_repo: docker_repo.clone(),
             history_repo: history_repo.clone(),
             tx: tx.clone(),
+            write_tx,
             ws_system_connections: ws_system_connections.clone(),
+            snapshots_saved_total,
             shutdown_rx,
         },
         worker::WorkerConfig {
-            flush_rate: app_config.database.flush_rate,
             sample_interval_ms: app_config.monitoring.sample_interval_ms,
             stats_log_interval_secs: app_config.monitoring.stats_log_interval_secs,
+            prune_interval_secs: app_config.database.prune_interval_secs,
         },
     );
 
@@ -134,6 +151,7 @@ async fn main() -> Result<()> {
                 tracing::info!("Received shutdown signal");
                 let _ = shutdown_tx.send(());
                 let _ = worker_handle.await;
+                let _ = writer_handle.await;
             }
         }
     }

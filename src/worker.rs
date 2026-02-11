@@ -1,17 +1,22 @@
-// Background stats worker (same logic as Kotlin StatsWorker)
+// Background stats worker (same logic as Kotlin StatsWorker).
+// Collection runs in the worker; persistence runs in a dedicated history writer task (channel).
 
 use crate::docker_repo::DockerRepo;
 use crate::history_repo::HistoryRepo;
 use crate::models::{FullSystemSnapshot, SystemInfo};
 use crate::sysinfo_repo::SysinfoRepo;
 use std::sync::Arc;
-use std::sync::atomic::AtomicUsize;
-use tokio::sync::broadcast;
+use std::sync::atomic::{AtomicU64, AtomicUsize};
+use tokio::sync::{broadcast, mpsc};
 use tokio::time::{Duration, Instant, interval};
 
-const PRUNE_INTERVAL_TICKS: u64 = 3600;
 /// Rate limit for "no receivers" warning (avoid logging every second when no one is on /ws/system)
 const NO_RECEIVERS_WARN_INTERVAL: Duration = Duration::from_secs(60);
+
+/// Channel capacity for snapshot writer (backpressure if writer falls behind).
+pub fn writer_channel_capacity(flush_rate: u64) -> usize {
+    (flush_rate as usize * 2).max(32)
+}
 
 /// Repos, channels, and shutdown for the worker.
 pub struct WorkerDeps {
@@ -20,41 +25,130 @@ pub struct WorkerDeps {
     pub docker_repo: Arc<DockerRepo>,
     pub history_repo: Arc<HistoryRepo>,
     pub tx: broadcast::Sender<FullSystemSnapshot>,
+    pub write_tx: mpsc::Sender<FullSystemSnapshot>,
     pub ws_system_connections: Arc<AtomicUsize>,
+    pub snapshots_saved_total: Arc<AtomicU64>,
     pub shutdown_rx: tokio::sync::oneshot::Receiver<()>,
 }
 
 /// Worker timing and logging config.
+/// Stats logging and pruning use real-time intervals, independent of sample_interval_ms.
 pub struct WorkerConfig {
-    pub flush_rate: u64,
     pub sample_interval_ms: u64,
+    /// How often to log app stats (real seconds).
     pub stats_log_interval_secs: u64,
+    /// How often to prune old data (real seconds).
+    pub prune_interval_secs: u64,
+}
+
+/// Writer config: batching for the dedicated history writer task.
+pub struct HistoryWriterConfig {
+    pub flush_rate: u64,
+    pub flush_interval_secs: u64,
+}
+
+/// Spawns the background task that receives snapshots from the worker and flushes to the DB.
+/// Flushes when buffer len >= flush_rate, or every flush_interval_secs, or when channel closes.
+/// When the worker drops its sender, this task flushes remaining and exits.
+pub fn spawn_history_writer(
+    mut write_rx: mpsc::Receiver<FullSystemSnapshot>,
+    history_repo: Arc<HistoryRepo>,
+    system_info: Arc<SystemInfo>,
+    config: HistoryWriterConfig,
+    snapshots_saved_total: Arc<AtomicU64>,
+) -> tokio::task::JoinHandle<()> {
+    let flush_interval = Duration::from_secs(config.flush_interval_secs);
+    tokio::spawn(async move {
+        let mut buffer: Vec<FullSystemSnapshot> = Vec::new();
+        let mut flush_tick = interval(flush_interval);
+        flush_tick.set_missed_tick_behavior(tokio::time::MissedTickBehavior::Skip);
+
+        loop {
+            tokio::select! {
+                result = write_rx.recv() => {
+                    match result {
+                        Some(snapshot) => {
+                            buffer.push(snapshot);
+                            if buffer.len() >= config.flush_rate as usize
+                                && let Err(e) = flush_buffer(&history_repo, &system_info, &mut buffer, &snapshots_saved_total).await
+                            {
+                                tracing::warn!(error = %e, "history writer: save_snapshots failed");
+                            }
+                        }
+                        None => break,
+                    }
+                }
+                _ = flush_tick.tick() => {
+                    if let Err(e) = flush_buffer(&history_repo, &system_info, &mut buffer, &snapshots_saved_total).await {
+                        tracing::warn!(error = %e, "history writer: save_snapshots failed");
+                    }
+                }
+            }
+        }
+        if let Err(e) = flush_buffer(
+            &history_repo,
+            &system_info,
+            &mut buffer,
+            &snapshots_saved_total,
+        )
+        .await
+        {
+            tracing::warn!(error = %e, "history writer: final flush failed");
+        }
+        tracing::debug!("History writer shutting down");
+    })
+}
+
+async fn flush_buffer(
+    history_repo: &HistoryRepo,
+    system_info: &SystemInfo,
+    buffer: &mut Vec<FullSystemSnapshot>,
+    snapshots_saved_total: &AtomicU64,
+) -> anyhow::Result<()> {
+    if buffer.is_empty() {
+        return Ok(());
+    }
+    let n = buffer.len();
+    history_repo.save_snapshots(buffer, system_info).await?;
+    snapshots_saved_total.fetch_add(n as u64, std::sync::atomic::Ordering::Relaxed);
+    buffer.clear();
+    tracing::debug!(
+        operation = "save_snapshots",
+        snapshots_count = n,
+        "Snapshots saved"
+    );
+    Ok(())
 }
 
 pub fn spawn(deps: WorkerDeps, config: WorkerConfig) -> tokio::task::JoinHandle<()> {
     let WorkerDeps {
         sysinfo_repo,
-        system_info,
+        system_info: _,
         docker_repo,
         history_repo,
         tx,
+        write_tx,
         ws_system_connections,
+        snapshots_saved_total,
         mut shutdown_rx,
     } = deps;
     let WorkerConfig {
-        flush_rate,
         sample_interval_ms,
         stats_log_interval_secs,
+        prune_interval_secs,
     } = config;
+
+    let stats_log_interval = Duration::from_secs(stats_log_interval_secs);
+    let prune_interval = Duration::from_secs(prune_interval_secs);
 
     tokio::spawn(async move {
         let mut tick = interval(Duration::from_millis(sample_interval_ms));
         tick.set_missed_tick_behavior(tokio::time::MissedTickBehavior::Skip);
-        let mut snapshot_buffer: Vec<FullSystemSnapshot> = Vec::new();
-        let mut flush_ticks: u64 = 0;
-        let mut prune_ticks: u64 = 0;
-        let mut stats_log_ticks: u64 = 0;
-        let mut snapshots_saved_total: u64 = 0;
+        let mut stats_log_tick = interval(stats_log_interval);
+        stats_log_tick.set_missed_tick_behavior(tokio::time::MissedTickBehavior::Skip);
+        let mut prune_tick = interval(prune_interval);
+        prune_tick.set_missed_tick_behavior(tokio::time::MissedTickBehavior::Skip);
+
         let mut snapshots_pruned_total: u64 = 0;
         let mut last_no_receivers_warn: Option<Instant> = None;
 
@@ -63,25 +157,7 @@ pub fn spawn(deps: WorkerDeps, config: WorkerConfig) -> tokio::task::JoinHandle<
 
         loop {
             tokio::select! {
-                _ = tick.tick() => {}
-                _ = &mut shutdown_rx => {
-                    if !snapshot_buffer.is_empty()
-                        && let Err(e) = history_repo
-                            .save_snapshots(&snapshot_buffer, system_info.as_ref())
-                            .await
-                    {
-                        tracing::warn!(
-                            error = %e,
-                            operation = "save_snapshots",
-                            snapshots_count = snapshot_buffer.len(),
-                            "Failed to save snapshots on shutdown"
-                        );
-                    }
-                    tracing::debug!("Worker shutting down");
-                    break;
-                }
-            }
-
+                _ = tick.tick() => {
             let timestamp = std::time::SystemTime::now()
                 .duration_since(std::time::UNIX_EPOCH)
                 .map(|d| d.as_millis() as u64)
@@ -172,58 +248,35 @@ pub fn spawn(deps: WorkerDeps, config: WorkerConfig) -> tokio::task::JoinHandle<
                     last_no_receivers_warn = Some(Instant::now());
                 }
             }
-            snapshot_buffer.push(snapshot);
-
-            flush_ticks += 1;
-            if flush_ticks >= flush_rate && !snapshot_buffer.is_empty() {
-                let n = snapshot_buffer.len();
-                if let Err(e) = history_repo
-                    .save_snapshots(&snapshot_buffer, system_info.as_ref())
-                    .await
-                {
-                    tracing::warn!(
-                        error = %e,
-                        operation = "save_snapshots",
-                        snapshots_count = n,
-                        "Failed to save snapshots"
-                    );
-                } else {
-                    tracing::debug!(
-                        operation = "save_snapshots",
-                        snapshots_count = n,
-                        "Snapshots saved"
-                    );
-                    snapshots_saved_total += n as u64;
-                }
-                snapshot_buffer.clear();
-                flush_ticks = 0;
+            if write_tx.send(snapshot).await.is_err() {
+                tracing::debug!("History writer channel closed");
             }
-
-            prune_ticks += 1;
-            if prune_ticks >= PRUNE_INTERVAL_TICKS {
-                if let Err(e) = history_repo.prune_old_data().await {
-                    tracing::warn!(
-                        error = %e,
-                        operation = "prune_old_data",
-                        "Failed to prune old data"
-                    );
-                } else {
-                    tracing::debug!(operation = "prune_old_data", "Old data pruned successfully");
-                    snapshots_pruned_total += 1;
                 }
-                prune_ticks = 0;
-            }
-
-            stats_log_ticks += 1;
-            if stats_log_ticks >= stats_log_interval_secs {
-                tracing::info!(
-                    ws_system_clients =
-                        ws_system_connections.load(std::sync::atomic::Ordering::Relaxed),
-                    snapshots_saved_total = snapshots_saved_total,
-                    snapshots_pruned_total = snapshots_pruned_total,
-                    "app stats"
-                );
-                stats_log_ticks = 0;
+                _ = &mut shutdown_rx => {
+                    tracing::debug!("Worker shutting down");
+                    break;
+                }
+                _ = stats_log_tick.tick() => {
+                    tracing::info!(
+                        ws_system_clients =
+                            ws_system_connections.load(std::sync::atomic::Ordering::Relaxed),
+                        snapshots_saved_total = snapshots_saved_total.load(std::sync::atomic::Ordering::Relaxed),
+                        snapshots_pruned_total = snapshots_pruned_total,
+                        "app stats"
+                    );
+                }
+                _ = prune_tick.tick() => {
+                    if let Err(e) = history_repo.prune_old_data().await {
+                        tracing::warn!(
+                            error = %e,
+                            operation = "prune_old_data",
+                            "Failed to prune old data"
+                        );
+                    } else {
+                        tracing::debug!(operation = "prune_old_data", "Old data pruned successfully");
+                        snapshots_pruned_total += 1;
+                    }
+                }
             }
         }
     })

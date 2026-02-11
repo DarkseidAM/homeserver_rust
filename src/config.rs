@@ -1,4 +1,5 @@
 use serde::Deserialize;
+use std::str::FromStr;
 
 #[derive(Debug, Clone, Deserialize)]
 pub struct AppConfig {
@@ -19,8 +20,14 @@ pub struct DatabaseConfig {
     pub path: String,
     pub max_pool_size: u32,
     pub flush_rate: u64,
+    /// Flush at least every N seconds even if buffer below flush_rate (writer task).
+    #[serde(default = "default_flush_interval_secs")]
+    pub flush_interval_secs: u64,
     #[serde(default = "default_retention_days")]
     pub retention_days: u32,
+    /// How often to prune old raw data (seconds). Independent of sample_interval_ms.
+    #[serde(default = "default_prune_interval_secs")]
+    pub prune_interval_secs: u64,
     #[serde(default = "default_enable_aggregation")]
     pub enable_aggregation: bool,
     #[serde(default = "default_aggregation_interval_secs")]
@@ -29,10 +36,28 @@ pub struct DatabaseConfig {
     pub raw_retention_hours: u32,
     #[serde(default = "default_minute_retention_hours")]
     pub minute_retention_hours: u32,
+    /// Optional cron expression for VACUUM (e.g. "0 3 * * *" = 03:00 daily). Uses local time.
+    #[serde(default)]
+    pub vacuum_schedule: Option<String>,
+    /// Fallback: run VACUUM every N seconds when vacuum_schedule is not set. Default 86400 (24h).
+    #[serde(default = "default_vacuum_interval_secs")]
+    pub vacuum_interval_secs: u64,
 }
 
 fn default_retention_days() -> u32 {
     3
+}
+
+fn default_flush_interval_secs() -> u64 {
+    30
+}
+
+fn default_prune_interval_secs() -> u64 {
+    3600
+}
+
+fn default_vacuum_interval_secs() -> u64 {
+    86400
 }
 
 fn default_enable_aggregation() -> bool {
@@ -101,10 +126,31 @@ impl AppConfig {
             self.database.flush_rate
         );
         anyhow::ensure!(
+            self.database.flush_interval_secs > 0,
+            "database.flush_interval_secs must be > 0, got {}",
+            self.database.flush_interval_secs
+        );
+        anyhow::ensure!(
             self.database.retention_days > 0,
             "database.retention_days must be > 0, got {}",
             self.database.retention_days
         );
+        anyhow::ensure!(
+            self.database.prune_interval_secs > 0,
+            "database.prune_interval_secs must be > 0, got {}",
+            self.database.prune_interval_secs
+        );
+        if let Some(ref cron_str) = self.database.vacuum_schedule {
+            cron::Schedule::from_str(cron_str).map_err(|e| {
+                anyhow::anyhow!("database.vacuum_schedule invalid cron expression: {}", e)
+            })?;
+        } else {
+            anyhow::ensure!(
+                self.database.vacuum_interval_secs > 0,
+                "database.vacuum_interval_secs must be > 0 when vacuum_schedule is not set, got {}",
+                self.database.vacuum_interval_secs
+            );
+        }
         if self.database.enable_aggregation {
             anyhow::ensure!(
                 self.database.aggregation_interval_secs > 0,
