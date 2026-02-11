@@ -18,7 +18,7 @@ aggregation_interval_secs = 3600
 raw_retention_hours = 1
 minute_retention_hours = 24
 # Optional: cron for VACUUM (local time). Example: "0 3 * * *" = 03:00 daily. If unset, vacuum_interval_secs is used.
-# vacuum_schedule = "0 3 * * *"
+vacuum_schedule = "0 3 * * *"
 # Fallback: run VACUUM every N seconds when vacuum_schedule is not set.
 vacuum_interval_secs = 86400
 
