@@ -5,7 +5,7 @@ mod linux;
 use crate::models::*;
 use std::sync::Arc;
 use std::time::Instant;
-use sysinfo::{Disks, Networks, System};
+use sysinfo::{Disks, Networks, ProcessesToUpdate, System};
 use tracing::instrument;
 
 pub struct SysinfoRepo {
@@ -289,6 +289,7 @@ impl SysinfoRepo {
                 .map_err(|e| anyhow::anyhow!("sysinfo lock poisoned: {}", e))?;
             sys.refresh_memory();
             sys.refresh_cpu_all();
+            sys.refresh_processes(ProcessesToUpdate::All, true);
             let uptime = System::uptime();
             let process_count = sys.processes().len() as u32;
             let thread_count = sys
