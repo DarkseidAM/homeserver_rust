@@ -49,6 +49,9 @@ thiserror = "2.0"
 anyhow = "1.0"
 futures-util = "0.3"
 
+# Memory allocator
+tikv-jemallocator = "0.6"
+
 [dev-dependencies]
 tokio = { version = "1", features = ["rt", "macros"] }
 tempfile = "3"

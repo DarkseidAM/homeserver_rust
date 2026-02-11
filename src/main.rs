@@ -6,6 +6,13 @@ use tokio::sync::broadcast;
 use tracing_subscriber::EnvFilter;
 use tracing_subscriber::fmt::time::FormatTime;
 
+#[cfg(not(target_env = "msvc"))]
+use tikv_jemallocator::Jemalloc;
+
+#[cfg(not(target_env = "msvc"))]
+#[global_allocator]
+static GLOBAL: Jemalloc = Jemalloc;
+
 struct LocalTimer;
 
 impl FormatTime for LocalTimer {
