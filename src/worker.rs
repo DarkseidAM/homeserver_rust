@@ -165,7 +165,7 @@ pub fn spawn(deps: WorkerDeps, config: WorkerConfig) -> tokio::task::JoinHandle<
                 let should_warn = last_no_receivers_warn
                     .is_none_or(|t| t.elapsed() >= NO_RECEIVERS_WARN_INTERVAL);
                 if should_warn {
-                    tracing::warn!(
+                    tracing::debug!(
                         operation = "broadcast_snapshot",
                         "No active WebSocket clients; broadcast channel has no receivers"
                     );

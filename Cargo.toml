@@ -1,6 +1,6 @@
 [package]
 name = "homeserver"
-version = "0.6.1"
+version = "0.6.2"
 edition = "2024"
 rust-version = "1.93"
 description = "Home server - system and Docker stats over WebSockets (Rust port)"
