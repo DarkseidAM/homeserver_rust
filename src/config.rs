@@ -1,6 +1,17 @@
 use serde::Deserialize;
 use std::str::FromStr;
 
+/// Converts 5-field Unix cron (min hour dom month dow) to 6-field (sec min hour dom month dow)
+/// by prepending "0" for seconds. The cron crate expects at least 6 fields.
+pub(crate) fn normalize_cron_expression(s: &str) -> String {
+    let parts: Vec<&str> = s.split_whitespace().collect();
+    if parts.len() == 5 {
+        format!("0 {}", parts.join(" "))
+    } else {
+        s.trim().to_string()
+    }
+}
+
 #[derive(Debug, Clone, Deserialize)]
 pub struct AppConfig {
     pub server: ServerConfig,
@@ -141,7 +152,8 @@ impl AppConfig {
             self.database.prune_interval_secs
         );
         if let Some(ref cron_str) = self.database.vacuum_schedule {
-            cron::Schedule::from_str(cron_str).map_err(|e| {
+            let normalized = normalize_cron_expression(cron_str);
+            cron::Schedule::from_str(&normalized).map_err(|e| {
                 anyhow::anyhow!("database.vacuum_schedule invalid cron expression: {}", e)
             })?;
         } else {

@@ -68,7 +68,8 @@ async fn run(repo: Arc<HistoryRepo>, config: AggregationWorkerConfig) {
 /// Sends a message on `tx` at each VACUUM time (cron or fixed interval). Uses local time for cron.
 async fn vacuum_scheduler(config: AggregationWorkerConfig, tx: tokio::sync::mpsc::Sender<()>) {
     if let Some(ref cron_str) = config.vacuum_schedule {
-        let Ok(schedule) = cron::Schedule::from_str(cron_str) else {
+        let normalized = crate::config::normalize_cron_expression(cron_str);
+        let Ok(schedule) = cron::Schedule::from_str(&normalized) else {
             warn!(cron = %cron_str, "invalid vacuum_schedule; VACUUM will not run");
             return;
         };
