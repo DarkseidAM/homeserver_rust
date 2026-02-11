@@ -1,6 +1,6 @@
 [package]
 name = "homeserver"
-version = "0.6.2"
+version = "0.7.0"
 edition = "2024"
 rust-version = "1.93"
 description = "Home server - system and Docker stats over WebSockets (Rust port)"
@@ -42,6 +42,9 @@ sqlx = { version = "0.8", default-features = false, features = ["runtime-tokio",
 tracing = "0.1"
 tracing-subscriber = { version = "0.3", features = ["env-filter"] }
 chrono = "0.4"
+
+# Cron (local-time schedule for VACUUM)
+cron = "0.15"
 
 # Utilities
 bytes = "1"

@@ -6,10 +6,14 @@ host = "0.0.0.0"
 # Path to SQLite database (relative to container, use /app/data for persistence)
 path = "data/server.db"
 max_pool_size = 10
-# Flush snapshots to database every N ticks
+# Flush snapshots to database every N samples (writer task)
 flush_rate = 10
+# Flush at least every N seconds (writer task)
+flush_interval_secs = 30
 # Prune history older than N days (default: 3)
 retention_days = 3
+# How often to prune old raw data (seconds). Independent of sample_interval_ms (default: 3600).
+# prune_interval_secs = 3600
 
 [publishing]
 # Frequency for individual stat streams (WebSocket endpoints)

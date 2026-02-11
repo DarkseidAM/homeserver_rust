@@ -8,12 +8,19 @@ host = "0.0.0.0"
 path = "data/server.db"
 max_pool_size = 10
 flush_rate = 10
+flush_interval_secs = 30
 retention_days = 3
+# How often to prune old raw data (seconds). Independent of sample_interval_ms.
+prune_interval_secs = 3600
 # Downsampling: keep 1s for raw_retention_hours, then 1-min, then 5-min (see docs/downsampling-and-mobile-api.md)
 enable_aggregation = true
 aggregation_interval_secs = 3600
 raw_retention_hours = 1
 minute_retention_hours = 24
+# Optional: cron for VACUUM (local time). Example: "0 3 * * *" = 03:00 daily. If unset, vacuum_interval_secs is used.
+# vacuum_schedule = "0 3 * * *"
+# Fallback: run VACUUM every N seconds when vacuum_schedule is not set.
+vacuum_interval_secs = 86400
 
 [publishing]
 cpu_stats_frequency_ms = 1000

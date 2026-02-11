@@ -1,6 +1,8 @@
 // Background worker: roll raw 1s → 1-min, then 1-min → 5-min, then prune.
 // Runs every aggregation_interval_secs when enable_aggregation is true.
+// VACUUM runs on a configurable schedule (cron expression or fixed interval).
 
+use std::str::FromStr;
 use std::sync::Arc;
 use std::time::Duration;
 
@@ -12,16 +14,18 @@ const MS_PER_MINUTE: i64 = 60_000;
 const MS_PER_5_MINUTES: i64 = 300_000;
 const RESOLUTION_1MIN: i32 = 60;
 const RESOLUTION_5MIN: i32 = 300;
-/// Run VACUUM every N aggregation ticks (e.g. 24 with 1h interval = daily).
-const VACUUM_INTERVAL_TICKS: u64 = 24;
 
 /// Config for the aggregation worker.
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub struct AggregationWorkerConfig {
     pub aggregation_interval_secs: u64,
     pub raw_retention_hours: u32,
     pub minute_retention_hours: u32,
     pub retention_days: u32,
+    /// Optional cron expression for VACUUM (e.g. "0 3 * * *" = 03:00 daily). Uses local time.
+    pub vacuum_schedule: Option<String>,
+    /// Run VACUUM every N seconds when vacuum_schedule is not set.
+    pub vacuum_interval_secs: u64,
 }
 
 /// Spawns the aggregation worker. Returns a join handle.
@@ -36,23 +40,57 @@ pub fn spawn(
 
 #[instrument(skip(repo), fields(interval_secs = config.aggregation_interval_secs))]
 async fn run(repo: Arc<HistoryRepo>, config: AggregationWorkerConfig) {
-    let mut interval = tokio::time::interval(Duration::from_secs(config.aggregation_interval_secs));
-    interval.set_missed_tick_behavior(tokio::time::MissedTickBehavior::Skip);
-    let mut tick_count: u64 = 0;
+    let mut agg_interval =
+        tokio::time::interval(Duration::from_secs(config.aggregation_interval_secs));
+    agg_interval.set_missed_tick_behavior(tokio::time::MissedTickBehavior::Skip);
+
+    let (vacuum_tx, mut vacuum_rx) = tokio::sync::mpsc::channel::<()>(1);
+    tokio::spawn(vacuum_scheduler(config.clone(), vacuum_tx));
 
     loop {
-        interval.tick().await;
-
-        if let Err(e) = run_one_tick(&repo, &config).await {
-            warn!(error = %e, "aggregation tick failed");
+        tokio::select! {
+            _ = agg_interval.tick() => {
+                if let Err(e) = run_one_tick(&repo, &config).await {
+                    warn!(error = %e, "aggregation tick failed");
+                }
+            }
+            _ = vacuum_rx.recv() => {
+                if let Err(e) = repo.vacuum().await {
+                    warn!(error = %e, "vacuum failed");
+                } else {
+                    info!("vacuum complete");
+                }
+            }
         }
+    }
+}
 
-        tick_count = tick_count.saturating_add(1);
-        if tick_count.is_multiple_of(VACUUM_INTERVAL_TICKS) {
-            if let Err(e) = repo.vacuum().await {
-                warn!(error = %e, "vacuum failed");
+/// Sends a message on `tx` at each VACUUM time (cron or fixed interval). Uses local time for cron.
+async fn vacuum_scheduler(config: AggregationWorkerConfig, tx: tokio::sync::mpsc::Sender<()>) {
+    if let Some(ref cron_str) = config.vacuum_schedule {
+        let Ok(schedule) = cron::Schedule::from_str(cron_str) else {
+            warn!(cron = %cron_str, "invalid vacuum_schedule; VACUUM will not run");
+            return;
+        };
+        loop {
+            let now = chrono::Local::now();
+            let next = schedule.after(&now).next();
+            if let Some(next) = next {
+                let delay = (next - now).to_std().unwrap_or(Duration::from_secs(1));
+                tokio::time::sleep(delay).await;
+                if tx.send(()).await.is_err() {
+                    break;
+                }
             } else {
-                info!("vacuum complete");
+                tokio::time::sleep(Duration::from_secs(3600)).await;
+            }
+        }
+    } else {
+        let interval = Duration::from_secs(config.vacuum_interval_secs);
+        loop {
+            tokio::time::sleep(interval).await;
+            if tx.send(()).await.is_err() {
+                break;
             }
         }
     }

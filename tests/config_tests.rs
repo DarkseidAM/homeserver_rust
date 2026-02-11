@@ -62,6 +62,16 @@ fn test_config_validation_rejects_flush_rate_zero() {
 }
 
 #[test]
+fn test_config_validation_rejects_flush_interval_secs_zero() {
+    let bad = VALID_CONFIG.replace(
+        "flush_rate = 10",
+        "flush_rate = 10\nflush_interval_secs = 0",
+    );
+    let err = AppConfig::load_from_str(&bad).unwrap_err();
+    assert!(err.to_string().contains("flush_interval_secs"));
+}
+
+#[test]
 fn test_config_validation_rejects_cpu_stats_frequency_zero() {
     let bad = VALID_CONFIG.replace(
         "cpu_stats_frequency_ms = 1000",
@@ -191,4 +201,20 @@ fn test_config_validation_rejects_minute_retention_hours_zero_when_enabled() {
         .replace("minute_retention_hours = 24", "minute_retention_hours = 0");
     let err = AppConfig::load_from_str(&bad).unwrap_err();
     assert!(err.to_string().contains("minute_retention_hours"));
+}
+
+#[test]
+fn test_config_validation_rejects_invalid_vacuum_schedule() {
+    let with_cron = VALID_CONFIG_WITH_AGGREGATION.replace(
+        "minute_retention_hours = 24",
+        "minute_retention_hours = 24\nvacuum_schedule = \"not valid cron\"",
+    );
+    let err = AppConfig::load_from_str(&with_cron).unwrap_err();
+    assert!(err.to_string().contains("vacuum_schedule"));
+}
+
+#[test]
+fn test_config_prune_interval_default() {
+    let config = AppConfig::load_from_str(VALID_CONFIG).expect("valid");
+    assert_eq!(config.database.prune_interval_secs, 3600);
 }
