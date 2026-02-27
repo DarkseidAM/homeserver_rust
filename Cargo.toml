@@ -58,4 +58,4 @@ tikv-jemallocator = "0.6"
 [dev-dependencies]
 tokio = { version = "1", features = ["rt", "macros"] }
 tempfile = "3"
-axum-test = { version = "18", features = ["ws"] }
+axum-test = { version = "19", features = ["ws"] }
