@@ -19,7 +19,7 @@ RUN cargo build --release --locked && \
     strip target/release/homeserver
 
 # Runtime stage - minimal Debian image
-FROM debian:bookworm-slim
+FROM debian:13.3-slim
 
 # Install runtime deps + tini (init for PID 1 so server doesn't get spurious signals)
 RUN apt-get update && apt-get install -y --no-install-recommends \
