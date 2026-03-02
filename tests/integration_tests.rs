@@ -80,14 +80,14 @@ async fn test_server_with_http() -> (
     broadcast::Sender<homeserver::models::FullSystemSnapshot>,
 ) {
     let (app, tx, _dir) = test_app().await;
-    let server = TestServer::builder().http_transport().build(app).unwrap();
+    let server = TestServer::builder().http_transport().build(app);
     (server, tx)
 }
 
 #[tokio::test]
 async fn test_root_endpoint() {
     let (app, _, _dir) = test_app().await;
-    let server = TestServer::new(app).unwrap();
+    let server = TestServer::new(app);
     let response = server.get("/").await;
     response.assert_status_ok();
     response.assert_text("Ktor: Hello from Rust homeserver!");
@@ -96,7 +96,7 @@ async fn test_root_endpoint() {
 #[tokio::test]
 async fn test_version_endpoint() {
     let (app, _, _dir) = test_app().await;
-    let server = TestServer::new(app).unwrap();
+    let server = TestServer::new(app);
     let response = server.get("/version").await;
     response.assert_status_ok();
     let json: serde_json::Value = response.json();
@@ -110,7 +110,7 @@ async fn test_version_endpoint() {
 #[tokio::test]
 async fn test_api_info_endpoint() {
     let (app, _, _dir) = test_app().await;
-    let server = TestServer::new(app).unwrap();
+    let server = TestServer::new(app);
     let response = server.get("/api/info").await;
     response.assert_status_ok();
     let json: serde_json::Value = response.json();
@@ -128,7 +128,7 @@ async fn test_api_info_endpoint() {
 #[tokio::test]
 async fn test_api_history_endpoint() {
     let (app, _, _dir) = test_app().await;
-    let server = TestServer::new(app).unwrap();
+    let server = TestServer::new(app);
     let response = server.get("/api/history").await;
     response.assert_status_ok();
     let json: serde_json::Value = response.json();
