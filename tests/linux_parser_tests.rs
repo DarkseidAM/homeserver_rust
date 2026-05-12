@@ -2,7 +2,7 @@
 // These functions have no I/O side effects; all assertions are over string literals.
 
 use homeserver::sysinfo_repo::linux::{
-    parse_diskstats, parse_hwmon_temp, parse_loadavg, parse_operstate,
+    disk_sysfs_base_device_name, parse_diskstats, parse_hwmon_temp, parse_loadavg, parse_operstate,
 };
 
 // ── parse_loadavg ─────────────────────────────────────────────────────────────
@@ -80,6 +80,26 @@ fn parse_diskstats_handles_empty_content() {
 fn parse_diskstats_handles_short_lines() {
     // Lines with < 14 fields must be silently skipped
     assert!(parse_diskstats("   8       0 sda\n").is_empty());
+}
+
+// ── disk_sysfs_base_device_name ───────────────────────────────────────────────
+
+#[test]
+fn disk_sysfs_base_maps_partitions_to_whole_disk() {
+    assert_eq!(disk_sysfs_base_device_name("sda1"), "sda");
+    assert_eq!(disk_sysfs_base_device_name("sdaa2"), "sdaa");
+    assert_eq!(disk_sysfs_base_device_name("nvme0n1p2"), "nvme0n1");
+    assert_eq!(disk_sysfs_base_device_name("mmcblk0p1"), "mmcblk0");
+    assert_eq!(disk_sysfs_base_device_name("xvda3"), "xvda");
+}
+
+#[test]
+fn disk_sysfs_base_leaves_whole_disk_and_unknown_unchanged() {
+    assert_eq!(disk_sysfs_base_device_name("sda"), "sda");
+    assert_eq!(disk_sysfs_base_device_name("nvme0n1"), "nvme0n1");
+    assert_eq!(disk_sysfs_base_device_name("mmcblk0"), "mmcblk0");
+    assert_eq!(disk_sysfs_base_device_name("xvd3"), "xvd3");
+    assert_eq!(disk_sysfs_base_device_name("dm-0"), "dm-0");
 }
 
 // ── parse_operstate ───────────────────────────────────────────────────────────

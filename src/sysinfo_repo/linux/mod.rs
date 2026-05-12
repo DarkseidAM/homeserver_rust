@@ -1,6 +1,9 @@
 // Linux-specific helpers: /proc, /etc/os-release, DMI, interface speed.
 
-use std::collections::HashMap;
+mod disk;
+
+pub use disk::{DiskIoRaw, disk_sysfs_base_device_name, parse_diskstats};
+pub(crate) use disk::{read_disk_model_linux, read_diskstats_linux};
 
 // ── Load average ─────────────────────────────────────────────────────────────
 
@@ -70,96 +73,6 @@ pub(super) fn read_cpu_temperature_linux() -> Option<f64> {
     }
     #[cfg(not(target_os = "linux"))]
     None
-}
-
-// ── Disk I/O stats ───────────────────────────────────────────────────────────
-
-#[derive(Debug, Default, Clone)]
-pub struct DiskIoRaw {
-    pub reads_completed: u64,
-    pub sectors_read: u64,
-    pub writes_completed: u64,
-    pub sectors_written: u64,
-    pub io_time_ms: u64,
-}
-
-/// Parse `/proc/diskstats` content into a map of device name → I/O counters.
-/// Skips loop, ram, and zram virtual devices.
-pub fn parse_diskstats(content: &str) -> HashMap<String, DiskIoRaw> {
-    #[inline]
-    fn u64_field(it: &mut std::str::SplitWhitespace<'_>) -> Option<u64> {
-        Some(it.next()?.parse::<u64>().unwrap_or(0))
-    }
-
-    #[inline]
-    fn skip_field(it: &mut std::str::SplitWhitespace<'_>) -> Option<()> {
-        it.next()?;
-        Some(())
-    }
-
-    // One diskstats row: major, minor, device name, then kernel counter fields through io_time_ms.
-    fn diskstats_row(line: &str) -> Option<(String, DiskIoRaw)> {
-        let mut it = line.split_whitespace();
-        skip_field(&mut it)?;
-        skip_field(&mut it)?;
-        let name = it.next()?;
-        if name.starts_with("loop") || name.starts_with("ram") || name.starts_with("zram") {
-            return None;
-        }
-
-        let reads_completed = u64_field(&mut it)?;
-        skip_field(&mut it)?; // reads merged
-        let sectors_read = u64_field(&mut it)?;
-        skip_field(&mut it)?; // time reading (ms)
-        let writes_completed = u64_field(&mut it)?;
-        skip_field(&mut it)?; // writes merged
-        let sectors_written = u64_field(&mut it)?;
-        skip_field(&mut it)?; // time writing (ms)
-        skip_field(&mut it)?; // I/Os in progress
-        let io_time_ms = u64_field(&mut it)?;
-
-        Some((
-            name.to_string(),
-            DiskIoRaw {
-                reads_completed,
-                sectors_read,
-                writes_completed,
-                sectors_written,
-                io_time_ms,
-            },
-        ))
-    }
-
-    let mut map = HashMap::new();
-    for line in content.lines() {
-        if let Some((name, raw)) = diskstats_row(line) {
-            map.insert(name, raw);
-        }
-    }
-    map
-}
-
-pub(super) fn read_diskstats_linux() -> HashMap<String, DiskIoRaw> {
-    #[cfg(target_os = "linux")]
-    {
-        let content = std::fs::read_to_string("/proc/diskstats").unwrap_or_default();
-        parse_diskstats(&content)
-    }
-    #[cfg(not(target_os = "linux"))]
-    HashMap::new()
-}
-
-/// Read disk model name from `/sys/block/<dev>/device/model` (best-effort).
-pub(super) fn read_disk_model_linux(dev_name: &str) -> String {
-    #[cfg(target_os = "linux")]
-    {
-        let path = format!("/sys/block/{}/device/model", dev_name);
-        std::fs::read_to_string(&path)
-            .map(|s| s.trim().to_string())
-            .unwrap_or_default()
-    }
-    #[cfg(not(target_os = "linux"))]
-    String::new()
 }
 
 // ── Network interface operstate ───────────────────────────────────────────────
