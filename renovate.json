@@ -1,6 +1,59 @@
 {
-  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-  "extends": [
-    "config:recommended"
-  ]
+    "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+    "extends": [
+        "config:recommended"
+    ],
+    "osvVulnerabilityAlerts": true,
+    "minimumReleaseAge": "3 days",
+    "internalChecksFilter": "strict",
+    "rangeStrategy": "update-lockfile",
+    "prConcurrentLimit": 5,
+    "packageRules": [
+        {
+            "description": "Group all non-major Cargo updates to reduce CI churn",
+            "matchManagers": [
+                "cargo"
+            ],
+            "matchUpdateTypes": [
+                "minor",
+                "patch"
+            ],
+            "groupName": "rust-dependencies-minor",
+            "automerge": true,
+            "platformAutomerge": true
+        },
+        {
+            "description": "Automerge all GitHub Actions updates (minor and patch)",
+            "matchManagers": [
+                "github-actions"
+            ],
+            "automerge": true,
+            "platformAutomerge": true
+        },
+        {
+            "description": "Never automerge major updates for core async/web/data crates",
+            "matchManagers": [
+                "cargo"
+            ],
+            "matchPackageNames": [
+                "tokio",
+                "axum",
+                "sqlx",
+                "bollard",
+                "serde",
+                "tower-http"
+            ],
+            "matchUpdateTypes": [
+                "major"
+            ],
+            "automerge": false
+        }
+    ],
+    "lockFileMaintenance": {
+        "enabled": true,
+        "automerge": true,
+        "schedule": [
+            "before 5am on monday"
+        ]
+    }
 }
