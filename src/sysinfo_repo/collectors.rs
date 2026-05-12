@@ -2,11 +2,15 @@
 
 use super::linux;
 use crate::models::*;
+use std::sync::atomic::{AtomicU64, Ordering};
 use std::time::Instant;
 use sysinfo::{ProcessesToUpdate, System};
 use tracing::instrument;
 
 use super::SysinfoRepo;
+
+/// Times we skipped a per-interface rate sample because a cumulative counter decreased (reset / driver quirk).
+static NETWORK_RATE_COUNTER_DECREASE_SKIPS: AtomicU64 = AtomicU64::new(0);
 
 impl SysinfoRepo {
     #[instrument(skip(self), fields(repo = "sysinfo", operation = "get_storage_stats"))]
@@ -120,10 +124,40 @@ impl SysinfoRepo {
                 if dt_secs > 0.0 {
                     for iface in &mut interfaces {
                         if let Some(p) = prev.interfaces.iter().find(|i| i.name == iface.name) {
-                            let drx = iface.bytes_recv.saturating_sub(p.bytes_recv);
-                            let dtx = iface.bytes_sent.saturating_sub(p.bytes_sent);
-                            iface.received_bytes_per_sec = drx as f64 / dt_secs;
-                            iface.transmitted_bytes_per_sec = dtx as f64 / dt_secs;
+                            if iface.bytes_recv >= p.bytes_recv {
+                                let drx = iface.bytes_recv - p.bytes_recv;
+                                iface.received_bytes_per_sec = drx as f64 / dt_secs;
+                            } else {
+                                let n = NETWORK_RATE_COUNTER_DECREASE_SKIPS
+                                    .fetch_add(1, Ordering::Relaxed)
+                                    + 1;
+                                tracing::debug!(
+                                    operation = "network_rate_skip",
+                                    iface = %iface.name,
+                                    field = "bytes_recv",
+                                    curr = iface.bytes_recv,
+                                    prev = p.bytes_recv,
+                                    skips_total = n,
+                                    "cumulative recv counter decreased; skipping recv rate this interval"
+                                );
+                            }
+                            if iface.bytes_sent >= p.bytes_sent {
+                                let dtx = iface.bytes_sent - p.bytes_sent;
+                                iface.transmitted_bytes_per_sec = dtx as f64 / dt_secs;
+                            } else {
+                                let n = NETWORK_RATE_COUNTER_DECREASE_SKIPS
+                                    .fetch_add(1, Ordering::Relaxed)
+                                    + 1;
+                                tracing::debug!(
+                                    operation = "network_rate_skip",
+                                    iface = %iface.name,
+                                    field = "bytes_sent",
+                                    curr = iface.bytes_sent,
+                                    prev = p.bytes_sent,
+                                    skips_total = n,
+                                    "cumulative sent counter decreased; skipping sent rate this interval"
+                                );
+                            }
                         }
                     }
                 }
