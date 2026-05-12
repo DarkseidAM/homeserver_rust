@@ -86,26 +86,55 @@ pub struct DiskIoRaw {
 /// Parse `/proc/diskstats` content into a map of device name → I/O counters.
 /// Skips loop, ram, and zram virtual devices.
 pub fn parse_diskstats(content: &str) -> HashMap<String, DiskIoRaw> {
-    let mut map = HashMap::new();
-    for line in content.lines() {
-        let f: Vec<&str> = line.split_whitespace().collect();
-        if f.len() < 14 {
-            continue;
-        }
-        let name = f[2];
+    #[inline]
+    fn u64_field(it: &mut std::str::SplitWhitespace<'_>) -> Option<u64> {
+        Some(it.next()?.parse::<u64>().unwrap_or(0))
+    }
+
+    #[inline]
+    fn skip_field(it: &mut std::str::SplitWhitespace<'_>) -> Option<()> {
+        it.next()?;
+        Some(())
+    }
+
+    // One diskstats row: major, minor, device name, then kernel counter fields through io_time_ms.
+    fn diskstats_row(line: &str) -> Option<(String, DiskIoRaw)> {
+        let mut it = line.split_whitespace();
+        skip_field(&mut it)?;
+        skip_field(&mut it)?;
+        let name = it.next()?;
         if name.starts_with("loop") || name.starts_with("ram") || name.starts_with("zram") {
-            continue;
+            return None;
         }
-        map.insert(
+
+        let reads_completed = u64_field(&mut it)?;
+        skip_field(&mut it)?; // reads merged
+        let sectors_read = u64_field(&mut it)?;
+        skip_field(&mut it)?; // time reading (ms)
+        let writes_completed = u64_field(&mut it)?;
+        skip_field(&mut it)?; // writes merged
+        let sectors_written = u64_field(&mut it)?;
+        skip_field(&mut it)?; // time writing (ms)
+        skip_field(&mut it)?; // I/Os in progress
+        let io_time_ms = u64_field(&mut it)?;
+
+        Some((
             name.to_string(),
             DiskIoRaw {
-                reads_completed: f[3].parse().unwrap_or(0),
-                sectors_read: f[5].parse().unwrap_or(0),
-                writes_completed: f[7].parse().unwrap_or(0),
-                sectors_written: f[9].parse().unwrap_or(0),
-                io_time_ms: f[12].parse().unwrap_or(0),
+                reads_completed,
+                sectors_read,
+                writes_completed,
+                sectors_written,
+                io_time_ms,
             },
-        );
+        ))
+    }
+
+    let mut map = HashMap::new();
+    for line in content.lines() {
+        if let Some((name, raw)) = diskstats_row(line) {
+            map.insert(name, raw);
+        }
     }
     map
 }

@@ -54,6 +54,9 @@ async fn main() -> Result<()> {
     );
     history_repo.init().await?;
 
+    let mut agg_shutdown_tx: Option<tokio::sync::oneshot::Sender<()>> = None;
+    let mut agg_handle: Option<tokio::task::JoinHandle<()>> = None;
+
     if app_config.database.enable_aggregation {
         let agg_config = aggregation_worker::AggregationWorkerConfig {
             aggregation_interval_secs: app_config.database.aggregation_interval_secs,
@@ -66,8 +69,13 @@ async fn main() -> Result<()> {
         if let Err(e) = backfill::run_backfill(history_repo.clone(), &agg_config).await {
             tracing::error!(error = %e, "backfill failed (continuing)");
         }
-        // Keep the handle so we can join it on shutdown.
-        let _agg_handle = aggregation_worker::spawn(history_repo.clone(), agg_config);
+        let (shutdown_agg_tx, shutdown_agg_rx) = tokio::sync::oneshot::channel();
+        agg_shutdown_tx = Some(shutdown_agg_tx);
+        agg_handle = Some(aggregation_worker::spawn(
+            history_repo.clone(),
+            agg_config,
+            shutdown_agg_rx,
+        ));
     }
 
     let ws_system_connections = Arc::new(AtomicUsize::new(0));
@@ -126,6 +134,12 @@ async fn main() -> Result<()> {
     let _ = shutdown_tx.send(());
     let _ = worker_handle.await;
     let _ = writer_handle.await;
+    if let Some(tx) = agg_shutdown_tx.take() {
+        let _ = tx.send(());
+    }
+    if let Some(h) = agg_handle {
+        let _ = h.await;
+    }
 
     Ok(())
 }

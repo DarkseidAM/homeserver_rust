@@ -88,10 +88,13 @@ impl HistoryRepo {
                     .await?;
                     tx.commit().await?;
                 } else {
-                    sqlx::query("INSERT INTO schema_version (key, value) VALUES ('schema', $1)")
-                        .bind(i64::from(CURRENT_SCHEMA_VERSION))
-                        .execute(&self.pool)
-                        .await?;
+                    sqlx::query(
+                        r#"INSERT INTO schema_version (key, value) VALUES ('schema', $1)
+                           ON CONFLICT(key) DO NOTHING"#,
+                    )
+                    .bind(i64::from(CURRENT_SCHEMA_VERSION))
+                    .execute(&self.pool)
+                    .await?;
                 }
             }
             Some(v) if v == i64::from(CURRENT_SCHEMA_VERSION) => {}

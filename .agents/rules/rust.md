@@ -6,7 +6,7 @@ trigger: always_on
 
 - **Rule**: Do **not** use inline `#[cfg(test)]` modules inside `src/` files. All test code goes in the `tests/` directory as separate integration-test files (e.g. `tests/config_tests.rs`).
 - **Why**: Keeps production source files clean and under the 300-line limit; test files are independently navigable and compilable.
-- **How**: Create `tests/<module>_tests.rs`, import with `use rd_rs::<module>::...`, and add the file to the workspace so `cargo test` picks it up automatically.
+- **How**: Create `tests/<module>_tests.rs`, import with `use homeserver::<module>::...`, and add the file to the workspace so `cargo test` picks it up automatically.
 
 ## File Length Limit (300 lines)
 

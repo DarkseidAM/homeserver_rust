@@ -112,27 +112,28 @@ impl SysinfoRepo {
                 .collect();
 
             let now = Instant::now();
-            if let Ok(mut guard) = last_network.lock() {
-                if let Some((ref prev, prev_ts)) = *guard {
-                    let dt_secs = now.duration_since(prev_ts).as_secs_f64();
-                    if dt_secs > 0.0 {
-                        for iface in &mut interfaces {
-                            if let Some(p) = prev.interfaces.iter().find(|i| i.name == iface.name) {
-                                let drx = iface.bytes_recv.saturating_sub(p.bytes_recv);
-                                let dtx = iface.bytes_sent.saturating_sub(p.bytes_sent);
-                                iface.received_bytes_per_sec = drx as f64 / dt_secs;
-                                iface.transmitted_bytes_per_sec = dtx as f64 / dt_secs;
-                            }
+            let mut last_guard = last_network
+                .lock()
+                .map_err(|e| anyhow::anyhow!("sysinfo last_network lock poisoned: {}", e))?;
+            if let Some((ref prev, prev_ts)) = *last_guard {
+                let dt_secs = now.duration_since(prev_ts).as_secs_f64();
+                if dt_secs > 0.0 {
+                    for iface in &mut interfaces {
+                        if let Some(p) = prev.interfaces.iter().find(|i| i.name == iface.name) {
+                            let drx = iface.bytes_recv.saturating_sub(p.bytes_recv);
+                            let dtx = iface.bytes_sent.saturating_sub(p.bytes_sent);
+                            iface.received_bytes_per_sec = drx as f64 / dt_secs;
+                            iface.transmitted_bytes_per_sec = dtx as f64 / dt_secs;
                         }
                     }
                 }
-                *guard = Some((
-                    NetworkStats {
-                        interfaces: interfaces.clone(),
-                    },
-                    now,
-                ));
             }
+            *last_guard = Some((
+                NetworkStats {
+                    interfaces: interfaces.clone(),
+                },
+                now,
+            ));
 
             Ok(NetworkStats { interfaces })
         })
