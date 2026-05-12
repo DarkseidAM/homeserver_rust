@@ -13,6 +13,8 @@ pub struct CpuStats {
     pub logical_cores: u32,
     pub usage_percent: f64,
     pub temperature: f64,
+    /// Per-logical-core usage percentages (empty if unavailable).
+    pub core_usages: Vec<f64>,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize, SchemaRead, SchemaWrite)]
@@ -22,6 +24,9 @@ pub struct RamStats {
     pub used: u64,
     pub available: u64,
     pub usage_percent: f64,
+    pub swap_total: u64,
+    pub swap_used: u64,
+    pub swap_free: u64,
 }
 
 /// Static system identity; fetched once at startup and exposed via GET /api/info.
@@ -43,8 +48,9 @@ pub struct SystemStatsDynamic {
     pub uptime_secs: u64,
     pub process_count: u32,
     pub thread_count: u32,
-    pub cpu_voltage: f64,
-    pub fan_speeds: Vec<u32>,
+    pub load_avg_1: f64,
+    pub load_avg_5: f64,
+    pub load_avg_15: f64,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize, SchemaRead, SchemaWrite)]
@@ -59,8 +65,9 @@ pub struct SystemStats {
     pub uptime_secs: u64,
     pub process_count: u32,
     pub thread_count: u32,
-    pub cpu_voltage: f64,
-    pub fan_speeds: Vec<u32>,
+    pub load_avg_1: f64,
+    pub load_avg_5: f64,
+    pub load_avg_15: f64,
 }
 
 /// Merge static identity + dynamic metrics for display (e.g. dump_history, legacy readers).
@@ -94,8 +101,9 @@ pub fn merge_system_info(info: Option<&SystemInfo>, dynamic: &SystemStatsDynamic
         uptime_secs: dynamic.uptime_secs,
         process_count: dynamic.process_count,
         thread_count: dynamic.thread_count,
-        cpu_voltage: dynamic.cpu_voltage,
-        fan_speeds: dynamic.fan_speeds.clone(),
+        load_avg_1: dynamic.load_avg_1,
+        load_avg_5: dynamic.load_avg_5,
+        load_avg_15: dynamic.load_avg_15,
     }
 }
 

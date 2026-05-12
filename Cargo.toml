@@ -1,6 +1,6 @@
 [package]
 name = "homeserver"
-version = "0.7.1"
+version = "0.8.0"
 edition = "2024"
 rust-version = "1.95"
 description = "Home server - system and Docker stats over WebSockets (Rust port)"
@@ -58,4 +58,5 @@ tikv-jemallocator = "0.6"
 [dev-dependencies]
 tokio = { version = "1", features = ["rt", "macros"] }
 tempfile = "3"
+sqlx = { version = "0.8", default-features = false, features = ["runtime-tokio", "sqlite"] }
 axum-test = { version = "20", features = ["ws"] }

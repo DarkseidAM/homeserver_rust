@@ -24,7 +24,9 @@ pub struct DiskDeviceStat {
     pub size: u64,
     pub read_bytes: u64,
     pub write_bytes: u64,
-    pub transfer_time_ms: u64,
+    pub io_time_ms: u64,
+    pub iops_read: u64,
+    pub iops_write: u64,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize, SchemaRead, SchemaWrite)]

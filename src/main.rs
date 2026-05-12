@@ -54,6 +54,9 @@ async fn main() -> Result<()> {
     );
     history_repo.init().await?;
 
+    let mut agg_shutdown_tx: Option<tokio::sync::oneshot::Sender<()>> = None;
+    let mut agg_handle: Option<tokio::task::JoinHandle<()>> = None;
+
     if app_config.database.enable_aggregation {
         let agg_config = aggregation_worker::AggregationWorkerConfig {
             aggregation_interval_secs: app_config.database.aggregation_interval_secs,
@@ -66,8 +69,13 @@ async fn main() -> Result<()> {
         if let Err(e) = backfill::run_backfill(history_repo.clone(), &agg_config).await {
             tracing::error!(error = %e, "backfill failed (continuing)");
         }
-        let agg_handle = aggregation_worker::spawn(history_repo.clone(), agg_config);
-        drop(agg_handle);
+        let (shutdown_agg_tx, shutdown_agg_rx) = tokio::sync::oneshot::channel();
+        agg_shutdown_tx = Some(shutdown_agg_tx);
+        agg_handle = Some(aggregation_worker::spawn(
+            history_repo.clone(),
+            agg_config,
+            shutdown_agg_rx,
+        ));
     }
 
     let ws_system_connections = Arc::new(AtomicUsize::new(0));
@@ -117,44 +125,49 @@ async fn main() -> Result<()> {
     let listener = tokio::net::TcpListener::bind(&addr).await?;
     tracing::info!("Listening on http://{}", addr);
 
-    let in_container = std::path::Path::new("/.dockerenv").exists()
-        || std::env::var("CONTAINER").as_deref() == Ok("1");
+    // Unified graceful shutdown — works in both Docker and native.
+    axum::serve(listener, app)
+        .with_graceful_shutdown(shutdown_signal())
+        .await?;
 
-    if in_container {
-        // In Docker: run server until error or SIGTERM (no signal handler; avoids immediate exit)
-        axum::serve(listener, app).await?;
-    } else {
-        tokio::select! {
-            result = axum::serve(listener, app) => {
-                result?;
-            }
-            _ = async {
-                #[cfg(unix)]
-                {
-                    let mut sigterm = match tokio::signal::unix::signal(tokio::signal::unix::SignalKind::terminate()) {
-                        Ok(s) => s,
-                        Err(_) => {
-                            let _ = tokio::signal::ctrl_c().await;
-                            return;
-                        }
-                    };
-                    tokio::select! {
-                        _ = tokio::signal::ctrl_c() => {}
-                        _ = sigterm.recv() => {}
-                    }
-                }
-                #[cfg(not(unix))]
-                {
-                    tokio::signal::ctrl_c().await
-                }
-            } => {
-                tracing::info!("Received shutdown signal");
-                let _ = shutdown_tx.send(());
-                let _ = worker_handle.await;
-                let _ = writer_handle.await;
-            }
-        }
+    tracing::info!("Server stopped; sending shutdown to workers");
+    let _ = shutdown_tx.send(());
+    let _ = worker_handle.await;
+    let _ = writer_handle.await;
+    if let Some(tx) = agg_shutdown_tx.take() {
+        let _ = tx.send(());
+    }
+    if let Some(h) = agg_handle {
+        let _ = h.await;
     }
 
     Ok(())
+}
+
+/// Future that resolves on SIGTERM or Ctrl-C. Works inside Docker and natively.
+async fn shutdown_signal() {
+    #[cfg(unix)]
+    {
+        let mut sigterm =
+            match tokio::signal::unix::signal(tokio::signal::unix::SignalKind::terminate()) {
+                Ok(s) => s,
+                Err(_) => {
+                    let _ = tokio::signal::ctrl_c().await;
+                    return;
+                }
+            };
+        tokio::select! {
+            _ = tokio::signal::ctrl_c() => {
+                tracing::info!("Received Ctrl-C");
+            }
+            _ = sigterm.recv() => {
+                tracing::info!("Received SIGTERM");
+            }
+        }
+    }
+    #[cfg(not(unix))]
+    {
+        let _ = tokio::signal::ctrl_c().await;
+        tracing::info!("Received Ctrl-C");
+    }
 }
