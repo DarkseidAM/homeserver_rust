@@ -30,7 +30,7 @@ wincode = { version = "0.5", features = ["derive"] }
 toml = "1"
 
 # System info (OSHI equivalent)
-sysinfo = "0.38"
+sysinfo = "0.39"
 
 # Docker API
 bollard = "0.20"
