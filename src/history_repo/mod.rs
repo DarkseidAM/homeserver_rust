@@ -3,6 +3,8 @@
 pub mod aggregation;
 mod blob;
 
+pub const CURRENT_SCHEMA_VERSION: u32 = 2;
+
 use crate::models::{
     AggregatedSnapshot, ContainerStats, CpuStats, FullSystemSnapshot, NetworkStats, RamStats,
     StorageStats, SystemInfo, SystemStats, SystemStatsDynamic,
@@ -34,12 +36,86 @@ impl HistoryRepo {
         Ok(Self { pool, retention_ms })
     }
 
-    pub async fn init(&self) -> anyhow::Result<()> {
+    async fn drop_history_user_tables(
+        tx: &mut sqlx::Transaction<'_, sqlx::Sqlite>,
+    ) -> anyhow::Result<()> {
+        sqlx::query("DROP TABLE IF EXISTS system_history")
+            .execute(&mut **tx)
+            .await?;
+        sqlx::query("DROP TABLE IF EXISTS system_history_aggregated")
+            .execute(&mut **tx)
+            .await?;
+        sqlx::query("DROP TABLE IF EXISTS system_info")
+            .execute(&mut **tx)
+            .await?;
+        Ok(())
+    }
+
+    async fn ensure_schema_version(&self) -> anyhow::Result<()> {
         sqlx::query(
             "CREATE TABLE IF NOT EXISTS schema_version (key TEXT PRIMARY KEY, value INTEGER NOT NULL)",
         )
         .execute(&self.pool)
         .await?;
+
+        let row: Option<i64> =
+            sqlx::query_scalar("SELECT value FROM schema_version WHERE key = 'schema'")
+                .fetch_optional(&self.pool)
+                .await?;
+
+        match row {
+            None => {
+                let legacy_tables: i64 = sqlx::query_scalar(
+                    r#"SELECT COUNT(*) FROM sqlite_master
+                       WHERE type = 'table'
+                         AND name IN ('system_history', 'system_info', 'system_history_aggregated')"#,
+                )
+                .fetch_one(&self.pool)
+                .await?;
+
+                if legacy_tables > 0 {
+                    tracing::warn!(
+                        "schema version row missing but history tables present; purging history"
+                    );
+                    let mut tx = self.pool.begin().await?;
+                    Self::drop_history_user_tables(&mut tx).await?;
+                    sqlx::query(
+                        r#"INSERT INTO schema_version (key, value) VALUES ('schema', $1)
+                           ON CONFLICT(key) DO UPDATE SET value = excluded.value"#,
+                    )
+                    .bind(i64::from(CURRENT_SCHEMA_VERSION))
+                    .execute(&mut *tx)
+                    .await?;
+                    tx.commit().await?;
+                } else {
+                    sqlx::query("INSERT INTO schema_version (key, value) VALUES ('schema', $1)")
+                        .bind(i64::from(CURRENT_SCHEMA_VERSION))
+                        .execute(&self.pool)
+                        .await?;
+                }
+            }
+            Some(v) if v == i64::from(CURRENT_SCHEMA_VERSION) => {}
+            Some(found) => {
+                tracing::warn!(
+                    "schema version mismatch: found {}, expected {}; purging history",
+                    found,
+                    CURRENT_SCHEMA_VERSION
+                );
+                let mut tx = self.pool.begin().await?;
+                Self::drop_history_user_tables(&mut tx).await?;
+                sqlx::query("UPDATE schema_version SET value = $1 WHERE key = 'schema'")
+                    .bind(i64::from(CURRENT_SCHEMA_VERSION))
+                    .execute(&mut *tx)
+                    .await?;
+                tx.commit().await?;
+            }
+        }
+
+        Ok(())
+    }
+
+    pub async fn init(&self) -> anyhow::Result<()> {
+        self.ensure_schema_version().await?;
 
         sqlx::query(
             r#"
@@ -441,8 +517,9 @@ impl HistoryRepo {
                 uptime_secs: 0,
                 process_count: 0,
                 thread_count: 0,
-                cpu_voltage: 0.0,
-                fan_speeds: vec![],
+                load_avg_1: 0.0,
+                load_avg_5: 0.0,
+                load_avg_15: 0.0,
             }
         });
 
@@ -489,8 +566,9 @@ impl HistoryRepo {
                             uptime_secs: 0,
                             process_count: 0,
                             thread_count: 0,
-                            cpu_voltage: 0.0,
-                            fan_speeds: vec![],
+                            load_avg_1: 0.0,
+                            load_avg_5: 0.0,
+                            load_avg_15: 0.0,
                         }
                     }
                 }
@@ -503,8 +581,9 @@ impl HistoryRepo {
                     uptime_secs: full.uptime_secs,
                     process_count: full.process_count,
                     thread_count: full.thread_count,
-                    cpu_voltage: full.cpu_voltage,
-                    fan_speeds: full.fan_speeds,
+                    load_avg_1: 0.0,
+                    load_avg_5: 0.0,
+                    load_avg_15: 0.0,
                 },
                 Err(e) => {
                     tracing::debug!(error = %e, "wincode deserialize system (legacy), using default");
@@ -512,8 +591,9 @@ impl HistoryRepo {
                         uptime_secs: 0,
                         process_count: 0,
                         thread_count: 0,
-                        cpu_voltage: 0.0,
-                        fan_speeds: vec![],
+                        load_avg_1: 0.0,
+                        load_avg_5: 0.0,
+                        load_avg_15: 0.0,
                     }
                 }
             },
@@ -527,12 +607,16 @@ impl HistoryRepo {
                 logical_cores: 0,
                 usage_percent: cpu_load,
                 temperature: 0.0,
+                core_usages: vec![],
             },
             ram: RamStats {
                 total: 0,
                 used: memory_used as u64,
                 available: 0,
                 usage_percent: 0.0,
+                swap_total: 0,
+                swap_used: 0,
+                swap_free: 0,
             },
             containers,
             storage,
@@ -576,12 +660,16 @@ fn aggregated_to_snapshot(agg: AggregatedSnapshot) -> FullSystemSnapshot {
             logical_cores: 0,
             usage_percent: agg.cpu_load_avg,
             temperature: 0.0,
+            core_usages: vec![],
         },
         ram: RamStats {
             total: 0,
             used: agg.memory_used_avg as u64,
             available: 0,
             usage_percent: 0.0,
+            swap_total: 0,
+            swap_used: 0,
+            swap_free: 0,
         },
         containers: agg.containers,
         storage: agg.storage,

@@ -66,8 +66,8 @@ async fn main() -> Result<()> {
         if let Err(e) = backfill::run_backfill(history_repo.clone(), &agg_config).await {
             tracing::error!(error = %e, "backfill failed (continuing)");
         }
-        let agg_handle = aggregation_worker::spawn(history_repo.clone(), agg_config);
-        drop(agg_handle);
+        // Keep the handle so we can join it on shutdown.
+        let _agg_handle = aggregation_worker::spawn(history_repo.clone(), agg_config);
     }
 
     let ws_system_connections = Arc::new(AtomicUsize::new(0));
@@ -117,44 +117,43 @@ async fn main() -> Result<()> {
     let listener = tokio::net::TcpListener::bind(&addr).await?;
     tracing::info!("Listening on http://{}", addr);
 
-    let in_container = std::path::Path::new("/.dockerenv").exists()
-        || std::env::var("CONTAINER").as_deref() == Ok("1");
+    // Unified graceful shutdown — works in both Docker and native.
+    axum::serve(listener, app)
+        .with_graceful_shutdown(shutdown_signal())
+        .await?;
 
-    if in_container {
-        // In Docker: run server until error or SIGTERM (no signal handler; avoids immediate exit)
-        axum::serve(listener, app).await?;
-    } else {
+    tracing::info!("Server stopped; sending shutdown to workers");
+    let _ = shutdown_tx.send(());
+    let _ = worker_handle.await;
+    let _ = writer_handle.await;
+
+    Ok(())
+}
+
+/// Future that resolves on SIGTERM or Ctrl-C. Works inside Docker and natively.
+async fn shutdown_signal() {
+    #[cfg(unix)]
+    {
+        let mut sigterm =
+            match tokio::signal::unix::signal(tokio::signal::unix::SignalKind::terminate()) {
+                Ok(s) => s,
+                Err(_) => {
+                    let _ = tokio::signal::ctrl_c().await;
+                    return;
+                }
+            };
         tokio::select! {
-            result = axum::serve(listener, app) => {
-                result?;
+            _ = tokio::signal::ctrl_c() => {
+                tracing::info!("Received Ctrl-C");
             }
-            _ = async {
-                #[cfg(unix)]
-                {
-                    let mut sigterm = match tokio::signal::unix::signal(tokio::signal::unix::SignalKind::terminate()) {
-                        Ok(s) => s,
-                        Err(_) => {
-                            let _ = tokio::signal::ctrl_c().await;
-                            return;
-                        }
-                    };
-                    tokio::select! {
-                        _ = tokio::signal::ctrl_c() => {}
-                        _ = sigterm.recv() => {}
-                    }
-                }
-                #[cfg(not(unix))]
-                {
-                    tokio::signal::ctrl_c().await
-                }
-            } => {
-                tracing::info!("Received shutdown signal");
-                let _ = shutdown_tx.send(());
-                let _ = worker_handle.await;
-                let _ = writer_handle.await;
+            _ = sigterm.recv() => {
+                tracing::info!("Received SIGTERM");
             }
         }
     }
-
-    Ok(())
+    #[cfg(not(unix))]
+    {
+        let _ = tokio::signal::ctrl_c().await;
+        tracing::info!("Received Ctrl-C");
+    }
 }

@@ -10,6 +10,7 @@ fn test_cpu_stats_serialization_camel_case() {
         logical_cores: 8,
         usage_percent: 12.5,
         temperature: 45.0,
+        core_usages: vec![10.0, 15.0, 20.0, 25.0, 30.0, 35.0, 40.0, 45.0],
     };
     let json = serde_json::to_string(&cpu).unwrap();
     assert!(json.contains("\"usagePercent\""));
@@ -25,6 +26,9 @@ fn test_ram_stats_json_roundtrip() {
         used: 512,
         available: 512,
         usage_percent: 50.0,
+        swap_total: 2048,
+        swap_used: 256,
+        swap_free: 1792,
     };
     let json = serde_json::to_string(&ram).unwrap();
     let back: RamStats = serde_json::from_str(&json).unwrap();
@@ -79,12 +83,16 @@ fn test_full_system_snapshot_serialization() {
             logical_cores: 2,
             usage_percent: 0.0,
             temperature: 0.0,
+            core_usages: vec![],
         },
         ram: RamStats {
             total: 1024,
             used: 512,
             available: 512,
             usage_percent: 50.0,
+            swap_total: 0,
+            swap_used: 0,
+            swap_free: 0,
         },
         containers: vec![],
         storage: StorageStats {
@@ -96,8 +104,9 @@ fn test_full_system_snapshot_serialization() {
             uptime_secs: 0,
             process_count: 0,
             thread_count: 0,
-            cpu_voltage: 0.0,
-            fan_speeds: vec![],
+            load_avg_1: 0.0,
+            load_avg_5: 0.0,
+            load_avg_15: 0.0,
         },
     };
     let json = serde_json::to_string(&snapshot).unwrap();
@@ -117,12 +126,16 @@ fn test_full_system_snapshot_wincode_roundtrip() {
             logical_cores: 2,
             usage_percent: 0.0,
             temperature: 0.0,
+            core_usages: vec![],
         },
         ram: RamStats {
             total: 100,
             used: 50,
             available: 50,
             usage_percent: 50.0,
+            swap_total: 0,
+            swap_used: 0,
+            swap_free: 0,
         },
         containers: vec![],
         storage: StorageStats {
@@ -134,8 +147,9 @@ fn test_full_system_snapshot_wincode_roundtrip() {
             uptime_secs: 0,
             process_count: 0,
             thread_count: 0,
-            cpu_voltage: 0.0,
-            fan_speeds: vec![],
+            load_avg_1: 0.0,
+            load_avg_5: 0.0,
+            load_avg_15: 0.0,
         },
     };
     let bytes = wincode::serialize(&snapshot).unwrap();
@@ -169,7 +183,9 @@ fn test_disk_device_stat_json_roundtrip() {
         size: 512 * 1024 * 1024 * 1024,
         read_bytes: 1000,
         write_bytes: 2000,
-        transfer_time_ms: 5,
+        io_time_ms: 5,
+        iops_read: 100,
+        iops_write: 200,
     };
     let json = serde_json::to_string(&d).unwrap();
     let back: DiskDeviceStat = serde_json::from_str(&json).unwrap();
@@ -195,7 +211,9 @@ fn test_storage_stats_json_and_wincode_roundtrip() {
             size: 1_000_000_000,
             read_bytes: 0,
             write_bytes: 0,
-            transfer_time_ms: 0,
+            io_time_ms: 0,
+            iops_read: 0,
+            iops_write: 0,
         }],
     };
     let json = serde_json::to_string(&s).unwrap();
@@ -267,13 +285,14 @@ fn test_system_stats_json_and_wincode_roundtrip() {
         uptime_secs: 3600,
         process_count: 100,
         thread_count: 200,
-        cpu_voltage: 1.2,
-        fan_speeds: vec![1200, 1400],
+        load_avg_1: 0.5,
+        load_avg_5: 1.0,
+        load_avg_15: 1.5,
     };
     let json = serde_json::to_string(&s).unwrap();
     let _: SystemStats = serde_json::from_str(&json).unwrap();
     let bytes = wincode::serialize(&s).unwrap();
     let back: SystemStats = wincode::deserialize(&bytes).unwrap();
     assert_eq!(back.uptime_secs, s.uptime_secs);
-    assert_eq!(back.fan_speeds.len(), 2);
+    assert!((back.load_avg_1 - 0.5).abs() < 0.001);
 }
