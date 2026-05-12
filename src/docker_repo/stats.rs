@@ -1,7 +1,7 @@
 // Process raw Docker stats API response into ContainerStats.
 
 use crate::models::{ContainerState, ContainerStats};
-use bollard::secret::ContainerStatsResponse;
+use bollard::models::ContainerStatsResponse;
 
 /// Process a raw Docker stats response into our ContainerStats. Exposed for unit tests.
 pub(crate) fn process_statistics(
@@ -176,7 +176,7 @@ pub(crate) fn process_statistics(
 #[cfg(test)]
 mod tests {
     use super::*;
-    use bollard::secret::{
+    use bollard::models::{
         ContainerBlkioStatEntry, ContainerBlkioStats, ContainerCpuStats, ContainerCpuUsage,
         ContainerMemoryStats, ContainerNetworkStats, ContainerPidsStats, ContainerStatsResponse,
         ContainerThrottlingData,

@@ -2,7 +2,7 @@
 name = "homeserver"
 version = "0.7.1"
 edition = "2024"
-rust-version = "1.93"
+rust-version = "1.95"
 description = "Home server - system and Docker stats over WebSockets (Rust port)"
 
 [lib]
@@ -33,7 +33,7 @@ toml = "1"
 sysinfo = "0.39"
 
 # Docker API
-bollard = "0.20"
+bollard = "0.21"
 
 # SQLite (async + pooling)
 sqlx = { version = "0.8", default-features = false, features = ["runtime-tokio", "sqlite", "macros"] }
