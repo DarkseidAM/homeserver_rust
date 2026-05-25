@@ -36,7 +36,7 @@ sysinfo = "0.39"
 bollard = "0.21"
 
 # SQLite (async + pooling)
-sqlx = { version = "0.8", default-features = false, features = ["runtime-tokio", "sqlite", "macros"] }
+sqlx = { version = "0.9", default-features = false, features = ["runtime-tokio", "sqlite", "macros"] }
 
 # Logging
 tracing = "0.1"
