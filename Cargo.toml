@@ -53,7 +53,7 @@ anyhow = "1.0"
 futures-util = "0.3"
 
 # Memory allocator
-tikv-jemallocator = "0.6"
+tikv-jemallocator = "0.7"
 
 [dev-dependencies]
 tokio = { version = "1", features = ["rt", "macros"] }
