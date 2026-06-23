@@ -192,12 +192,16 @@ async fn test_ws_system_receives_broadcast_snapshot() {
             logical_cores: 2,
             usage_percent: 0.0,
             temperature: 0.0,
+            core_usages: vec![],
         },
         ram: RamStats {
             total: 100,
             used: 50,
             available: 50,
             usage_percent: 50.0,
+            swap_total: 0,
+            swap_used: 0,
+            swap_free: 0,
         },
         containers: vec![],
         storage: homeserver::models::StorageStats {
@@ -209,8 +213,9 @@ async fn test_ws_system_receives_broadcast_snapshot() {
             uptime_secs: 0,
             process_count: 0,
             thread_count: 0,
-            cpu_voltage: 0.0,
-            fan_speeds: vec![],
+            load_avg_1: 0.0,
+            load_avg_5: 0.0,
+            load_avg_15: 0.0,
         },
     };
     let mut ws = server

@@ -29,17 +29,23 @@ pub struct AggregationWorkerConfig {
 }
 
 /// Spawns the aggregation worker. Returns a join handle.
+/// Callers send `()` on the paired shutdown sender, then await this handle so the task exits cleanly.
 pub fn spawn(
     repo: Arc<HistoryRepo>,
     config: AggregationWorkerConfig,
+    shutdown_rx: tokio::sync::oneshot::Receiver<()>,
 ) -> tokio::task::JoinHandle<()> {
     tokio::spawn(async move {
-        run(repo, config).await;
+        run(repo, config, shutdown_rx).await;
     })
 }
 
 #[instrument(skip(repo), fields(interval_secs = config.aggregation_interval_secs))]
-async fn run(repo: Arc<HistoryRepo>, config: AggregationWorkerConfig) {
+async fn run(
+    repo: Arc<HistoryRepo>,
+    config: AggregationWorkerConfig,
+    mut shutdown_rx: tokio::sync::oneshot::Receiver<()>,
+) {
     let mut agg_interval =
         tokio::time::interval(Duration::from_secs(config.aggregation_interval_secs));
     agg_interval.set_missed_tick_behavior(tokio::time::MissedTickBehavior::Skip);
@@ -49,6 +55,10 @@ async fn run(repo: Arc<HistoryRepo>, config: AggregationWorkerConfig) {
 
     loop {
         tokio::select! {
+            _ = &mut shutdown_rx => {
+                tracing::debug!("aggregation worker shutting down");
+                break;
+            }
             _ = agg_interval.tick() => {
                 if let Err(e) = run_one_tick(&repo, &config).await {
                     warn!(error = %e, "aggregation tick failed");
