@@ -52,6 +52,7 @@
     "lockFileMaintenance": {
         "enabled": true,
         "automerge": true,
+        "rebaseWhen": "never",
         "schedule": [
             "before 5am on monday"
         ]
