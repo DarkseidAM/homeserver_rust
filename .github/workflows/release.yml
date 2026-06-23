@@ -17,29 +17,47 @@ jobs:
         with:
           fetch-depth: 0
 
+      - name: Check if release already exists
+        id: check_release
+        run: |
+          if gh release view "${{ github.ref_name }}" --repo "${{ github.repository }}" &>/dev/null; then
+            echo "exists=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "exists=false" >> "$GITHUB_OUTPUT"
+          fi
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
       - name: Install Rust toolchain
+        if: steps.check_release.outputs.exists == 'false'
         uses: dtolnay/rust-toolchain@stable
 
       - name: Cache cargo
+        if: steps.check_release.outputs.exists == 'false'
         uses: Swatinem/rust-cache@v2
         with:
           shared-key: "release"
 
       - name: Install git-cliff
+        if: steps.check_release.outputs.exists == 'false'
         uses: taiki-e/install-action@v2
         with:
           tool: git-cliff
 
       - name: Generate release notes
+        if: steps.check_release.outputs.exists == 'false'
         run: git cliff --latest --strip all -o release-notes.md
 
       - name: Build release binary
+        if: steps.check_release.outputs.exists == 'false'
         run: cargo build --release
 
       - name: Strip binary
+        if: steps.check_release.outputs.exists == 'false'
         run: strip target/release/homeserver
 
       - name: Create GitHub Release
+        if: steps.check_release.outputs.exists == 'false'
         uses: softprops/action-gh-release@v2
         with:
           body_path: release-notes.md

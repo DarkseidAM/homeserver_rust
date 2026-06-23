@@ -592,12 +592,23 @@ Runs on every push/PR to `main`:
 ### `.github/workflows/tag-version.yml`
 Runs after CI succeeds on `main`:
 1. Extracts version from `Cargo.toml`.
-2. Force-pushes a `v<version>` git tag.
-3. Builds and pushes a Docker image to GHCR tagged `v<version>`, `<version>`, and `latest`. Targets `linux/amd64`.
+2. Creates or force-pushes a `v<version>` git tag (no Docker build).
 
 ### `.github/workflows/docker.yml`
-Triggered by `v*.*.*` tag pushes (independent of CI workflow):
+Triggered by `v*.*.*` tag pushes:
 1. Builds and pushes Docker image to GHCR with semver tags (`major.minor.patch`, `major.minor`, `major`, `latest`). Targets `linux/amd64`.
+
+### `.github/workflows/docs.yml`
+Runs on every push to `main`:
+1. Builds rustdoc documentation.
+2. Generates CHANGELOG via git-cliff.
+3. Deploys to the `gh-pages` branch, served via GitHub Pages.
+
+### `.github/workflows/release.yml`
+Triggered by `v*.*.*` tag pushes:
+1. Generates release notes with git-cliff.
+2. Builds and strips the `linux/amd64` binary.
+3. Creates a GitHub Release with the release notes and binary attached.
 
 ---
 
