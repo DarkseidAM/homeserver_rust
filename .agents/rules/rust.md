@@ -27,6 +27,12 @@ trigger: always_on
 - **How**: Add the field with its default value and a comment explaining what it controls.
 - **Why**: `config.toml` is the canonical example/reference config. If it drifts from the actual config struct, users get confusing behaviour (silent ignored keys or missing documentation).
 
+## Keep `CODEBASE.md` in Sync
+
+- **Rule**: Whenever you add, remove, or rename a module under `src/`, update `CODEBASE.md` — the module map tree, the Mermaid dependency graph, and the module table must all stay accurate.
+- **Also update**: the entry-points section if worker lifecycle or route structure changes; the CI/CD section if a workflow is added, removed, or significantly changed.
+- **Why**: `CODEBASE.md` is the primary orientation document for agents and new contributors. Stale entries cause wasted time chasing modules that have moved or been renamed.
+
 ## Logging Levels
 
 - **Rule**: NEVER change the logging level of existing log statements (e.g., from `tracing::info!` to `tracing::debug!`) without explicitly asking the user for permission.
