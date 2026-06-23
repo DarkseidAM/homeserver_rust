@@ -2,6 +2,8 @@
 
 mod stats;
 
+pub use stats::process_statistics;
+
 use crate::models::ContainerStats;
 use bollard::Docker;
 use bollard::query_parameters::{ListContainersOptions, StatsOptions};
