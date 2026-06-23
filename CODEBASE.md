@@ -374,7 +374,7 @@ history_repo:          Arc<HistoryRepo>
 
 | Route | Handler | Response |
 |---|---|---|
-| `GET /` | inline | `"Ktor: Hello from Rust homeserver!"` (plain text) |
+| GET / | inline | "Hello from Rust homeserver!" (plain text) |
 | `GET /version` | `version_handler` | `{"name": "homeserver", "version": "0.8.0"}` |
 | `GET /api/info` | `api_info_handler` | `SystemInfo` as JSON |
 | `GET /api/history` | `api_history_handler` | `Vec<FullSystemSnapshot>` merged from raw + aggregated |
