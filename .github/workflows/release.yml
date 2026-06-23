@@ -1,0 +1,75 @@
+name: Release
+
+on:
+  workflow_run:
+    workflows: ["Tag version"]
+    types: [completed]
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    name: Create GitHub Release
+    runs-on: ubuntu-latest
+    if: github.event.workflow_run.conclusion == 'success'
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          ref: ${{ github.event.workflow_run.head_sha }}
+          fetch-depth: 0
+
+      - name: Get version from Cargo.toml
+        id: version
+        run: |
+          V=$(grep '^version' Cargo.toml | head -1 | sed 's/.*= *"\(.*\)".*/\1/')
+          echo "version=$V" >> "$GITHUB_OUTPUT"
+          echo "tag=v${V}" >> "$GITHUB_OUTPUT"
+
+      - name: Check if release already exists
+        id: check_release
+        run: |
+          if gh release view "${{ steps.version.outputs.tag }}" --repo "${{ github.repository }}" &>/dev/null; then
+            echo "exists=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "exists=false" >> "$GITHUB_OUTPUT"
+          fi
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Install Rust toolchain
+        if: steps.check_release.outputs.exists == 'false'
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Cache cargo
+        if: steps.check_release.outputs.exists == 'false'
+        uses: Swatinem/rust-cache@v2
+        with:
+          shared-key: "release"
+
+      - name: Install git-cliff
+        if: steps.check_release.outputs.exists == 'false'
+        uses: taiki-e/install-action@v2
+        with:
+          tool: git-cliff
+
+      - name: Generate release notes
+        if: steps.check_release.outputs.exists == 'false'
+        run: git cliff --latest --strip all -o release-notes.md
+
+      - name: Build release binary
+        if: steps.check_release.outputs.exists == 'false'
+        run: cargo build --release
+
+      - name: Strip binary
+        if: steps.check_release.outputs.exists == 'false'
+        run: strip target/release/homeserver
+
+      - name: Create GitHub Release
+        if: steps.check_release.outputs.exists == 'false'
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ steps.version.outputs.tag }}
+          name: ${{ steps.version.outputs.tag }}
+          body_path: release-notes.md
+          files: target/release/homeserver

@@ -1,0 +1,44 @@
+name: Docs
+on:
+  push:
+    branches: [main]
+
+permissions:
+  contents: write
+
+jobs:
+  deploy-docs:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0   # needed for git-cliff to see full history
+
+      - name: Install Rust toolchain
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Cache cargo
+        uses: Swatinem/rust-cache@v2
+        with:
+          shared-key: "docs"
+
+      - name: Build rustdoc
+        run: cargo doc --no-deps
+
+      - name: Install git-cliff
+        uses: taiki-e/install-action@v2
+        with:
+          tool: git-cliff
+
+      - name: Generate CHANGELOG
+        run: git cliff --output target/doc/CHANGELOG.md
+
+      - name: Create redirect index
+        run: echo '<meta http-equiv="refresh" content="0; url=homeserver/index.html">' > target/doc/index.html
+
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./target/doc
+          publish_branch: gh-pages
