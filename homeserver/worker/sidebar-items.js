@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"fn":["spawn","spawn_history_writer","writer_channel_capacity"],"struct":["HistoryWriterConfig","WorkerConfig","WorkerDeps"]};

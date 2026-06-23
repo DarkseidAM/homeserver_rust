@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"enum":["ContainerState"],"fn":["merge_system_info"],"struct":["AggregatedSnapshot","ContainerStats","CpuStats","DiskDeviceStat","FullSystemSnapshot","FullSystemSnapshotDisplay","InterfaceStat","NetworkStats","PartitionStat","RamStats","StorageStats","SystemInfo","SystemStats","SystemStatsDynamic"]};

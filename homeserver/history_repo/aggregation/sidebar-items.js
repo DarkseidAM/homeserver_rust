@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"fn":["aggregate_aggregated_snapshots","aggregate_snapshots","init_aggregated_table"]};

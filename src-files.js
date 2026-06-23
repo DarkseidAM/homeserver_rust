@@ -1,0 +1,2 @@
+createSrcSidebar('[["homeserver",["",[["docker_repo",[],["mod.rs","stats.rs"]],["history_repo",[],["agg_store.rs","aggregation.rs","blob.rs","history_merge.rs","mod.rs","raw.rs","schema.rs"]],["models",[],["aggregation.rs","container.rs","mod.rs","network.rs","storage.rs","system.rs"]],["routes",[],["http.rs","mod.rs","ws.rs"]],["sysinfo_repo",[["linux",[],["disk.rs","mod.rs"]]],["collectors.rs","mod.rs"]],["worker",[],["history_writer.rs","mod.rs"]]],["aggregation_worker.rs","backfill.rs","config.rs","lib.rs","version.rs"]]]]');
+//{"start":19,"fragment_lengths":[512]}
