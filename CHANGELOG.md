@@ -2,17 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
-## [Unreleased]
-
-### Features
-
-- Agent map, rustdoc on Pages, automated releases ([#71](https://github.com/DarkseidAM/homeserver_rust/pull/71))
-
 ## [0.8.0] - 2026-06-23
 
 ### Features
 
 - **homeserver:** V0.8.0 — monitoring metrics, SQLite schema versioning ([#58](https://github.com/DarkseidAM/homeserver_rust/pull/58))
+- Agent map, rustdoc on Pages, automated releases ([#71](https://github.com/DarkseidAM/homeserver_rust/pull/71))
 
 ## [0.7.1] - 2026-06-21
 
