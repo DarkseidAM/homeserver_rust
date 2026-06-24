@@ -94,6 +94,15 @@ async fn test_root_endpoint() {
 }
 
 #[tokio::test]
+async fn test_health_endpoint() {
+    let (app, _, _dir) = test_app().await;
+    let server = TestServer::new(app);
+    let response = server.get("/health").await;
+    response.assert_status_ok();
+    response.assert_text("ok");
+}
+
+#[tokio::test]
 async fn test_version_endpoint() {
     let (app, _, _dir) = test_app().await;
     let server = TestServer::new(app);

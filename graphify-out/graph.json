@@ -339,7 +339,7 @@
       "source_location": "",
       "_origin": "ast",
       "id": "joinhandle",
-      "community": 0,
+      "community": 1,
       "norm_label": "joinhandle"
     },
     {
@@ -569,7 +569,7 @@
       "source_location": "",
       "_origin": "ast",
       "id": "self",
-      "community": 8,
+      "community": 33,
       "norm_label": "self"
     },
     {
@@ -599,7 +599,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "docker_repo_mod",
-      "community": 0,
+      "community": 1,
       "norm_label": "mod.rs"
     },
     {
@@ -609,7 +609,7 @@
       "source_location": "L16",
       "_origin": "ast",
       "id": "docker_repo_mod_dockerrepo",
-      "community": 0,
+      "community": 1,
       "norm_label": "dockerrepo"
     },
     {
@@ -619,7 +619,7 @@
       "source_location": "",
       "_origin": "ast",
       "id": "docker",
-      "community": 0,
+      "community": 1,
       "norm_label": "docker"
     },
     {
@@ -629,7 +629,7 @@
       "source_location": "",
       "_origin": "ast",
       "id": "rwlock",
-      "community": 0,
+      "community": 1,
       "norm_label": "rwlock"
     },
     {
@@ -649,7 +649,7 @@
       "source_location": "L23",
       "_origin": "ast",
       "id": "docker_repo_mod_dockerrepo_connect",
-      "community": 8,
+      "community": 33,
       "norm_label": ".connect()"
     },
     {
@@ -679,7 +679,7 @@
       "source_location": "L142",
       "_origin": "ast",
       "id": "docker_repo_mod_dockerrepo_start_monitoring",
-      "community": 0,
+      "community": 1,
       "norm_label": ".start_monitoring()"
     },
     {
@@ -809,7 +809,7 @@
       "source_location": "",
       "_origin": "ast",
       "id": "sqliterow",
-      "community": 8,
+      "community": 0,
       "norm_label": "sqliterow"
     },
     {
@@ -829,7 +829,7 @@
       "source_location": "L10",
       "_origin": "ast",
       "id": "history_repo_aggregation_init_aggregated_table",
-      "community": 0,
+      "community": 9,
       "norm_label": "init_aggregated_table()"
     },
     {
@@ -839,7 +839,7 @@
       "source_location": "",
       "_origin": "ast",
       "id": "sqlitepool",
-      "community": 0,
+      "community": 9,
       "norm_label": "sqlitepool"
     },
     {
@@ -989,7 +989,7 @@
       "source_location": "L19",
       "_origin": "ast",
       "id": "history_repo_history_merge_deserialize_storage_data",
-      "community": 8,
+      "community": 0,
       "norm_label": "deserialize_storage_data()"
     },
     {
@@ -1009,7 +1009,7 @@
       "source_location": "L38",
       "_origin": "ast",
       "id": "history_repo_history_merge_deserialize_cpu_data",
-      "community": 8,
+      "community": 0,
       "norm_label": "deserialize_cpu_data()"
     },
     {
@@ -1019,7 +1019,7 @@
       "source_location": "L60",
       "_origin": "ast",
       "id": "history_repo_history_merge_deserialize_ram_data",
-      "community": 8,
+      "community": 0,
       "norm_label": "deserialize_ram_data()"
     },
     {
@@ -1073,13 +1073,23 @@
       "norm_label": ".vacuum()"
     },
     {
+      "label": ".ping()",
+      "file_type": "code",
+      "source_file": "src/history_repo/history_merge.rs",
+      "source_location": "L161",
+      "_origin": "ast",
+      "id": "history_repo_history_merge_historyrepo_ping",
+      "community": 8,
+      "norm_label": ".ping()"
+    },
+    {
       "label": "mod.rs",
       "file_type": "code",
       "source_file": "src/history_repo/mod.rs",
       "source_location": "L1",
       "_origin": "ast",
       "id": "history_repo_mod",
-      "community": 0,
+      "community": 9,
       "norm_label": "mod.rs"
     },
     {
@@ -1089,7 +1099,7 @@
       "source_location": "L14",
       "_origin": "ast",
       "id": "history_repo_mod_historyrepo",
-      "community": 0,
+      "community": 9,
       "norm_label": "historyrepo"
     },
     {
@@ -1119,7 +1129,7 @@
       "source_location": "L15",
       "_origin": "ast",
       "id": "history_repo_raw_historyrepo_save_snapshots",
-      "community": 1,
+      "community": 8,
       "norm_label": ".save_snapshots()"
     },
     {
@@ -1139,7 +1149,7 @@
       "source_location": "L89",
       "_origin": "ast",
       "id": "history_repo_raw_historyrepo_get_stored_system_info",
-      "community": 1,
+      "community": 8,
       "norm_label": ".get_stored_system_info()"
     },
     {
@@ -1149,7 +1159,7 @@
       "source_location": "L102",
       "_origin": "ast",
       "id": "history_repo_raw_historyrepo_get_recent_snapshots",
-      "community": 1,
+      "community": 8,
       "norm_label": ".get_recent_snapshots()"
     },
     {
@@ -1159,7 +1169,7 @@
       "source_location": "L129",
       "_origin": "ast",
       "id": "history_repo_raw_historyrepo_get_raw_snapshots_by_time_range",
-      "community": 8,
+      "community": 0,
       "norm_label": ".get_raw_snapshots_by_time_range()"
     },
     {
@@ -1189,7 +1199,7 @@
       "source_location": "L176",
       "_origin": "ast",
       "id": "history_repo_raw_historyrepo_parse_snapshot_row",
-      "community": 8,
+      "community": 0,
       "norm_label": ".parse_snapshot_row()"
     },
     {
@@ -1219,7 +1229,7 @@
       "source_location": "L25",
       "_origin": "ast",
       "id": "history_repo_schema_historyrepo_connect",
-      "community": 8,
+      "community": 33,
       "norm_label": ".connect()"
     },
     {
@@ -1429,7 +1439,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "models_mod",
-      "community": 8,
+      "community": 33,
       "norm_label": "mod.rs"
     },
     {
@@ -1469,7 +1479,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "models_storage",
-      "community": 5,
+      "community": 0,
       "norm_label": "storage.rs"
     },
     {
@@ -1479,7 +1489,7 @@
       "source_location": "L8",
       "_origin": "ast",
       "id": "models_storage_partitionstat",
-      "community": 5,
+      "community": 0,
       "norm_label": "partitionstat"
     },
     {
@@ -1489,7 +1499,7 @@
       "source_location": "L21",
       "_origin": "ast",
       "id": "models_storage_diskdevicestat",
-      "community": 5,
+      "community": 0,
       "norm_label": "diskdevicestat"
     },
     {
@@ -1499,7 +1509,7 @@
       "source_location": "L34",
       "_origin": "ast",
       "id": "models_storage_storagestats",
-      "community": 5,
+      "community": 0,
       "norm_label": "storagestats"
     },
     {
@@ -1509,7 +1519,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "models_system",
-      "community": 8,
+      "community": 0,
       "norm_label": "system.rs"
     },
     {
@@ -1519,7 +1529,7 @@
       "source_location": "L10",
       "_origin": "ast",
       "id": "models_system_cpustats",
-      "community": 8,
+      "community": 0,
       "norm_label": "cpustats"
     },
     {
@@ -1529,7 +1539,7 @@
       "source_location": "L22",
       "_origin": "ast",
       "id": "models_system_ramstats",
-      "community": 8,
+      "community": 0,
       "norm_label": "ramstats"
     },
     {
@@ -1539,7 +1549,7 @@
       "source_location": "L35",
       "_origin": "ast",
       "id": "models_system_systeminfo",
-      "community": 1,
+      "community": 8,
       "norm_label": "systeminfo"
     },
     {
@@ -1549,7 +1559,7 @@
       "source_location": "L47",
       "_origin": "ast",
       "id": "models_system_systemstatsdynamic",
-      "community": 8,
+      "community": 0,
       "norm_label": "systemstatsdynamic"
     },
     {
@@ -1559,7 +1569,7 @@
       "source_location": "L58",
       "_origin": "ast",
       "id": "models_system_systemstats",
-      "community": 8,
+      "community": 0,
       "norm_label": "systemstats"
     },
     {
@@ -1569,7 +1579,7 @@
       "source_location": "L74",
       "_origin": "ast",
       "id": "models_system_merge_system_info",
-      "community": 8,
+      "community": 0,
       "norm_label": "merge_system_info()"
     },
     {
@@ -1579,7 +1589,7 @@
       "source_location": "L112",
       "_origin": "ast",
       "id": "models_system_fullsystemsnapshot",
-      "community": 1,
+      "community": 0,
       "norm_label": "fullsystemsnapshot"
     },
     {
@@ -1589,7 +1599,7 @@
       "source_location": "L125",
       "_origin": "ast",
       "id": "models_system_fullsystemsnapshotdisplay",
-      "community": 8,
+      "community": 0,
       "norm_label": "fullsystemsnapshotdisplay"
     },
     {
@@ -1599,17 +1609,47 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "routes_http",
-      "community": 1,
+      "community": 32,
       "norm_label": "http.rs"
+    },
+    {
+      "label": "health_handler()",
+      "file_type": "code",
+      "source_file": "src/routes/http.rs",
+      "source_location": "L13",
+      "_origin": "ast",
+      "id": "routes_http_health_handler",
+      "community": 32,
+      "norm_label": "health_handler()"
+    },
+    {
+      "label": "State",
+      "file_type": "code",
+      "source_file": "",
+      "source_location": "",
+      "_origin": "ast",
+      "id": "state",
+      "community": 32,
+      "norm_label": "state"
+    },
+    {
+      "label": "Response",
+      "file_type": "code",
+      "source_file": "",
+      "source_location": "",
+      "_origin": "ast",
+      "id": "response",
+      "community": 32,
+      "norm_label": "response"
     },
     {
       "label": "version_handler()",
       "file_type": "code",
       "source_file": "src/routes/http.rs",
-      "source_location": "L13",
+      "source_location": "L28",
       "_origin": "ast",
       "id": "routes_http_version_handler",
-      "community": 1,
+      "community": 32,
       "norm_label": "version_handler()"
     },
     {
@@ -1619,57 +1659,47 @@
       "source_location": "",
       "_origin": "ast",
       "id": "intoresponse",
-      "community": 1,
+      "community": 32,
       "norm_label": "intoresponse"
     },
     {
       "label": "api_info_handler()",
       "file_type": "code",
       "source_file": "src/routes/http.rs",
-      "source_location": "L21",
+      "source_location": "L36",
       "_origin": "ast",
       "id": "routes_http_api_info_handler",
-      "community": 1,
+      "community": 32,
       "norm_label": "api_info_handler()"
-    },
-    {
-      "label": "State",
-      "file_type": "code",
-      "source_file": "",
-      "source_location": "",
-      "_origin": "ast",
-      "id": "state",
-      "community": 1,
-      "norm_label": "state"
     },
     {
       "label": "HistoryQuery",
       "file_type": "code",
       "source_file": "src/routes/http.rs",
-      "source_location": "L26",
+      "source_location": "L41",
       "_origin": "ast",
       "id": "routes_http_historyquery",
-      "community": 5,
+      "community": 32,
       "norm_label": "historyquery"
     },
     {
       "label": "parse_resolution()",
       "file_type": "code",
       "source_file": "src/routes/http.rs",
-      "source_location": "L38",
+      "source_location": "L53",
       "_origin": "ast",
       "id": "routes_http_parse_resolution",
-      "community": 1,
+      "community": 32,
       "norm_label": "parse_resolution()"
     },
     {
       "label": "api_history_handler()",
       "file_type": "code",
       "source_file": "src/routes/http.rs",
-      "source_location": "L56",
+      "source_location": "L71",
       "_origin": "ast",
       "id": "routes_http_api_history_handler",
-      "community": 1,
+      "community": 32,
       "norm_label": "api_history_handler()"
     },
     {
@@ -1679,18 +1709,8 @@
       "source_location": "",
       "_origin": "ast",
       "id": "query",
-      "community": 1,
+      "community": 32,
       "norm_label": "query"
-    },
-    {
-      "label": "Response",
-      "file_type": "code",
-      "source_file": "",
-      "source_location": "",
-      "_origin": "ast",
-      "id": "response",
-      "community": 1,
-      "norm_label": "response"
     },
     {
       "label": "mod.rs",
@@ -1709,7 +1729,7 @@
       "source_location": "L18",
       "_origin": "ast",
       "id": "routes_mod_appstate",
-      "community": 1,
+      "community": 32,
       "norm_label": "appstate"
     },
     {
@@ -1749,7 +1769,7 @@
       "source_location": "",
       "_origin": "ast",
       "id": "router",
-      "community": 7,
+      "community": 1,
       "norm_label": "router"
     },
     {
@@ -1759,17 +1779,37 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "routes_ws",
-      "community": 1,
+      "community": 32,
       "norm_label": "ws.rs"
+    },
+    {
+      "label": "ws_options()",
+      "file_type": "code",
+      "source_file": "src/routes/ws.rs",
+      "source_location": "L28",
+      "_origin": "ast",
+      "id": "routes_ws_ws_options",
+      "community": 32,
+      "norm_label": "ws_options()"
+    },
+    {
+      "label": "Options",
+      "file_type": "code",
+      "source_file": "",
+      "source_location": "",
+      "_origin": "ast",
+      "id": "options",
+      "community": 32,
+      "norm_label": "options"
     },
     {
       "label": "WsSystemGuard",
       "file_type": "code",
       "source_file": "src/routes/ws.rs",
-      "source_location": "L25",
+      "source_location": "L33",
       "_origin": "ast",
       "id": "routes_ws_wssystemguard",
-      "community": 1,
+      "community": 32,
       "norm_label": "wssystemguard"
     },
     {
@@ -1779,98 +1819,168 @@
       "source_location": "",
       "_origin": "ast",
       "id": "drop",
-      "community": 1,
+      "community": 32,
       "norm_label": "drop"
     },
     {
       "label": ".drop()",
       "file_type": "code",
       "source_file": "src/routes/ws.rs",
-      "source_location": "L28",
+      "source_location": "L36",
       "_origin": "ast",
       "id": "routes_ws_wssystemguard_drop",
-      "community": 1,
+      "community": 32,
       "norm_label": ".drop()"
+    },
+    {
+      "label": "send_frame()",
+      "file_type": "code",
+      "source_file": "src/routes/ws.rs",
+      "source_location": "L42",
+      "_origin": "ast",
+      "id": "routes_ws_send_frame",
+      "community": 32,
+      "norm_label": "send_frame()"
+    },
+    {
+      "label": "S",
+      "file_type": "code",
+      "source_file": "",
+      "source_location": "",
+      "_origin": "ast",
+      "id": "s",
+      "community": 32,
+      "norm_label": "s"
+    },
+    {
+      "label": "Frame",
+      "file_type": "code",
+      "source_file": "",
+      "source_location": "",
+      "_origin": "ast",
+      "id": "frame",
+      "community": 32,
+      "norm_label": "frame"
+    },
+    {
+      "label": "is_close()",
+      "file_type": "code",
+      "source_file": "src/routes/ws.rs",
+      "source_location": "L50",
+      "_origin": "ast",
+      "id": "routes_ws_is_close",
+      "community": 32,
+      "norm_label": "is_close()"
     },
     {
       "label": "ws_cpu()",
       "file_type": "code",
       "source_file": "src/routes/ws.rs",
-      "source_location": "L33",
+      "source_location": "L57",
       "_origin": "ast",
       "id": "routes_ws_ws_cpu",
-      "community": 1,
+      "community": 32,
       "norm_label": "ws_cpu()"
     },
     {
-      "label": "WebSocketUpgrade",
+      "label": "IncomingUpgrade",
       "file_type": "code",
       "source_file": "",
       "source_location": "",
       "_origin": "ast",
-      "id": "websocketupgrade",
-      "community": 1,
-      "norm_label": "websocketupgrade"
-    },
-    {
-      "label": "stream_cpu()",
-      "file_type": "code",
-      "source_file": "src/routes/ws.rs",
-      "source_location": "L51",
-      "_origin": "ast",
-      "id": "routes_ws_stream_cpu",
-      "community": 1,
-      "norm_label": "stream_cpu()"
-    },
-    {
-      "label": "WebSocket",
-      "file_type": "code",
-      "source_file": "",
-      "source_location": "",
-      "_origin": "ast",
-      "id": "websocket",
-      "community": 1,
-      "norm_label": "websocket"
+      "id": "incomingupgrade",
+      "community": 32,
+      "norm_label": "incomingupgrade"
     },
     {
       "label": "ws_ram()",
       "file_type": "code",
       "source_file": "src/routes/ws.rs",
-      "source_location": "L82",
+      "source_location": "L70",
       "_origin": "ast",
       "id": "routes_ws_ws_ram",
-      "community": 1,
+      "community": 32,
       "norm_label": "ws_ram()"
-    },
-    {
-      "label": "stream_ram()",
-      "file_type": "code",
-      "source_file": "src/routes/ws.rs",
-      "source_location": "L100",
-      "_origin": "ast",
-      "id": "routes_ws_stream_ram",
-      "community": 1,
-      "norm_label": "stream_ram()"
     },
     {
       "label": "ws_system()",
       "file_type": "code",
       "source_file": "src/routes/ws.rs",
-      "source_location": "L131",
+      "source_location": "L83",
       "_origin": "ast",
       "id": "routes_ws_ws_system",
-      "community": 1,
+      "community": 32,
       "norm_label": "ws_system()"
+    },
+    {
+      "label": "upgrade()",
+      "file_type": "code",
+      "source_file": "src/routes/ws.rs",
+      "source_location": "L96",
+      "_origin": "ast",
+      "id": "routes_ws_upgrade",
+      "community": 32,
+      "norm_label": "upgrade()"
+    },
+    {
+      "label": "F",
+      "file_type": "code",
+      "source_file": "",
+      "source_location": "",
+      "_origin": "ast",
+      "id": "f",
+      "community": 32,
+      "norm_label": "f"
+    },
+    {
+      "label": "pump_periodic()",
+      "file_type": "code",
+      "source_file": "src/routes/ws.rs",
+      "source_location": "L122",
+      "_origin": "ast",
+      "id": "routes_ws_pump_periodic",
+      "community": 32,
+      "norm_label": "pump_periodic()"
+    },
+    {
+      "label": "Si",
+      "file_type": "code",
+      "source_file": "",
+      "source_location": "",
+      "_origin": "ast",
+      "id": "si",
+      "community": 32,
+      "norm_label": "si"
+    },
+    {
+      "label": "St",
+      "file_type": "code",
+      "source_file": "",
+      "source_location": "",
+      "_origin": "ast",
+      "id": "st",
+      "community": 32,
+      "norm_label": "st"
     },
     {
       "label": "stream_system()",
       "file_type": "code",
       "source_file": "src/routes/ws.rs",
-      "source_location": "L151",
+      "source_location": "L161",
       "_origin": "ast",
       "id": "routes_ws_stream_system",
-      "community": 1,
+      "community": 32,
       "norm_label": "stream_system()"
+    },
+    {
+      "label": "Ws",
+      "file_type": "code",
+      "source_file": "",
+      "source_location": "",
+      "_origin": "ast",
+      "id": "ws",
+      "community": 32,
+      "norm_label": "ws"
     },
     {
       "label": "collectors.rs",
@@ -1879,7 +1989,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "sysinfo_repo_collectors",
-      "community": 8,
+      "community": 33,
       "norm_label": "collectors.rs"
     },
     {
@@ -2129,7 +2239,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "sysinfo_repo_mod",
-      "community": 8,
+      "community": 33,
       "norm_label": "mod.rs"
     },
     {
@@ -2139,7 +2249,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "sysinfo_repo_mod_sysinforepo",
-      "community": 8,
+      "community": 33,
       "norm_label": "sysinforepo"
     },
     {
@@ -2149,7 +2259,7 @@
       "source_location": "",
       "_origin": "ast",
       "id": "mutex",
-      "community": 8,
+      "community": 33,
       "norm_label": "mutex"
     },
     {
@@ -2159,7 +2269,7 @@
       "source_location": "",
       "_origin": "ast",
       "id": "system",
-      "community": 8,
+      "community": 33,
       "norm_label": "system"
     },
     {
@@ -2169,7 +2279,7 @@
       "source_location": "",
       "_origin": "ast",
       "id": "disks",
-      "community": 8,
+      "community": 33,
       "norm_label": "disks"
     },
     {
@@ -2179,7 +2289,7 @@
       "source_location": "",
       "_origin": "ast",
       "id": "networks",
-      "community": 8,
+      "community": 33,
       "norm_label": "networks"
     },
     {
@@ -2189,7 +2299,7 @@
       "source_location": "",
       "_origin": "ast",
       "id": "instant",
-      "community": 8,
+      "community": 33,
       "norm_label": "instant"
     },
     {
@@ -2199,7 +2309,7 @@
       "source_location": "",
       "_origin": "ast",
       "id": "default",
-      "community": 8,
+      "community": 33,
       "norm_label": "default"
     },
     {
@@ -2209,7 +2319,7 @@
       "source_location": "L21",
       "_origin": "ast",
       "id": "sysinfo_repo_mod_sysinforepo_default",
-      "community": 8,
+      "community": 33,
       "norm_label": ".default()"
     },
     {
@@ -2219,7 +2329,7 @@
       "source_location": "L27",
       "_origin": "ast",
       "id": "sysinfo_repo_mod_sysinforepo_new",
-      "community": 8,
+      "community": 33,
       "norm_label": ".new()"
     },
     {
@@ -2229,7 +2339,7 @@
       "source_location": "L42",
       "_origin": "ast",
       "id": "sysinfo_repo_mod_sysinforepo_get_cpu_stats",
-      "community": 8,
+      "community": 0,
       "norm_label": ".get_cpu_stats()"
     },
     {
@@ -2239,7 +2349,7 @@
       "source_location": "L108",
       "_origin": "ast",
       "id": "sysinfo_repo_mod_sysinforepo_get_ram_stats",
-      "community": 8,
+      "community": 0,
       "norm_label": ".get_ram_stats()"
     },
     {
@@ -2429,7 +2539,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "common_mod",
-      "community": 1,
+      "community": 0,
       "norm_label": "mod.rs"
     },
     {
@@ -2439,7 +2549,7 @@
       "source_location": "L5",
       "_origin": "ast",
       "id": "common_mod_minimal_snapshot",
-      "community": 1,
+      "community": 0,
       "norm_label": "minimal_snapshot()"
     },
     {
@@ -2659,7 +2769,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "tests_docker_repo_tests",
-      "community": 0,
+      "community": 1,
       "norm_label": "docker_repo_tests.rs"
     },
     {
@@ -2669,7 +2779,7 @@
       "source_location": "L6",
       "_origin": "ast",
       "id": "tests_docker_repo_tests_docker_repo_connect_and_list_running",
-      "community": 0,
+      "community": 1,
       "norm_label": "docker_repo_connect_and_list_running()"
     },
     {
@@ -3103,10 +3213,20 @@
       "norm_label": "test_root_endpoint()"
     },
     {
-      "label": "test_version_endpoint()",
+      "label": "test_health_endpoint()",
       "file_type": "code",
       "source_file": "tests/integration_tests.rs",
       "source_location": "L97",
+      "_origin": "ast",
+      "id": "tests_integration_tests_test_health_endpoint",
+      "community": 7,
+      "norm_label": "test_health_endpoint()"
+    },
+    {
+      "label": "test_version_endpoint()",
+      "file_type": "code",
+      "source_file": "tests/integration_tests.rs",
+      "source_location": "L106",
       "_origin": "ast",
       "id": "tests_integration_tests_test_version_endpoint",
       "community": 7,
@@ -3116,7 +3236,7 @@
       "label": "test_api_info_endpoint()",
       "file_type": "code",
       "source_file": "tests/integration_tests.rs",
-      "source_location": "L111",
+      "source_location": "L120",
       "_origin": "ast",
       "id": "tests_integration_tests_test_api_info_endpoint",
       "community": 7,
@@ -3126,7 +3246,7 @@
       "label": "test_api_history_endpoint()",
       "file_type": "code",
       "source_file": "tests/integration_tests.rs",
-      "source_location": "L129",
+      "source_location": "L138",
       "_origin": "ast",
       "id": "tests_integration_tests_test_api_history_endpoint",
       "community": 7,
@@ -3136,7 +3256,7 @@
       "label": "receive_first_json_text()",
       "file_type": "code",
       "source_file": "tests/integration_tests.rs",
-      "source_location": "L169",
+      "source_location": "L178",
       "_origin": "ast",
       "id": "tests_integration_tests_receive_first_json_text",
       "community": 7,
@@ -3166,7 +3286,7 @@
       "label": "test_ws_cpu_receives_json()",
       "file_type": "code",
       "source_file": "tests/integration_tests.rs",
-      "source_location": "L186",
+      "source_location": "L195",
       "_origin": "ast",
       "id": "tests_integration_tests_test_ws_cpu_receives_json",
       "community": 7,
@@ -3176,7 +3296,7 @@
       "label": "test_ws_ram_receives_json()",
       "file_type": "code",
       "source_file": "tests/integration_tests.rs",
-      "source_location": "L193",
+      "source_location": "L202",
       "_origin": "ast",
       "id": "tests_integration_tests_test_ws_ram_receives_json",
       "community": 7,
@@ -3186,7 +3306,7 @@
       "label": "test_ws_system_receives_broadcast_snapshot()",
       "file_type": "code",
       "source_file": "tests/integration_tests.rs",
-      "source_location": "L200",
+      "source_location": "L209",
       "_origin": "ast",
       "id": "tests_integration_tests_test_ws_system_receives_broadcast_snapshot",
       "community": 7,
@@ -4159,7 +4279,7 @@
       "source_location": "L175",
       "_origin": "ast",
       "id": "codebase_configuration_src_config_rs",
-      "community": 37,
+      "community": 6,
       "norm_label": "configuration (`src/config.rs`)"
     },
     {
@@ -4169,7 +4289,7 @@
       "source_location": "L179",
       "_origin": "ast",
       "id": "codebase_top_level_sections",
-      "community": 37,
+      "community": 6,
       "norm_label": "top-level sections"
     },
     {
@@ -4179,7 +4299,7 @@
       "source_location": "L188",
       "_origin": "ast",
       "id": "codebase_database_fields_and_defaults",
-      "community": 37,
+      "community": 6,
       "norm_label": "`[database]` fields and defaults"
     },
     {
@@ -4189,7 +4309,7 @@
       "source_location": "L209",
       "_origin": "ast",
       "id": "codebase_system_collector_src_sysinfo_repo",
-      "community": 6,
+      "community": 3,
       "norm_label": "system collector (`src/sysinfo_repo/`)"
     },
     {
@@ -4209,7 +4329,7 @@
       "source_location": "L224",
       "_origin": "ast",
       "id": "codebase_sysinfo_repo_linux",
-      "community": 6,
+      "community": 3,
       "norm_label": "`sysinfo_repo::linux`"
     },
     {
@@ -4219,7 +4339,7 @@
       "source_location": "L238",
       "_origin": "ast",
       "id": "codebase_docker_collector_src_docker_repo",
-      "community": 3,
+      "community": 6,
       "norm_label": "docker collector (`src/docker_repo/`)"
     },
     {
@@ -4239,7 +4359,7 @@
       "source_location": "L254",
       "_origin": "ast",
       "id": "codebase_history_database_src_history_repo",
-      "community": 34,
+      "community": 6,
       "norm_label": "history database (`src/history_repo/`)"
     },
     {
@@ -4259,7 +4379,7 @@
       "source_location": "L271",
       "_origin": "ast",
       "id": "codebase_tables",
-      "community": 34,
+      "community": 6,
       "norm_label": "tables"
     },
     {
@@ -4269,7 +4389,7 @@
       "source_location": "L280",
       "_origin": "ast",
       "id": "codebase_blob_encoding",
-      "community": 34,
+      "community": 6,
       "norm_label": "blob encoding"
     },
     {
@@ -4279,7 +4399,7 @@
       "source_location": "L288",
       "_origin": "ast",
       "id": "codebase_key_historyrepo_methods",
-      "community": 34,
+      "community": 6,
       "norm_label": "key `historyrepo` methods"
     },
     {
@@ -4289,7 +4409,7 @@
       "source_location": "L308",
       "_origin": "ast",
       "id": "codebase_aggregation_logic_history_repo_aggregation",
-      "community": 34,
+      "community": 6,
       "norm_label": "aggregation logic (`history_repo::aggregation`)"
     },
     {
@@ -4299,7 +4419,7 @@
       "source_location": "L324",
       "_origin": "ast",
       "id": "codebase_worker_tasks",
-      "community": 35,
+      "community": 6,
       "norm_label": "worker tasks"
     },
     {
@@ -4309,7 +4429,7 @@
       "source_location": "L326",
       "_origin": "ast",
       "id": "codebase_main_worker_src_worker_mod_rs",
-      "community": 35,
+      "community": 6,
       "norm_label": "main worker (`src/worker/mod.rs`)"
     },
     {
@@ -4319,7 +4439,7 @@
       "source_location": "L341",
       "_origin": "ast",
       "id": "codebase_history_writer_src_worker_history_writer_rs",
-      "community": 35,
+      "community": 6,
       "norm_label": "history writer (`src/worker/history_writer.rs`)"
     },
     {
@@ -4329,7 +4449,7 @@
       "source_location": "L348",
       "_origin": "ast",
       "id": "codebase_aggregation_worker_src_aggregation_worker_rs",
-      "community": 35,
+      "community": 6,
       "norm_label": "aggregation worker (`src/aggregation_worker.rs`)"
     },
     {
@@ -4339,7 +4459,7 @@
       "source_location": "L358",
       "_origin": "ast",
       "id": "codebase_backfill_src_backfill_rs",
-      "community": 35,
+      "community": 6,
       "norm_label": "backfill (`src/backfill.rs`)"
     },
     {
@@ -4349,7 +4469,7 @@
       "source_location": "L364",
       "_origin": "ast",
       "id": "codebase_http_and_websocket_routes_src_routes",
-      "community": 32,
+      "community": 6,
       "norm_label": "http and websocket routes (`src/routes/`)"
     },
     {
@@ -4359,7 +4479,7 @@
       "source_location": "L366",
       "_origin": "ast",
       "id": "codebase_appstate",
-      "community": 32,
+      "community": 3,
       "norm_label": "`appstate`"
     },
     {
@@ -4369,24 +4489,24 @@
       "source_location": "L379",
       "_origin": "ast",
       "id": "codebase_http_endpoints",
-      "community": 32,
+      "community": 6,
       "norm_label": "http endpoints"
     },
     {
       "label": "WebSocket Endpoints",
       "file_type": "document",
       "source_file": "CODEBASE.md",
-      "source_location": "L390",
+      "source_location": "L391",
       "_origin": "ast",
       "id": "codebase_websocket_endpoints",
-      "community": 32,
+      "community": 6,
       "norm_label": "websocket endpoints"
     },
     {
       "label": "Entry Point (`src/main.rs`)",
       "file_type": "document",
       "source_file": "CODEBASE.md",
-      "source_location": "L406",
+      "source_location": "L412",
       "_origin": "ast",
       "id": "codebase_entry_point_src_main_rs",
       "community": 6,
@@ -4396,7 +4516,7 @@
       "label": "Startup and Shutdown Sequence",
       "file_type": "document",
       "source_file": "CODEBASE.md",
-      "source_location": "L427",
+      "source_location": "L433",
       "_origin": "ast",
       "id": "codebase_startup_and_shutdown_sequence",
       "community": 6,
@@ -4406,7 +4526,7 @@
       "label": "Data Flow",
       "file_type": "document",
       "source_file": "CODEBASE.md",
-      "source_location": "L452",
+      "source_location": "L458",
       "_origin": "ast",
       "id": "codebase_data_flow",
       "community": 6,
@@ -4416,57 +4536,57 @@
       "label": "Database Schema",
       "file_type": "document",
       "source_file": "CODEBASE.md",
-      "source_location": "L485",
+      "source_location": "L491",
       "_origin": "ast",
       "id": "codebase_database_schema",
-      "community": 36,
+      "community": 6,
       "norm_label": "database schema"
     },
     {
       "label": "`schema_version`",
       "file_type": "document",
       "source_file": "CODEBASE.md",
-      "source_location": "L487",
+      "source_location": "L493",
       "_origin": "ast",
       "id": "codebase_schema_version",
-      "community": 36,
+      "community": 6,
       "norm_label": "`schema_version`"
     },
     {
       "label": "`system_history`",
       "file_type": "document",
       "source_file": "CODEBASE.md",
-      "source_location": "L496",
+      "source_location": "L502",
       "_origin": "ast",
       "id": "codebase_system_history",
-      "community": 36,
+      "community": 6,
       "norm_label": "`system_history`"
     },
     {
       "label": "`system_info`",
       "file_type": "document",
       "source_file": "CODEBASE.md",
-      "source_location": "L513",
+      "source_location": "L519",
       "_origin": "ast",
       "id": "codebase_system_info",
-      "community": 36,
+      "community": 6,
       "norm_label": "`system_info`"
     },
     {
       "label": "`system_history_aggregated`",
       "file_type": "document",
       "source_file": "CODEBASE.md",
-      "source_location": "L521",
+      "source_location": "L527",
       "_origin": "ast",
       "id": "codebase_system_history_aggregated",
-      "community": 36,
+      "community": 6,
       "norm_label": "`system_history_aggregated`"
     },
     {
       "label": "Key Dependencies",
       "file_type": "document",
       "source_file": "CODEBASE.md",
-      "source_location": "L546",
+      "source_location": "L552",
       "_origin": "ast",
       "id": "codebase_key_dependencies",
       "community": 6,
@@ -4476,7 +4596,7 @@
       "label": "Tests",
       "file_type": "document",
       "source_file": "CODEBASE.md",
-      "source_location": "L571",
+      "source_location": "L578",
       "_origin": "ast",
       "id": "codebase_tests",
       "community": 6,
@@ -4486,67 +4606,67 @@
       "label": "CI / CD Workflows",
       "file_type": "document",
       "source_file": "CODEBASE.md",
-      "source_location": "L593",
+      "source_location": "L600",
       "_origin": "ast",
       "id": "codebase_ci_cd_workflows",
-      "community": 33,
+      "community": 6,
       "norm_label": "ci / cd workflows"
     },
     {
       "label": "`.github/workflows/ci.yml`",
       "file_type": "document",
       "source_file": "CODEBASE.md",
-      "source_location": "L595",
+      "source_location": "L602",
       "_origin": "ast",
       "id": "codebase_github_workflows_ci_yml",
-      "community": 33,
+      "community": 6,
       "norm_label": "`.github/workflows/ci.yml`"
     },
     {
       "label": "`.github/workflows/tag-version.yml`",
       "file_type": "document",
       "source_file": "CODEBASE.md",
-      "source_location": "L602",
+      "source_location": "L609",
       "_origin": "ast",
       "id": "codebase_github_workflows_tag_version_yml",
-      "community": 33,
+      "community": 6,
       "norm_label": "`.github/workflows/tag-version.yml`"
     },
     {
       "label": "`.github/workflows/docker.yml`",
       "file_type": "document",
       "source_file": "CODEBASE.md",
-      "source_location": "L607",
+      "source_location": "L614",
       "_origin": "ast",
       "id": "codebase_github_workflows_docker_yml",
-      "community": 33,
+      "community": 6,
       "norm_label": "`.github/workflows/docker.yml`"
     },
     {
       "label": "`.github/workflows/docs.yml`",
       "file_type": "document",
       "source_file": "CODEBASE.md",
-      "source_location": "L611",
+      "source_location": "L618",
       "_origin": "ast",
       "id": "codebase_github_workflows_docs_yml",
-      "community": 33,
+      "community": 6,
       "norm_label": "`.github/workflows/docs.yml`"
     },
     {
       "label": "`.github/workflows/release.yml`",
       "file_type": "document",
       "source_file": "CODEBASE.md",
-      "source_location": "L617",
+      "source_location": "L624",
       "_origin": "ast",
       "id": "codebase_github_workflows_release_yml",
-      "community": 33,
+      "community": 6,
       "norm_label": "`.github/workflows/release.yml`"
     },
     {
       "label": "Configuration Reference",
       "file_type": "document",
       "source_file": "CODEBASE.md",
-      "source_location": "L625",
+      "source_location": "L632",
       "_origin": "ast",
       "id": "codebase_configuration_reference",
       "community": 6,
@@ -5371,7 +5491,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 32,
+      "community": 3,
       "community_name": "Community 3",
       "norm_label": "history_repo/raw.rs",
       "id": "codebase_history_repo_raw"
@@ -5385,7 +5505,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 32,
+      "community": 3,
       "community_name": "Community 3",
       "norm_label": "history_repo/agg_store.rs",
       "id": "codebase_history_repo_agg_store"
@@ -5399,7 +5519,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 32,
+      "community": 3,
       "community_name": "Community 3",
       "norm_label": "history_repo/aggregation.rs",
       "id": "codebase_history_repo_aggregation"
@@ -5441,7 +5561,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 32,
+      "community": 3,
       "community_name": "Community 3",
       "norm_label": "routes/mod.rs appstate router",
       "id": "codebase_routes_mod"
@@ -5455,7 +5575,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 32,
+      "community": 3,
       "community_name": "Community 2",
       "norm_label": "routes/http.rs http handlers",
       "id": "codebase_routes_http"
@@ -5469,7 +5589,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 32,
+      "community": 3,
       "community_name": "Community 3",
       "norm_label": "routes/ws.rs websocket handlers",
       "id": "codebase_routes_ws"
@@ -5511,7 +5631,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 32,
+      "community": 3,
       "community_name": "Community 3",
       "norm_label": "fullsystemsnapshot",
       "id": "codebase_fullsystemsnapshot"
@@ -5525,7 +5645,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 32,
+      "community": 3,
       "community_name": "Community 3",
       "norm_label": "aggregatedsnapshot",
       "id": "codebase_aggregatedsnapshot"
@@ -5539,7 +5659,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 32,
+      "community": 3,
       "community_name": "Community 3",
       "norm_label": "appconfig",
       "id": "codebase_appconfig"
@@ -5623,7 +5743,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 32,
+      "community": 3,
       "community_name": "Community 3",
       "norm_label": "axum crate",
       "id": "codebase_dep_axum"
@@ -6066,6 +6186,17 @@
       "relation": "references",
       "confidence": "EXTRACTED",
       "source_file": "src/history_repo/history_merge.rs",
+      "source_location": "L161",
+      "weight": 1.0,
+      "context": "return_type",
+      "source": "history_repo_history_merge_historyrepo_ping",
+      "target": "result",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "source_file": "src/history_repo/history_merge.rs",
       "source_location": "L126",
       "weight": 1.0,
       "context": "return_type",
@@ -6212,30 +6343,8 @@
       "source_location": "L129",
       "weight": 1.0,
       "context": "return_type",
+      "confidence_score": 1.0,
       "source": "history_repo_schema_historyrepo_run_migrations",
-      "target": "result",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "references",
-      "confidence": "EXTRACTED",
-      "source_file": "src/routes/ws.rs",
-      "source_location": "L51",
-      "weight": 1.0,
-      "context": "return_type",
-      "confidence_score": 1.0,
-      "source": "routes_ws_stream_cpu",
-      "target": "result"
-    },
-    {
-      "relation": "references",
-      "confidence": "EXTRACTED",
-      "source_file": "src/routes/ws.rs",
-      "source_location": "L100",
-      "weight": 1.0,
-      "context": "return_type",
-      "confidence_score": 1.0,
-      "source": "routes_ws_stream_ram",
       "target": "result"
     },
     {
@@ -6744,9 +6853,9 @@
       "source_location": "L38",
       "weight": 1.0,
       "context": "parameter_type",
+      "confidence_score": 1.0,
       "source": "history_repo_history_merge_deserialize_cpu_data",
-      "target": "option",
-      "confidence_score": 1.0
+      "target": "option"
     },
     {
       "relation": "references",
@@ -6755,9 +6864,9 @@
       "source_location": "L60",
       "weight": 1.0,
       "context": "parameter_type",
+      "confidence_score": 1.0,
       "source": "history_repo_history_merge_deserialize_ram_data",
-      "target": "option",
-      "confidence_score": 1.0
+      "target": "option"
     },
     {
       "relation": "references",
@@ -6923,6 +7032,17 @@
       "confidence_score": 1.0,
       "source": "routes_http_parse_resolution",
       "target": "option"
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "source_file": "src/routes/ws.rs",
+      "source_location": "L50",
+      "weight": 1.0,
+      "context": "parameter_type",
+      "source": "routes_ws_is_close",
+      "target": "option",
+      "confidence_score": 1.0
     },
     {
       "relation": "references",
@@ -7291,28 +7411,6 @@
       "relation": "references",
       "confidence": "EXTRACTED",
       "source_file": "src/routes/ws.rs",
-      "source_location": "L51",
-      "weight": 1.0,
-      "context": "parameter_type",
-      "confidence_score": 1.0,
-      "source": "routes_ws_stream_cpu",
-      "target": "arc"
-    },
-    {
-      "relation": "references",
-      "confidence": "EXTRACTED",
-      "source_file": "src/routes/ws.rs",
-      "source_location": "L100",
-      "weight": 1.0,
-      "context": "parameter_type",
-      "confidence_score": 1.0,
-      "source": "routes_ws_stream_ram",
-      "target": "arc"
-    },
-    {
-      "relation": "references",
-      "confidence": "EXTRACTED",
-      "source_file": "src/routes/ws.rs",
       "source_location": "L151",
       "weight": 1.0,
       "context": "parameter_type",
@@ -7580,9 +7678,9 @@
       "source_location": "L4",
       "weight": 1.0,
       "context": "import",
+      "confidence_score": 1.0,
       "source": "tests_history_repo_migration_tests",
-      "target": "historyrepo",
-      "confidence_score": 1.0
+      "target": "historyrepo"
     },
     {
       "relation": "imports_from",
@@ -9394,9 +9492,9 @@
       "source_file": "src/history_repo/history_merge.rs",
       "source_location": "L38",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "history_repo_history_merge",
-      "target": "history_repo_history_merge_deserialize_cpu_data",
-      "confidence_score": 1.0
+      "target": "history_repo_history_merge_deserialize_cpu_data"
     },
     {
       "relation": "contains",
@@ -9414,9 +9512,9 @@
       "source_file": "src/history_repo/history_merge.rs",
       "source_location": "L60",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "history_repo_history_merge",
-      "target": "history_repo_history_merge_deserialize_ram_data",
-      "confidence_score": 1.0
+      "target": "history_repo_history_merge_deserialize_ram_data"
     },
     {
       "relation": "contains",
@@ -9511,9 +9609,9 @@
       "source_location": "L38",
       "weight": 1.0,
       "context": "return_type",
+      "confidence_score": 1.0,
       "source": "history_repo_history_merge_deserialize_cpu_data",
-      "target": "models_system_cpustats",
-      "confidence_score": 1.0
+      "target": "models_system_cpustats"
     },
     {
       "relation": "calls",
@@ -9533,9 +9631,9 @@
       "source_location": "L60",
       "weight": 1.0,
       "context": "return_type",
+      "confidence_score": 1.0,
       "source": "history_repo_history_merge_deserialize_ram_data",
-      "target": "models_system_ramstats",
-      "confidence_score": 1.0
+      "target": "models_system_ramstats"
     },
     {
       "relation": "calls",
@@ -9601,6 +9699,16 @@
       "confidence_score": 1.0,
       "source": "history_repo_history_merge_historyrepo",
       "target": "history_repo_history_merge_historyrepo_get_history"
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "src/history_repo/history_merge.rs",
+      "source_location": "L161",
+      "weight": 1.0,
+      "source": "history_repo_history_merge_historyrepo",
+      "target": "history_repo_history_merge_historyrepo_ping",
+      "confidence_score": 1.0
     },
     {
       "relation": "method",
@@ -9891,9 +9999,9 @@
       "source_file": "src/history_repo/schema.rs",
       "source_location": "L129",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "history_repo_schema_historyrepo",
-      "target": "history_repo_schema_historyrepo_run_migrations",
-      "confidence_score": 1.0
+      "target": "history_repo_schema_historyrepo_run_migrations"
     },
     {
       "relation": "references",
@@ -9935,9 +10043,9 @@
       "source_file": "src/history_repo/schema.rs",
       "source_location": "L138",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "history_repo_schema_historyrepo_run_migrations",
-      "target": "history_repo_schema_historyrepo_drop_history_user_tables",
-      "confidence_score": 1.0
+      "target": "history_repo_schema_historyrepo_drop_history_user_tables"
     },
     {
       "relation": "calls",
@@ -9946,9 +10054,9 @@
       "source_file": "src/history_repo/schema.rs",
       "source_location": "L103",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "history_repo_schema_historyrepo_ensure_schema_version",
-      "target": "history_repo_schema_historyrepo_run_migrations",
-      "confidence_score": 1.0
+      "target": "history_repo_schema_historyrepo_run_migrations"
     },
     {
       "relation": "calls",
@@ -10105,9 +10213,9 @@
       "source_location": "L25",
       "weight": 1.0,
       "context": "field",
+      "confidence_score": 1.0,
       "source": "models_aggregation_aggregatedsnapshot",
-      "target": "models_system_cpustats",
-      "confidence_score": 1.0
+      "target": "models_system_cpustats"
     },
     {
       "relation": "references",
@@ -10116,9 +10224,9 @@
       "source_location": "L26",
       "weight": 1.0,
       "context": "field",
+      "confidence_score": 1.0,
       "source": "models_aggregation_aggregatedsnapshot",
-      "target": "models_system_ramstats",
-      "confidence_score": 1.0
+      "target": "models_system_ramstats"
     },
     {
       "relation": "references",
@@ -10876,6 +10984,16 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src/routes/http.rs",
+      "source_location": "L13",
+      "weight": 1.0,
+      "source": "routes_http",
+      "target": "routes_http_health_handler",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/routes/http.rs",
       "source_location": "L26",
       "weight": 1.0,
       "confidence_score": 1.0,
@@ -10912,6 +11030,149 @@
       "confidence_score": 1.0,
       "source": "routes_http",
       "target": "routes_mod_appstate"
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "source_file": "src/routes/http.rs",
+      "source_location": "L13",
+      "weight": 1.0,
+      "context": "return_type",
+      "source": "routes_http_health_handler",
+      "target": "response",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "source_file": "src/routes/http.rs",
+      "source_location": "L13",
+      "weight": 1.0,
+      "context": "generic_arg",
+      "source": "routes_http_health_handler",
+      "target": "routes_mod_appstate",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "source_file": "src/routes/http.rs",
+      "source_location": "L13",
+      "weight": 1.0,
+      "context": "parameter_type",
+      "source": "routes_http_health_handler",
+      "target": "state",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "source_file": "src/routes/http.rs",
+      "source_location": "L51",
+      "weight": 1.0,
+      "context": "parameter_type",
+      "confidence_score": 1.0,
+      "source": "routes_http_api_history_handler",
+      "target": "state"
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "source_file": "src/routes/http.rs",
+      "source_location": "L21",
+      "weight": 1.0,
+      "context": "parameter_type",
+      "confidence_score": 1.0,
+      "source": "routes_http_api_info_handler",
+      "target": "state"
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "source_file": "src/routes/ws.rs",
+      "source_location": "L33",
+      "weight": 1.0,
+      "context": "parameter_type",
+      "confidence_score": 1.0,
+      "source": "routes_ws_ws_cpu",
+      "target": "state"
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "source_file": "src/routes/ws.rs",
+      "source_location": "L82",
+      "weight": 1.0,
+      "context": "parameter_type",
+      "confidence_score": 1.0,
+      "source": "routes_ws_ws_ram",
+      "target": "state"
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "source_file": "src/routes/ws.rs",
+      "source_location": "L131",
+      "weight": 1.0,
+      "context": "parameter_type",
+      "confidence_score": 1.0,
+      "source": "routes_ws_ws_system",
+      "target": "state"
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "source_file": "src/routes/http.rs",
+      "source_location": "L51",
+      "weight": 1.0,
+      "context": "return_type",
+      "confidence_score": 1.0,
+      "source": "routes_http_api_history_handler",
+      "target": "response"
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "source_file": "src/routes/ws.rs",
+      "source_location": "L96",
+      "weight": 1.0,
+      "context": "return_type",
+      "source": "routes_ws_upgrade",
+      "target": "response",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "source_file": "src/routes/ws.rs",
+      "source_location": "L57",
+      "weight": 1.0,
+      "context": "return_type",
+      "source": "routes_ws_ws_cpu",
+      "target": "response",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "source_file": "src/routes/ws.rs",
+      "source_location": "L70",
+      "weight": 1.0,
+      "context": "return_type",
+      "source": "routes_ws_ws_ram",
+      "target": "response",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "source_file": "src/routes/ws.rs",
+      "source_location": "L83",
+      "weight": 1.0,
+      "context": "return_type",
+      "source": "routes_ws_ws_system",
+      "target": "response",
+      "confidence_score": 1.0
     },
     {
       "relation": "references",
@@ -10983,61 +11244,6 @@
       "relation": "references",
       "confidence": "EXTRACTED",
       "source_file": "src/routes/http.rs",
-      "source_location": "L21",
-      "weight": 1.0,
-      "context": "parameter_type",
-      "confidence_score": 1.0,
-      "source": "routes_http_api_info_handler",
-      "target": "state"
-    },
-    {
-      "relation": "references",
-      "confidence": "EXTRACTED",
-      "source_file": "src/routes/http.rs",
-      "source_location": "L51",
-      "weight": 1.0,
-      "context": "parameter_type",
-      "confidence_score": 1.0,
-      "source": "routes_http_api_history_handler",
-      "target": "state"
-    },
-    {
-      "relation": "references",
-      "confidence": "EXTRACTED",
-      "source_file": "src/routes/ws.rs",
-      "source_location": "L33",
-      "weight": 1.0,
-      "context": "parameter_type",
-      "confidence_score": 1.0,
-      "source": "routes_ws_ws_cpu",
-      "target": "state"
-    },
-    {
-      "relation": "references",
-      "confidence": "EXTRACTED",
-      "source_file": "src/routes/ws.rs",
-      "source_location": "L82",
-      "weight": 1.0,
-      "context": "parameter_type",
-      "confidence_score": 1.0,
-      "source": "routes_ws_ws_ram",
-      "target": "state"
-    },
-    {
-      "relation": "references",
-      "confidence": "EXTRACTED",
-      "source_file": "src/routes/ws.rs",
-      "source_location": "L131",
-      "weight": 1.0,
-      "context": "parameter_type",
-      "confidence_score": 1.0,
-      "source": "routes_ws_ws_system",
-      "target": "state"
-    },
-    {
-      "relation": "references",
-      "confidence": "EXTRACTED",
-      "source_file": "src/routes/http.rs",
       "source_location": "L51",
       "weight": 1.0,
       "context": "generic_arg",
@@ -11055,17 +11261,6 @@
       "confidence_score": 1.0,
       "source": "routes_http_api_history_handler",
       "target": "query"
-    },
-    {
-      "relation": "references",
-      "confidence": "EXTRACTED",
-      "source_file": "src/routes/http.rs",
-      "source_location": "L51",
-      "weight": 1.0,
-      "context": "return_type",
-      "confidence_score": 1.0,
-      "source": "routes_http_api_history_handler",
-      "target": "response"
     },
     {
       "relation": "references",
@@ -11209,28 +11404,6 @@
       "target": "sysinforepo"
     },
     {
-      "relation": "references",
-      "confidence": "EXTRACTED",
-      "source_file": "src/routes/ws.rs",
-      "source_location": "L51",
-      "weight": 1.0,
-      "context": "generic_arg",
-      "confidence_score": 1.0,
-      "source": "routes_ws_stream_cpu",
-      "target": "sysinforepo"
-    },
-    {
-      "relation": "references",
-      "confidence": "EXTRACTED",
-      "source_file": "src/routes/ws.rs",
-      "source_location": "L100",
-      "weight": 1.0,
-      "context": "generic_arg",
-      "confidence_score": 1.0,
-      "source": "routes_ws_stream_ram",
-      "target": "sysinforepo"
-    },
-    {
       "relation": "imports_from",
       "confidence": "EXTRACTED",
       "source_file": "src/sysinfo_repo/collectors.rs",
@@ -11352,24 +11525,45 @@
       "target": "router"
     },
     {
-      "relation": "contains",
+      "relation": "imports_from",
       "confidence": "EXTRACTED",
       "source_file": "src/routes/ws.rs",
-      "source_location": "L51",
+      "source_location": "L18",
       "weight": 1.0,
-      "confidence_score": 1.0,
+      "context": "import",
       "source": "routes_ws",
-      "target": "routes_ws_stream_cpu"
+      "target": "frame",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src/routes/ws.rs",
-      "source_location": "L100",
+      "source_location": "L50",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "routes_ws",
-      "target": "routes_ws_stream_ram"
+      "target": "routes_ws_is_close",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/routes/ws.rs",
+      "source_location": "L122",
+      "weight": 1.0,
+      "source": "routes_ws",
+      "target": "routes_ws_pump_periodic",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/routes/ws.rs",
+      "source_location": "L42",
+      "weight": 1.0,
+      "source": "routes_ws",
+      "target": "routes_ws_send_frame",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -11385,11 +11579,31 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src/routes/ws.rs",
+      "source_location": "L96",
+      "weight": 1.0,
+      "source": "routes_ws",
+      "target": "routes_ws_upgrade",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/routes/ws.rs",
       "source_location": "L33",
       "weight": 1.0,
       "confidence_score": 1.0,
       "source": "routes_ws",
       "target": "routes_ws_ws_cpu"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/routes/ws.rs",
+      "source_location": "L28",
+      "weight": 1.0,
+      "source": "routes_ws",
+      "target": "routes_ws_ws_options",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -11426,6 +11640,28 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "src/routes/ws.rs",
+      "source_location": "L101",
+      "weight": 1.0,
+      "source": "routes_ws_upgrade",
+      "target": "routes_ws_ws_options",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "source_file": "src/routes/ws.rs",
+      "source_location": "L28",
+      "weight": 1.0,
+      "context": "return_type",
+      "source": "routes_ws_ws_options",
+      "target": "options",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "src/routes/ws.rs",
       "source_location": "L158",
       "weight": 1.0,
       "confidence_score": 1.0,
@@ -11453,92 +11689,136 @@
       "target": "routes_ws_wssystemguard_drop"
     },
     {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "source_file": "src/routes/ws.rs",
+      "source_location": "L42",
+      "weight": 1.0,
+      "context": "parameter_type",
+      "source": "routes_ws_send_frame",
+      "target": "frame",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "source_file": "src/routes/ws.rs",
+      "source_location": "L42",
+      "weight": 1.0,
+      "context": "parameter_type",
+      "source": "routes_ws_send_frame",
+      "target": "s",
+      "confidence_score": 1.0
+    },
+    {
       "relation": "calls",
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "src/routes/ws.rs",
-      "source_location": "L40",
+      "source_location": "L183",
       "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "routes_ws_ws_cpu",
-      "target": "routes_ws_stream_cpu"
-    },
-    {
-      "relation": "references",
-      "confidence": "EXTRACTED",
-      "source_file": "src/routes/ws.rs",
-      "source_location": "L33",
-      "weight": 1.0,
-      "context": "parameter_type",
-      "confidence_score": 1.0,
-      "source": "routes_ws_ws_cpu",
-      "target": "websocketupgrade"
-    },
-    {
-      "relation": "references",
-      "confidence": "EXTRACTED",
-      "source_file": "src/routes/ws.rs",
-      "source_location": "L82",
-      "weight": 1.0,
-      "context": "parameter_type",
-      "confidence_score": 1.0,
-      "source": "routes_ws_ws_ram",
-      "target": "websocketupgrade"
-    },
-    {
-      "relation": "references",
-      "confidence": "EXTRACTED",
-      "source_file": "src/routes/ws.rs",
-      "source_location": "L131",
-      "weight": 1.0,
-      "context": "parameter_type",
-      "confidence_score": 1.0,
-      "source": "routes_ws_ws_system",
-      "target": "websocketupgrade"
-    },
-    {
-      "relation": "references",
-      "confidence": "EXTRACTED",
-      "source_file": "src/routes/ws.rs",
-      "source_location": "L51",
-      "weight": 1.0,
-      "context": "parameter_type",
-      "confidence_score": 1.0,
-      "source": "routes_ws_stream_cpu",
-      "target": "websocket"
-    },
-    {
-      "relation": "references",
-      "confidence": "EXTRACTED",
-      "source_file": "src/routes/ws.rs",
-      "source_location": "L100",
-      "weight": 1.0,
-      "context": "parameter_type",
-      "confidence_score": 1.0,
-      "source": "routes_ws_stream_ram",
-      "target": "websocket"
-    },
-    {
-      "relation": "references",
-      "confidence": "EXTRACTED",
-      "source_file": "src/routes/ws.rs",
-      "source_location": "L151",
-      "weight": 1.0,
-      "context": "parameter_type",
-      "confidence_score": 1.0,
       "source": "routes_ws_stream_system",
-      "target": "websocket"
+      "target": "routes_ws_send_frame",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "source_file": "src/routes/ws.rs",
+      "source_location": "L50",
+      "weight": 1.0,
+      "context": "generic_arg",
+      "source": "routes_ws_is_close",
+      "target": "frame",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "source_file": "src/routes/ws.rs",
+      "source_location": "L57",
+      "weight": 1.0,
+      "context": "parameter_type",
+      "source": "routes_ws_ws_cpu",
+      "target": "incomingupgrade",
+      "confidence_score": 1.0
     },
     {
       "relation": "calls",
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "src/routes/ws.rs",
-      "source_location": "L89",
+      "source_location": "L62",
       "weight": 1.0,
-      "confidence_score": 1.0,
+      "source": "routes_ws_ws_cpu",
+      "target": "routes_ws_pump_periodic",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "src/routes/ws.rs",
+      "source_location": "L60",
+      "weight": 1.0,
+      "source": "routes_ws_ws_cpu",
+      "target": "routes_ws_upgrade",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "source_file": "src/routes/ws.rs",
+      "source_location": "L96",
+      "weight": 1.0,
+      "context": "parameter_type",
+      "source": "routes_ws_upgrade",
+      "target": "incomingupgrade",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "source_file": "src/routes/ws.rs",
+      "source_location": "L70",
+      "weight": 1.0,
+      "context": "parameter_type",
       "source": "routes_ws_ws_ram",
-      "target": "routes_ws_stream_ram"
+      "target": "incomingupgrade",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "source_file": "src/routes/ws.rs",
+      "source_location": "L83",
+      "weight": 1.0,
+      "context": "parameter_type",
+      "source": "routes_ws_ws_system",
+      "target": "incomingupgrade",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "src/routes/ws.rs",
+      "source_location": "L75",
+      "weight": 1.0,
+      "source": "routes_ws_ws_ram",
+      "target": "routes_ws_pump_periodic",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "src/routes/ws.rs",
+      "source_location": "L73",
+      "weight": 1.0,
+      "source": "routes_ws_ws_ram",
+      "target": "routes_ws_upgrade",
+      "confidence_score": 1.0
     },
     {
       "relation": "calls",
@@ -11550,6 +11830,72 @@
       "confidence_score": 1.0,
       "source": "routes_ws_ws_system",
       "target": "routes_ws_stream_system"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "src/routes/ws.rs",
+      "source_location": "L87",
+      "weight": 1.0,
+      "source": "routes_ws_ws_system",
+      "target": "routes_ws_upgrade",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "source_file": "src/routes/ws.rs",
+      "source_location": "L96",
+      "weight": 1.0,
+      "context": "parameter_type",
+      "source": "routes_ws_upgrade",
+      "target": "f",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "source_file": "src/routes/ws.rs",
+      "source_location": "L122",
+      "weight": 1.0,
+      "context": "parameter_type",
+      "source": "routes_ws_pump_periodic",
+      "target": "f",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "source_file": "src/routes/ws.rs",
+      "source_location": "L122",
+      "weight": 1.0,
+      "context": "parameter_type",
+      "source": "routes_ws_pump_periodic",
+      "target": "si",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "source_file": "src/routes/ws.rs",
+      "source_location": "L122",
+      "weight": 1.0,
+      "context": "parameter_type",
+      "source": "routes_ws_pump_periodic",
+      "target": "st",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "source_file": "src/routes/ws.rs",
+      "source_location": "L161",
+      "weight": 1.0,
+      "context": "parameter_type",
+      "source": "routes_ws_stream_system",
+      "target": "ws",
+      "confidence_score": 1.0
     },
     {
       "relation": "imports_from",
@@ -12834,9 +13180,9 @@
       "source_location": "L9",
       "weight": 1.0,
       "context": "import",
+      "confidence_score": 1.0,
       "source": "tests_history_repo_migration_tests",
-      "target": "tempdir",
-      "confidence_score": 1.0
+      "target": "tempdir"
     },
     {
       "relation": "contains",
@@ -12844,9 +13190,9 @@
       "source_file": "tests/history_repo_migration_tests.rs",
       "source_location": "L13",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "tests_history_repo_migration_tests",
-      "target": "tests_history_repo_migration_tests_make_v2_db",
-      "confidence_score": 1.0
+      "target": "tests_history_repo_migration_tests_make_v2_db"
     },
     {
       "relation": "contains",
@@ -12854,9 +13200,9 @@
       "source_file": "tests/history_repo_migration_tests.rs",
       "source_location": "L86",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "tests_history_repo_migration_tests",
-      "target": "tests_history_repo_migration_tests_migrates_v2_to_v3_preserving_rows",
-      "confidence_score": 1.0
+      "target": "tests_history_repo_migration_tests_migrates_v2_to_v3_preserving_rows"
     },
     {
       "relation": "contains",
@@ -12864,9 +13210,9 @@
       "source_file": "tests/history_repo_migration_tests.rs",
       "source_location": "L131",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "tests_history_repo_migration_tests",
-      "target": "tests_history_repo_migration_tests_new_writes_persist_full_cpu_ram_detail",
-      "confidence_score": 1.0
+      "target": "tests_history_repo_migration_tests_new_writes_persist_full_cpu_ram_detail"
     },
     {
       "relation": "calls",
@@ -12875,9 +13221,9 @@
       "source_file": "tests/history_repo_migration_tests.rs",
       "source_location": "L90",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "tests_history_repo_migration_tests_migrates_v2_to_v3_preserving_rows",
-      "target": "tests_history_repo_migration_tests_make_v2_db",
-      "confidence_score": 1.0
+      "target": "tests_history_repo_migration_tests_make_v2_db"
     },
     {
       "relation": "imports_from",
@@ -13219,6 +13565,16 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "tests/integration_tests.rs",
+      "source_location": "L97",
+      "weight": 1.0,
+      "source": "tests_integration_tests",
+      "target": "tests_integration_tests_test_health_endpoint",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/integration_tests.rs",
       "source_location": "L88",
       "weight": 1.0,
       "confidence_score": 1.0,
@@ -13350,6 +13706,17 @@
       "confidence_score": 1.0,
       "source": "tests_integration_tests_test_app",
       "target": "tempdir"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/integration_tests.rs",
+      "source_location": "L98",
+      "weight": 1.0,
+      "source": "tests_integration_tests_test_health_endpoint",
+      "target": "tests_integration_tests_test_app",
+      "confidence_score": 1.0
     },
     {
       "relation": "calls",
@@ -14258,9 +14625,9 @@
       "source_file": "CLAUDE.md",
       "source_location": "L1",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "claude",
-      "target": "claude_rust_rules",
-      "confidence_score": 1.0
+      "target": "claude_rust_rules"
     },
     {
       "relation": "contains",
@@ -16143,5 +16510,5 @@
       "source_file": ".github/workflows/ci.yml"
     }
   ],
-  "built_at_commit": "a61af0c56c8388f6c8332e6659522481c0a5aea8"
+  "built_at_commit": "8cb17c52defb94cdd8a3b7060f89026a5807b12d"
 }
