@@ -20,7 +20,9 @@ impl SysinfoRepo {
             let mut disks_guard = disks
                 .lock()
                 .map_err(|e| anyhow::anyhow!("sysinfo disks lock poisoned: {}", e))?;
-            disks_guard.refresh(false);
+            // refresh(true) re-evaluates the disk set so hot-plugged/removed disks (USB, etc.)
+            // are picked up without a restart; refresh(false) never updated membership.
+            disks_guard.refresh(true);
             let partitions: Vec<PartitionStat> = disks_guard
                 .list()
                 .iter()
@@ -209,26 +211,38 @@ impl SysinfoRepo {
     }
 
     /// Returns dynamic-only system metrics (wire format). Static identity is GET /api/info.
+    ///
+    /// Process/thread counts come from cheap `/proc` reads (see `linux::read_proc_entity_counts`)
+    /// instead of a full `sysinfo` process refresh, which was the loop's most expensive call.
+    /// Note: this intentionally does NOT refresh CPU/memory — those are owned by `get_cpu_stats`
+    /// and `get_ram_stats`; refreshing CPU here would corrupt their update-interval gating.
     #[instrument(skip(self), fields(repo = "sysinfo", operation = "get_system_stats"))]
     pub async fn get_system_stats(&self) -> anyhow::Result<SystemStatsDynamic> {
         let sys = self.sys.clone();
         tokio::task::spawn_blocking(move || {
-            let mut sys = sys
-                .lock()
-                .map_err(|e| anyhow::anyhow!("sysinfo lock poisoned: {}", e))?;
-            sys.refresh_memory();
-            sys.refresh_cpu_all();
-            sys.refresh_processes(ProcessesToUpdate::All, true);
             let uptime = System::uptime();
-            let process_count = sys.processes().len() as u32;
-            let thread_count = sys
-                .processes()
-                .values()
-                .map(|p| 1 + p.tasks().map(|t| t.len()).unwrap_or(0))
-                .sum::<usize>()
-                .min(u32::MAX as usize) as u32;
             let (load_avg_1, load_avg_5, load_avg_15) =
                 linux::read_loadavg_linux().unwrap_or((0.0, 0.0, 0.0));
+
+            let (process_count, thread_count) = match linux::read_proc_entity_counts() {
+                Some(counts) => counts,
+                None => {
+                    // Fallback (non-Linux / unreadable /proc): use sysinfo's process list.
+                    let mut sys = sys
+                        .lock()
+                        .map_err(|e| anyhow::anyhow!("sysinfo lock poisoned: {}", e))?;
+                    sys.refresh_processes(ProcessesToUpdate::All, true);
+                    let process_count = sys.processes().len() as u32;
+                    let thread_count = sys
+                        .processes()
+                        .values()
+                        .map(|p| 1 + p.tasks().map(|t| t.len()).unwrap_or(0))
+                        .sum::<usize>()
+                        .min(u32::MAX as usize) as u32;
+                    (process_count, thread_count)
+                }
+            };
+
             Ok(SystemStatsDynamic {
                 uptime_secs: uptime,
                 process_count,

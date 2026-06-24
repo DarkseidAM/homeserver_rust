@@ -23,7 +23,7 @@ pub struct InterfaceStat {
     pub is_up: bool,
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize, SchemaRead, SchemaWrite)]
+#[derive(Debug, Clone, Default, Serialize, Deserialize, SchemaRead, SchemaWrite)]
 #[serde(rename_all = "camelCase")]
 pub struct NetworkStats {
     pub interfaces: Vec<InterfaceStat>,

@@ -30,6 +30,11 @@ pub(super) struct HistoryQuery {
     pub resolution: Option<String>,
 }
 
+/// Maximum span accepted by /api/history (guards against unbounded scans / OOM).
+const MAX_HISTORY_SPAN_MS: i64 = 31 * 24 * 3600 * 1000; // 31 days
+/// Maximum number of points a single /api/history response may materialize.
+const MAX_HISTORY_POINTS: i64 = 50_000;
+
 fn parse_resolution(s: &str) -> Option<u32> {
     let s = s.trim().to_lowercase();
     if s == "1s" || s == "1" {
@@ -71,6 +76,25 @@ pub(super) async fn api_history_handler(
         return (
             axum::http::StatusCode::BAD_REQUEST,
             axum::Json(serde_json::json!({"error": "from must be less than to"})),
+        )
+            .into_response();
+    }
+
+    let span_ms = to_ts - from_ts;
+    if span_ms > MAX_HISTORY_SPAN_MS {
+        return (
+            axum::http::StatusCode::BAD_REQUEST,
+            axum::Json(serde_json::json!({"error": "time range too large (max 31 days)"})),
+        )
+            .into_response();
+    }
+    let estimated_points = span_ms / ((resolution_secs as i64) * 1000).max(1);
+    if estimated_points > MAX_HISTORY_POINTS {
+        return (
+            axum::http::StatusCode::BAD_REQUEST,
+            axum::Json(serde_json::json!({
+                "error": "too many points for the requested resolution; increase resolution or narrow the range"
+            })),
         )
             .into_response();
     }

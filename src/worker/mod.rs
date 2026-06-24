@@ -100,62 +100,29 @@ pub fn spawn(deps: WorkerDeps, config: WorkerConfig) -> tokio::task::JoinHandle<
                     0
                 });
 
-            let cpu = match sysinfo_repo.get_cpu_stats().await {
-                Ok(c) => c,
-                Err(e) => {
-                    tracing::warn!(
-                        error = %e,
-                        operation = "get_cpu_stats",
-                        "CPU stats failed"
-                    );
-                    continue;
-                }
-            };
-            let ram = match sysinfo_repo.get_ram_stats().await {
-                Ok(c) => c,
-                Err(e) => {
-                    tracing::warn!(
-                        error = %e,
-                        operation = "get_ram_stats",
-                        "RAM stats failed"
-                    );
-                    continue;
-                }
-            };
+            // Degrade gracefully: a single failing collector falls back to defaults for that
+            // metric rather than dropping the whole tick (which would lose the healthy metrics too).
+            let cpu = sysinfo_repo.get_cpu_stats().await.unwrap_or_else(|e| {
+                tracing::warn!(error = %e, operation = "get_cpu_stats", "CPU stats failed; using defaults");
+                Default::default()
+            });
+            let ram = sysinfo_repo.get_ram_stats().await.unwrap_or_else(|e| {
+                tracing::warn!(error = %e, operation = "get_ram_stats", "RAM stats failed; using defaults");
+                Default::default()
+            });
             let containers = docker_repo.list_running_and_refresh_stats().await;
-            let storage = match sysinfo_repo.get_storage_stats().await {
-                Ok(c) => c,
-                Err(e) => {
-                    tracing::warn!(
-                        error = %e,
-                        operation = "get_storage_stats",
-                        "storage stats failed"
-                    );
-                    continue;
-                }
-            };
-            let network = match sysinfo_repo.get_network_stats().await {
-                Ok(c) => c,
-                Err(e) => {
-                    tracing::warn!(
-                        error = %e,
-                        operation = "get_network_stats",
-                        "network stats failed"
-                    );
-                    continue;
-                }
-            };
-            let system = match sysinfo_repo.get_system_stats().await {
-                Ok(c) => c,
-                Err(e) => {
-                    tracing::warn!(
-                        error = %e,
-                        operation = "get_system_stats",
-                        "system stats failed"
-                    );
-                    continue;
-                }
-            };
+            let storage = sysinfo_repo.get_storage_stats().await.unwrap_or_else(|e| {
+                tracing::warn!(error = %e, operation = "get_storage_stats", "storage stats failed; using defaults");
+                Default::default()
+            });
+            let network = sysinfo_repo.get_network_stats().await.unwrap_or_else(|e| {
+                tracing::warn!(error = %e, operation = "get_network_stats", "network stats failed; using defaults");
+                Default::default()
+            });
+            let system = sysinfo_repo.get_system_stats().await.unwrap_or_else(|e| {
+                tracing::warn!(error = %e, operation = "get_system_stats", "system stats failed; using defaults");
+                Default::default()
+            });
 
             let snapshot = FullSystemSnapshot {
                 timestamp,
@@ -167,13 +134,16 @@ pub fn spawn(deps: WorkerDeps, config: WorkerConfig) -> tokio::task::JoinHandle<
                 system,
             };
 
-            if tx.send(snapshot.clone()).is_err() {
+            // Only clone for the broadcast when someone is actually listening.
+            if tx.receiver_count() > 0 {
+                let _ = tx.send(snapshot.clone());
+            } else {
                 let should_warn = last_no_receivers_warn
                     .is_none_or(|t| t.elapsed() >= NO_RECEIVERS_WARN_INTERVAL);
                 if should_warn {
                     tracing::debug!(
                         operation = "broadcast_snapshot",
-                        "No active WebSocket clients; broadcast channel has no receivers"
+                        "No active WebSocket clients; skipping broadcast"
                     );
                     last_no_receivers_warn = Some(Instant::now());
                 }

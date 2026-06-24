@@ -1,15 +1,16 @@
-# Graph Report - .  (2026-06-24)
+# Graph Report - homeserver-rust  (2026-06-25)
 
 ## Corpus Check
-- cluster-only mode — file stats not available
+- 59 files · ~22,823 words
+- Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 416 nodes · 816 edges · 25 communities (18 shown, 7 thin omitted)
-- Extraction: 96% EXTRACTED · 4% INFERRED · 0% AMBIGUOUS · INFERRED: 29 edges (avg confidence: 0.81)
+- 547 nodes · 947 edges · 32 communities (23 shown, 9 thin omitted)
+- Extraction: 97% EXTRACTED · 3% INFERRED · 0% AMBIGUOUS · INFERRED: 29 edges (avg confidence: 0.81)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `3f3f77e1`
+- Built from commit: `9c820170`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -35,30 +36,36 @@
 - [[_COMMUNITY_Community 20|Community 20]]
 - [[_COMMUNITY_Community 21|Community 21]]
 - [[_COMMUNITY_Community 22|Community 22]]
+- [[_COMMUNITY_Community 25|Community 25]]
+- [[_COMMUNITY_Community 26|Community 26]]
+- [[_COMMUNITY_Community 27|Community 27]]
+- [[_COMMUNITY_Community 28|Community 28]]
+- [[_COMMUNITY_Community 29|Community 29]]
+- [[_COMMUNITY_Community 30|Community 30]]
 
 ## God Nodes (most connected - your core abstractions)
 1. `FullSystemSnapshot` - 30 edges
-2. `DockerRepo` - 16 edges
-3. `SystemInfo` - 16 edges
-4. `AppState` - 16 edges
-5. `AggregatedSnapshot` - 15 edges
-6. `ContainerStats` - 15 edges
-7. `AppConfig` - 14 edges
-8. `SysinfoRepo` - 14 edges
-9. `WorkerDeps` - 12 edges
-10. `test_app()` - 12 edges
+2. `Codebase Guide — homeserver-rust` - 19 edges
+3. `DockerRepo` - 16 edges
+4. `SystemInfo` - 16 edges
+5. `AppState` - 16 edges
+6. `AggregatedSnapshot` - 15 edges
+7. `ContainerStats` - 15 edges
+8. `Homeserver (Rust)` - 15 edges
+9. `AppConfig` - 14 edges
+10. `SysinfoRepo` - 14 edges
 
 ## Surprising Connections (you probably didn't know these)
+- `Rust Agent Rules (.agents/rules/rust.md)` --references--> `main.rs Entry Point`  [INFERRED]
+  .agents/rules/rust.md → CODEBASE.md
+- `main()` --calls--> `merge_system_info()`  [INFERRED]
+  examples/dump_history.rs → src/models/system.rs
 - `aggregate_snapshots_empty_returns_none()` --calls--> `aggregate_snapshots()`  [INFERRED]
   tests/aggregation_tests.rs → src/history_repo/aggregation.rs
 - `aggregate_snapshots_multiple_computes_avg_min_max()` --calls--> `aggregate_snapshots()`  [INFERRED]
   tests/aggregation_tests.rs → src/history_repo/aggregation.rs
 - `aggregate_snapshots_single_snapshot()` --calls--> `aggregate_snapshots()`  [INFERRED]
   tests/aggregation_tests.rs → src/history_repo/aggregation.rs
-- `snapshot()` --references--> `FullSystemSnapshot`  [EXTRACTED]
-  tests/aggregation_tests.rs → src/models/system.rs
-- `parse_diskstats_extracts_block_device_counters()` --calls--> `parse_diskstats()`  [INFERRED]
-  tests/linux_parser_tests.rs → src/sysinfo_repo/linux/disk.rs
 
 ## Import Cycles
 - None detected.
@@ -68,47 +75,47 @@
 - **Tiered Aggregation and Downsampling Pipeline** — codebase_sqlite_system_history, codebase_aggregation_worker, codebase_sqlite_system_history_aggregated, codebase_history_repo_aggregation, codebase_history_repo_history_merge, codebase_backfillrs [EXTRACTED 1.00]
 - **CI/CD Release Chain (CI → Tag → Docker + Release + Docs)** — ci_ci_yml, ci_tagversion_yml, ci_docker_yml, ci_release_yml, ci_docs_yml [EXTRACTED 1.00]
 
-## Communities (25 total, 7 thin omitted)
+## Communities (32 total, 9 thin omitted)
 
 ### Community 0 - "Community 0"
-Cohesion: 0.07
-Nodes (30): minimal_snapshot(), main(), HistoryRepo, with_version_prefix(), aggregated_to_snapshot(), deserialize_container_data(), deserialize_network_data(), deserialize_storage_data() (+22 more)
+Cohesion: 0.08
+Nodes (36): minimal_snapshot(), aggregate_aggregated_snapshots(), aggregate_containers(), aggregate_containers_from_aggregated(), aggregate_one_container(), aggregate_snapshots(), mean_f64(), mean_i64() (+28 more)
 
 ### Community 1 - "Community 1"
-Cohesion: 0.10
-Nodes (39): Arc, AtomicU64, AtomicUsize, Drop, HistoryRepo, IntoResponse, Query, Receiver (+31 more)
+Cohesion: 0.08
+Nodes (45): Arc, AtomicU64, AtomicUsize, Docker, DockerRepo, Drop, main(), HistoryRepo (+37 more)
 
 ### Community 2 - "Community 2"
-Cohesion: 0.07
-Nodes (39): Alerting / Health Checks (Missing), Authentication & Authorization (Missing), CPU Temperature (Stubbed Out), Disk I/O Statistics (Stubbed Out), DiskDeviceStat Dead Code Issue, Homeserver-Rust Code Analysis & Netdata Comparison, Load Average Monitoring (Missing), Netdata (+31 more)
+Cohesion: 0.06
+Nodes (47): Alerting / Health Checks (Missing), Authentication & Authorization (Missing), CPU Temperature (Stubbed Out), Disk I/O Statistics (Stubbed Out), DiskDeviceStat Dead Code Issue, Homeserver-Rust Code Analysis & Netdata Comparison, Load Average Monitoring (Missing), Netdata (+39 more)
 
 ### Community 3 - "Community 3"
-Cohesion: 0.08
-Nodes (38): Changelog v0.8.0, CI Workflow (ci.yml), Docker Build and Push Workflow (docker.yml), Docs Workflow (docs.yml), Release Workflow (release.yml), Tag Version Workflow (tag-version.yml), AggregatedSnapshot, aggregation_worker.rs (+30 more)
+Cohesion: 0.12
+Nodes (27): AggregatedSnapshot, aggregation_worker.rs, AppConfig, `AppState`, backfill.rs, config.rs AppConfig, axum crate, cron crate (+19 more)
 
 ### Community 4 - "Community 4"
 Cohesion: 0.06
 Nodes (5): AppConfig, MonitoringConfig, normalize_cron_expression(), PublishingConfig, ServerConfig
 
 ### Community 5 - "Community 5"
-Cohesion: 0.09
-Nodes (24): HashMap, disk_sysfs_base_device_name(), DiskIoRaw, parse_diskstats(), read_disk_model_linux(), read_diskstats_linux(), parse_hwmon_temp(), parse_loadavg() (+16 more)
+Cohesion: 0.08
+Nodes (25): HashMap, disk_sysfs_base_device_name(), DiskIoRaw, parse_diskstats(), read_disk_model_linux(), read_diskstats_linux(), parse_hwmon_temp(), parse_loadavg() (+17 more)
 
 ### Community 6 - "Community 6"
-Cohesion: 0.10
-Nodes (22): Docker, DockerRepo, aggregate_aggregated_snapshots(), aggregate_containers(), aggregate_containers_from_aggregated(), aggregate_one_container(), aggregate_snapshots(), init_aggregated_table() (+14 more)
+Cohesion: 0.05
+Nodes (42): Aggregation Logic (`history_repo::aggregation`), Aggregation Worker (`src/aggregation_worker.rs`), Backfill (`src/backfill.rs`), Blob Encoding, CI / CD Workflows, Codebase Guide — homeserver-rust, Configuration Reference, Configuration (`src/config.rs`) (+34 more)
 
 ### Community 7 - "Community 7"
 Cohesion: 0.20
 Nodes (17): Router, T, TempDir, receive_first_json_text(), test_api_history_endpoint(), test_api_info_endpoint(), test_app(), test_app_config() (+9 more)
 
 ### Community 8 - "Community 8"
-Cohesion: 0.14
-Nodes (8): Default, Disks, Instant, Mutex, Networks, Self, SysinfoRepo, System
+Cohesion: 0.06
+Nodes (21): Default, Disks, FormatTime, HistoryRepo, HistoryRepo, HistoryRepo, HistoryRepo, Instant (+13 more)
 
 ### Community 9 - "Community 9"
-Cohesion: 0.26
-Nodes (12): Path, Sqlite, history_repo_prune_old_data(), history_repo_save_and_get_recent(), history_repo_save_empty_no_op(), minimal_snapshot(), minimal_system_info(), schema_version_mismatch_purges_tables() (+4 more)
+Cohesion: 0.19
+Nodes (15): init_aggregated_table(), HistoryRepo, Path, Sqlite, SqlitePool, history_repo_prune_old_data(), history_repo_save_and_get_recent(), history_repo_save_empty_no_op() (+7 more)
 
 ### Community 10 - "Community 10"
 Cohesion: 0.14
@@ -123,28 +130,44 @@ Cohesion: 0.40
 Nodes (9): history_repo_delete_aggregated_range(), history_repo_delete_raw_range(), history_repo_get_aggregated_snapshots_by_time_range(), history_repo_get_min_raw_created_at_before(), history_repo_get_raw_snapshots_by_time_range(), history_repo_init_creates_aggregated_table(), minimal_aggregated_snapshot(), minimal_snapshot() (+1 more)
 
 ### Community 14 - "Community 14"
-Cohesion: 0.38
-Nodes (5): FormatTime, LocalTimer, main(), shutdown_signal(), Writer
+Cohesion: 0.09
+Nodes (20): Changelog v0.8.0, CI Workflow (ci.yml), Docker Build and Push Workflow (docker.yml), Docs Workflow (docs.yml), Release Workflow (release.yml), Tag Version Workflow (tag-version.yml), lib.rs, Rust Agent Rules (.agents/rules/rust.md) (+12 more)
+
+### Community 22 - "Community 22"
+Cohesion: 0.09
+Nodes (20): Advanced Configuration, `config.toml`, Configuration Files, Custom Port, Database Issues, Directory Structure, `docker-compose.yml`, `.env` (+12 more)
+
+### Community 25 - "Community 25"
+Cohesion: 0.09
+Nodes (21): [0.1.0] - 2026-02-02, [0.2.0] - 2026-02-04, [0.3.0] - 2026-02-04, [0.4.0] - 2026-02-05, [0.5.0] - 2026-02-06, [0.6.0] - 2026-02-08, [0.6.1] - 2026-02-11, [0.6.2] - 2026-02-11 (+13 more)
+
+### Community 26 - "Community 26"
+Cohesion: 0.25
+Nodes (7): File Length Limit (300 lines), General Rust Style, Keep `CHANGELOG.md` in Sync, Keep `CODEBASE.md` in Sync, Keep `config.toml` in Sync, Logging Levels, Tests in Separate Files
+
+### Community 27 - "Community 27"
+Cohesion: 0.33
+Nodes (5): Commit SHAs, Notes, Status: DONE, Summary, Task 2 Report: cliff.toml + CHANGELOG.md
 
 ## Knowledge Gaps
-- **40 isolated node(s):** `docker-entrypoint.sh script`, `$schema`, `extends`, `osvVulnerabilityAlerts`, `minimumReleaseAge` (+35 more)
+- **128 isolated node(s):** `docker-entrypoint.sh script`, `$schema`, `extends`, `osvVulnerabilityAlerts`, `minimumReleaseAge` (+123 more)
   These have ≤1 connection - possible missing edges or undocumented components.
-- **7 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
+- **9 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
 
-- **Why does `FullSystemSnapshot` connect `Community 0` to `Community 1`, `Community 6`, `Community 7`, `Community 9`, `Community 12`?**
-  _High betweenness centrality (0.097) - this node is a cross-community bridge._
 - **Why does `AppConfig` connect `Community 4` to `Community 1`, `Community 5`, `Community 7`?**
-  _High betweenness centrality (0.097) - this node is a cross-community bridge._
-- **Why does `AppState` connect `Community 1` to `Community 0`, `Community 4`?**
-  _High betweenness centrality (0.044) - this node is a cross-community bridge._
+  _High betweenness centrality (0.057) - this node is a cross-community bridge._
+- **Why does `FullSystemSnapshot` connect `Community 0` to `Community 1`, `Community 7`, `Community 8`, `Community 9`, `Community 12`?**
+  _High betweenness centrality (0.056) - this node is a cross-community bridge._
+- **Why does `Homeserver (Rust)` connect `Community 2` to `Community 3`, `Community 22`?**
+  _High betweenness centrality (0.039) - this node is a cross-community bridge._
 - **What connects `docker-entrypoint.sh script`, `$schema`, `extends` to the rest of the system?**
-  _40 weakly-connected nodes found - possible documentation gaps or missing edges._
+  _128 weakly-connected nodes found - possible documentation gaps or missing edges._
 - **Should `Community 0` be split into smaller, more focused modules?**
-  _Cohesion score 0.07033315705975675 - nodes in this community are weakly interconnected._
+  _Cohesion score 0.07946127946127945 - nodes in this community are weakly interconnected._
 - **Should `Community 1` be split into smaller, more focused modules?**
-  _Cohesion score 0.10431372549019607 - nodes in this community are weakly interconnected._
+  _Cohesion score 0.07837301587301587 - nodes in this community are weakly interconnected._
 - **Should `Community 2` be split into smaller, more focused modules?**
-  _Cohesion score 0.07152496626180836 - nodes in this community are weakly interconnected._
+  _Cohesion score 0.056429232192414434 - nodes in this community are weakly interconnected._

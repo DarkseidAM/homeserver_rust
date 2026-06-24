@@ -139,12 +139,27 @@ async fn test_api_history_endpoint() {
         "elements have timestamp"
     );
 
+    // A realistic 1-hour window at 1-minute resolution is accepted.
     let response = server
-        .get("/api/history?from=0&to=9999999999999&resolution=1m")
+        .get("/api/history?from=1700000000000&to=1700003600000&resolution=1m")
         .await;
     response.assert_status_ok();
 
+    // from >= to is rejected.
     let response = server.get("/api/history?from=100&to=50").await;
+    response.assert_status(axum::http::StatusCode::BAD_REQUEST);
+
+    // Span larger than the 31-day cap is rejected.
+    let response = server
+        .get("/api/history?from=0&to=9999999999999&resolution=1m")
+        .await;
+    response.assert_status(axum::http::StatusCode::BAD_REQUEST);
+
+    // A valid span but too many points for the requested resolution is rejected
+    // (10 days at 1-second resolution = ~864k points > 50k cap).
+    let response = server
+        .get("/api/history?from=1700000000000&to=1700864000000&resolution=1s")
+        .await;
     response.assert_status(axum::http::StatusCode::BAD_REQUEST);
 }
 
