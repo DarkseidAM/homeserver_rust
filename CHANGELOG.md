@@ -4,11 +4,15 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+### Other
+
+- Add graphify-rs MCP server config and enable it for Claude Code
+
+## [0.8.0] - 2026-06-23
+
 ### CI/CD
 
 - **docs:** Add workflow_dispatch trigger
-
-## [0.8.0] - 2026-06-23
 
 ### Features
 
