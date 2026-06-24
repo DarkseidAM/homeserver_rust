@@ -5,3 +5,4 @@ config.toml.local
 *.db-shm
 *.db-wal
 .env
+.mcp.json
