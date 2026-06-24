@@ -4,11 +4,11 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
-### Other
+### Features
 
-- Add graphify-rs MCP server config and enable it for Claude Code
+- Add graphify knowledge graph (416 nodes, 917 edges, 25 communities)
 
-## [0.8.0] - 2026-06-23
+## [0.8.0] - 2026-06-24
 
 ### CI/CD
 
@@ -18,6 +18,10 @@ All notable changes to this project will be documented in this file.
 
 - **homeserver:** V0.8.0 — monitoring metrics, SQLite schema versioning ([#58](https://github.com/DarkseidAM/homeserver_rust/pull/58))
 - Agent map, rustdoc on Pages, automated releases ([#71](https://github.com/DarkseidAM/homeserver_rust/pull/71))
+
+### Other
+
+- Add graphify-rs MCP server config and enable it for Claude Code
 
 ## [0.7.1] - 2026-06-21
 
