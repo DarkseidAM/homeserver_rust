@@ -1,31 +1,51 @@
 ---
-description: project rules — tests layout, file limits, Rust style, config.toml sync
+description: project rules — tests layout, file limits, Rust style, config/CODEBASE/CHANGELOG sync, logging
 alwaysApply: true
 ---
 
-# project rules (from `.agents/rules/rust.md`)
+# project rules (canonical source: `.agents/rules/rust.md`)
 
-## Tests in separate files
+## Tests in Separate Files
 
-- **Rule**: Do **not** use inline `#[cfg(test)]` modules inside `src/` files. All test code goes in the `tests/` directory as separate integration-test files (e.g. `tests/config_tests.rs`).
-- **Why**: Keeps production source files clean and under the 300-line limit; test files are independently navigable and compilable.
-- **How**: Create `tests/<module>_tests.rs`, import with `use homeserver::<module>::...`, and add the file to the workspace so `cargo test` picks it up automatically.
+- **Rule**: Do not use inline `#[cfg(test)]` modules inside `src/` files. All test code goes in the `tests/` directory as separate integration-test files (e.g. `tests/history_repo_tests.rs`).
+- **How**: Create `tests/<module>_tests.rs` and import with `use homeserver::<module>::...`. Cargo discovers files in `tests/` automatically — no registration needed.
+- **Why**: Keeps production source files clean and under the 300-line limit; test files are independently navigable.
 
-## File length limit (300 lines)
+## File Length Limit (300 lines)
 
-- **Rule**: No source file in `src/` or `tests/` may exceed **300 lines**, if not making sense can be extended till 350 lines.
-- **When exceeded**: Split the file into submodules or sibling modules (e.g. extract helpers, a group of trait impls, or a coherent set of types into a separate file). Re-export via `mod`/`pub use` so the crate's public API stays unchanged.
-- **Why**: Smaller files are easier to navigate, review, and test; they also keep compile times and IDE responsiveness better.
+- **Rule**: No source file in `src/` or `tests/` may exceed **300 lines**.
+- **When exceeded**: Split into submodules or sibling files (e.g. extract helpers, a group of trait impls, or a coherent set of types). Re-export via `mod`/`pub use` to keep the public API unchanged.
+- **Why**: Smaller, focused files are easier to navigate, review, and test.
 
-## General Rust style
+## General Rust Style
 
-- Run `cargo clippy --all-targets --all-features -- -D warnings` before committing; all warnings must be resolved (no `#[allow(...)]` silencing unless genuinely unavoidable, with a comment explaining why).
+- Run `cargo clippy --all-targets --all-features -- -D warnings` before committing. Resolve all warnings; do not silence with `#[allow(...)]` unless genuinely unavoidable, and if so add a comment explaining why.
 - Prefer `thiserror` for library error types, `anyhow` for binary/top-level error propagation.
-- Use `tracing` (not `println!` / `eprintln!`) for all runtime output.
+- Use `tracing` macros (not `println!` / `eprintln!`) for all runtime output.
 - Crate edition is **2024**; use let-chain syntax (`if let ... && ...`) where clippy suggests it.
 
-## Keep `config.toml` in sync
+## Keep `config.toml` in Sync
 
-- **Rule**: Whenever you add, rename, or change the default value of any field , you **must** also update `config.toml` to reflect that field.
-- **How**: Add the field with its default value and a comment explaining what it controls. 
-- **Why**: `config.toml` is the canonical example/reference config. If it drifts from the actual config struct, users get confusing behaviour (silent ignored keys or missing documentation).
+- **Rule**: Whenever you add, rename, or remove a configurable field, update `config.toml` to match.
+- **How**: Add or update the field with its default value and a short comment explaining what it controls.
+- **Why**: `config.toml` is the canonical user-facing reference. If it drifts from the config struct, users get silent ignored keys or missing documentation.
+
+## Keep `CODEBASE.md` in Sync
+
+- **Rule**: Whenever you add, remove, or rename a module under `src/`, update `CODEBASE.md` — the module map tree, Mermaid dependency graph, and module table must all stay accurate.
+- **Also update**: the entry-points section if worker lifecycle or route structure changes; the CI/CD section if a workflow is added, removed, or significantly changed.
+- **Why**: `CODEBASE.md` is the primary orientation document for agents and contributors. Stale entries send readers to modules that no longer exist.
+
+## Keep `CHANGELOG.md` in Sync
+
+- **Rule**: Before bumping the version in `Cargo.toml`, regenerate `CHANGELOG.md` by running:
+  ```
+  git cliff -o CHANGELOG.md
+  ```
+- **How**: Run the command, review the output, then commit `CHANGELOG.md` together with the `Cargo.toml` version bump in the same commit.
+- **Why**: `CHANGELOG.md` is generated from git history by git-cliff. It will drift silently if not regenerated before each release; the CI docs workflow regenerates it for the Pages site but does not commit it back to the repo.
+
+## Logging Levels
+
+- **Rule**: Never change the level of an existing log statement (e.g. `tracing::info!` → `tracing::debug!`) without explicit user approval.
+- **Why**: Log levels are part of the observable contract. Changing them silently breaks operator dashboards and alerting that depends on specific log output.

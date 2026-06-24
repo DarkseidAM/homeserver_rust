@@ -151,7 +151,7 @@ All model types derive `serde::{Serialize, Deserialize}` (for JSON API) and `win
 | Type | Fields | Purpose |
 |---|---|---|
 | `FullSystemSnapshot` | `timestamp`, `cpu`, `ram`, `containers`, `storage`, `network`, `system` | Single raw sample; broadcast on WS and persisted to DB |
-| `AggregatedSnapshot` | `created_at`, `resolution_seconds`, `cpu_load_{avg,min,max}`, `memory_used_{avg,min,max}`, `containers`, `storage`, `network`, `system` | One downsampled bucket (60 s or 300 s) |
+| `AggregatedSnapshot` | `created_at`, `resolution_seconds`, `cpu_load_{avg,min,max}`, `memory_used_{avg,min,max}`, `cpu`, `ram`, `containers`, `storage`, `network`, `system` | One downsampled bucket (60 s or 300 s); `cpu`/`ram` carry full detail from the last sample |
 | `FullSystemSnapshotDisplay` | Same as `FullSystemSnapshot` but `system: SystemStats` (merged static + dynamic) | Used in history display / dump_history |
 
 ### Metric Sub-types
@@ -257,16 +257,22 @@ Connects to the Docker daemon via `Docker::connect_with_unix_defaults()` (Unix s
 
 Thin wrapper around an `sqlx::SqlitePool`. WAL journal mode, 5-second busy timeout, Normal synchronous mode.
 
-`CURRENT_SCHEMA_VERSION = 2`. On `init()`, `ensure_schema_version()` handles three cases:
+`CURRENT_SCHEMA_VERSION = 3`. On `init()`, `ensure_schema_version()` handles these cases:
 - No schema row + no legacy tables → fresh install, write current version.
 - No schema row + legacy tables present → drop and recreate (data purge with a warning).
-- Version mismatch → drop and recreate (data purge with a warning).
+- Older version (`found < current`) → run ordered, additive, data-preserving migrations
+  (`run_migrations`); a step with no registered migration falls back to a purge.
+- Newer/unknown version (downgrade) → drop and recreate (data purge with a warning).
+
+Migrations are declared in `schema.rs::MIGRATIONS` as `(from_version, &[sql])` and applied in
+their own transactions. `v2 → v3` adds nullable `cpu_data` / `ram_data` BLOB columns so full
+CPU/RAM detail is persisted; rows written before v3 keep `NULL` and are read via a scalar fallback.
 
 ### Tables
 
 | Table | Purpose |
 |---|---|
-| `schema_version` | Single row `(key='schema', value=2)` |
+| `schema_version` | Single row `(key='schema', value=3)` |
 | `system_info` | Single row (id=1): wincode-serialised `SystemInfo` (overwritten on each flush) |
 | `system_history` | Raw 1-second snapshots |
 | `system_history_aggregated` | Downsampled snapshots at 60 s or 300 s resolution |
@@ -274,7 +280,7 @@ Thin wrapper around an `sqlx::SqlitePool`. WAL journal mode, 5-second busy timeo
 ### Blob Encoding
 
 Binary fields are prefixed with a version byte (`blob.rs`):
-- `BLOB_VERSION = 1` — containers, storage, network blobs; also legacy system blob
+- `BLOB_VERSION = 1` — containers, storage, network, `cpu_data`, `ram_data` blobs; also legacy system blob
 - `BLOB_VERSION_SYSTEM_DYNAMIC = 2` — `SystemStatsDynamic` blobs
 
 `blob_payload(bytes, expected_version)` strips the prefix byte when it matches, or returns the full slice (legacy path). On deserialization failure, functions return safe empty defaults and log at debug.
@@ -305,7 +311,7 @@ Binary fields are prefixed with a version byte (`blob.rs`):
 - CPU: avg/min/max of `usage_percent`
 - Memory: avg/min/max of `ram.used`
 - Containers: grouped by id; CPU % and memory averaged; network/block bytes summed; state/pids/throttling from last sample
-- Storage / network / system: taken from the last snapshot in the bucket
+- CPU / RAM (full structs) / storage / network / system: taken from the last snapshot in the bucket
 
 `aggregate_aggregated_snapshots` does the same for 1-min → 5-min roll-up.
 
@@ -484,7 +490,7 @@ CREATE TABLE schema_version (
   key   TEXT PRIMARY KEY,
   value INTEGER NOT NULL
 );
--- Single row: key='schema', value=2
+-- Single row: key='schema', value=3
 ```
 
 ### `system_history`
@@ -497,7 +503,9 @@ CREATE TABLE system_history (
   container_data  BLOB    NOT NULL,   -- wincode Vec<ContainerStats>
   storage_data    BLOB    NOT NULL,   -- wincode StorageStats
   network_data    BLOB    NOT NULL,   -- wincode NetworkStats
-  system_data     BLOB    NOT NULL    -- wincode SystemStatsDynamic (v2) or SystemStats (v1)
+  system_data     BLOB    NOT NULL,   -- wincode SystemStatsDynamic (v2) or SystemStats (v1)
+  cpu_data        BLOB,               -- wincode CpuStats (schema v3+; NULL on older rows)
+  ram_data        BLOB                -- wincode RamStats (schema v3+; NULL on older rows)
 );
 CREATE INDEX idx_history_created_at ON system_history(created_at);
 ```
@@ -525,7 +533,9 @@ CREATE TABLE system_history_aggregated (
   container_data     BLOB    NOT NULL,
   storage_data       BLOB    NOT NULL,
   network_data       BLOB    NOT NULL,
-  system_data        BLOB    NOT NULL
+  system_data        BLOB    NOT NULL,
+  cpu_data           BLOB,            -- wincode CpuStats (schema v3+; NULL on older rows)
+  ram_data           BLOB             -- wincode RamStats (schema v3+; NULL on older rows)
 );
 CREATE INDEX idx_aggregated_created_at_resolution
   ON system_history_aggregated(created_at, resolution_seconds);

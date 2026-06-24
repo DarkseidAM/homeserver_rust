@@ -33,28 +33,57 @@ pub(in crate::history_repo) fn deserialize_network_data(bytes: &[u8]) -> Network
     })
 }
 
+/// Deserialize the optional `cpu_data` blob. For legacy rows (NULL/empty) or corrupt data,
+/// reconstruct a minimal `CpuStats` from the scalar `cpu_load` column.
+pub(in crate::history_repo) fn deserialize_cpu_data(
+    bytes: Option<&[u8]>,
+    fallback_usage_percent: f64,
+) -> CpuStats {
+    match bytes {
+        Some(b) if !b.is_empty() => wincode::deserialize(blob::blob_payload(b, blob::BLOB_VERSION))
+            .unwrap_or_else(|e| {
+                tracing::debug!(error = %e, "wincode deserialize cpu (legacy/corrupt), using scalar fallback");
+                CpuStats {
+                    usage_percent: fallback_usage_percent,
+                    ..Default::default()
+                }
+            }),
+        _ => CpuStats {
+            usage_percent: fallback_usage_percent,
+            ..Default::default()
+        },
+    }
+}
+
+/// Deserialize the optional `ram_data` blob. For legacy rows (NULL/empty) or corrupt data,
+/// reconstruct a minimal `RamStats` from the scalar `memory_used` column.
+pub(in crate::history_repo) fn deserialize_ram_data(
+    bytes: Option<&[u8]>,
+    fallback_used: u64,
+) -> RamStats {
+    match bytes {
+        Some(b) if !b.is_empty() => wincode::deserialize(blob::blob_payload(b, blob::BLOB_VERSION))
+            .unwrap_or_else(|e| {
+                tracing::debug!(error = %e, "wincode deserialize ram (legacy/corrupt), using scalar fallback");
+                RamStats {
+                    used: fallback_used,
+                    ..Default::default()
+                }
+            }),
+        _ => RamStats {
+            used: fallback_used,
+            ..Default::default()
+        },
+    }
+}
+
 pub(in crate::history_repo) fn aggregated_to_snapshot(
     agg: AggregatedSnapshot,
 ) -> FullSystemSnapshot {
     FullSystemSnapshot {
         timestamp: agg.created_at as u64,
-        cpu: CpuStats {
-            model: String::new(),
-            physical_cores: 0,
-            logical_cores: 0,
-            usage_percent: agg.cpu_load_avg,
-            temperature: 0.0,
-            core_usages: vec![],
-        },
-        ram: RamStats {
-            total: 0,
-            used: agg.memory_used_avg as u64,
-            available: 0,
-            usage_percent: 0.0,
-            swap_total: 0,
-            swap_used: 0,
-            swap_free: 0,
-        },
+        cpu: agg.cpu,
+        ram: agg.ram,
         containers: agg.containers,
         storage: agg.storage,
         network: agg.network,

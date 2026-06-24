@@ -45,14 +45,14 @@
     "semantic_hash": "59c96a0b6aa2de6959dddcf73d247e24"
   },
   "src/history_repo/agg_store.rs": {
-    "mtime": 1782234685.1225464,
-    "ast_hash": "5f9e10d39b67150e542cbb718d822b47",
-    "semantic_hash": "5f9e10d39b67150e542cbb718d822b47"
+    "mtime": 1782327850.9812365,
+    "ast_hash": "35410e1bab93c329049f57307c09f1ca",
+    "semantic_hash": ""
   },
   "src/history_repo/aggregation.rs": {
-    "mtime": 1770573866.5410461,
-    "ast_hash": "843bf12986b761a8e68666a68ac5b567",
-    "semantic_hash": "843bf12986b761a8e68666a68ac5b567"
+    "mtime": 1782327676.1214244,
+    "ast_hash": "fcb30fd74c3ff6644e0797e29f7f2ae6",
+    "semantic_hash": ""
   },
   "src/history_repo/blob.rs": {
     "mtime": 1770237226.1425812,
@@ -60,24 +60,24 @@
     "semantic_hash": "9a0ea4bbcfc20844256b07f0cd187b18"
   },
   "src/history_repo/history_merge.rs": {
-    "mtime": 1782234685.1225464,
-    "ast_hash": "2a75857985e4c5d1ecc0ee3df24007ac",
-    "semantic_hash": "2a75857985e4c5d1ecc0ee3df24007ac"
+    "mtime": 1782327759.5408554,
+    "ast_hash": "06c0fdc6f20ce95bd25bdc86eb9fcb2e",
+    "semantic_hash": ""
   },
   "src/history_repo/mod.rs": {
-    "mtime": 1782234685.1225464,
-    "ast_hash": "8581ad0da71c76c814bbf2d98e6f6865",
-    "semantic_hash": "8581ad0da71c76c814bbf2d98e6f6865"
+    "mtime": 1782327615.70084,
+    "ast_hash": "8e06e649fb5c1b8aa59cac37870f4372",
+    "semantic_hash": ""
   },
   "src/history_repo/raw.rs": {
-    "mtime": 1782234685.1225464,
-    "ast_hash": "bb06d692106566ce23698a94fdf49eae",
-    "semantic_hash": "bb06d692106566ce23698a94fdf49eae"
+    "mtime": 1782327810.1805122,
+    "ast_hash": "145e4a2175ffaf4e064a25c1bdad7aa2",
+    "semantic_hash": ""
   },
   "src/history_repo/schema.rs": {
-    "mtime": 1782234685.1225464,
-    "ast_hash": "2d5b445bad77ff4a815751e433ed4fa3",
-    "semantic_hash": "2d5b445bad77ff4a815751e433ed4fa3"
+    "mtime": 1782327886.820995,
+    "ast_hash": "28935110be250d9f9ebe53c1128cef05",
+    "semantic_hash": ""
   },
   "src/lib.rs": {
     "mtime": 1770572361.8523495,
@@ -90,9 +90,9 @@
     "semantic_hash": "04d70c8bcc2bdb542ec5732d768a8da8"
   },
   "src/models/aggregation.rs": {
-    "mtime": 1770570293.2098956,
-    "ast_hash": "2accc42cfa8ae85e6734e6699b80b269",
-    "semantic_hash": "2accc42cfa8ae85e6734e6699b80b269"
+    "mtime": 1782328090.7136328,
+    "ast_hash": "835b642eaf28d9ead714e6e409eb29b3",
+    "semantic_hash": ""
   },
   "src/models/container.rs": {
     "mtime": 1770312601.7996843,
@@ -170,9 +170,9 @@
     "semantic_hash": ""
   },
   "tests/aggregation_tests.rs": {
-    "mtime": 1782234685.1238086,
-    "ast_hash": "4a8e731031ce5aaffbb7d48c48114196",
-    "semantic_hash": "4a8e731031ce5aaffbb7d48c48114196"
+    "mtime": 1782327938.3416493,
+    "ast_hash": "9918867fbf8ab0c27f50efb8ebf6bc0c",
+    "semantic_hash": ""
   },
   "tests/common/mod.rs": {
     "mtime": 1782234685.1238086,
@@ -195,9 +195,9 @@
     "semantic_hash": "1d7e65ddc5fed1abd6baff39d0c0b80f"
   },
   "tests/history_repo_aggregation_tests.rs": {
-    "mtime": 1782234685.1238086,
-    "ast_hash": "684505e267989a9003b90dc944a695b7",
-    "semantic_hash": "684505e267989a9003b90dc944a695b7"
+    "mtime": 1782327960.8974984,
+    "ast_hash": "e3a406157b7bafa55a7c43c19d761349",
+    "semantic_hash": ""
   },
   "tests/history_repo_tests.rs": {
     "mtime": 1782234685.1238086,
@@ -300,13 +300,13 @@
     "semantic_hash": ""
   },
   "CLAUDE.md": {
-    "mtime": 1782323298.0347548,
-    "ast_hash": "82efb97a359f5c7290bf2513d14686be",
+    "mtime": 1782327583.4820626,
+    "ast_hash": "810695a8077e8904fc1fff4ad032906a",
     "semantic_hash": ""
   },
   "CODEBASE.md": {
-    "mtime": 1782242052.0797036,
-    "ast_hash": "bbbab331a55e13ea7f35177afc853403",
+    "mtime": 1782328171.2600987,
+    "ast_hash": "13661cecc9116bb7d28cb4f33ec17ab6",
     "semantic_hash": ""
   },
   "README.md": {
@@ -332,6 +332,11 @@
   "docker-compose.yml": {
     "mtime": 1772472423.4369607,
     "ast_hash": "0524688fcea319bca8f9f2fae942d4f7",
+    "semantic_hash": ""
+  },
+  "tests/history_repo_migration_tests.rs": {
+    "mtime": 1782328074.3897414,
+    "ast_hash": "ba6f620b480e11023a131141e55a9b1c",
     "semantic_hash": ""
   }
 }

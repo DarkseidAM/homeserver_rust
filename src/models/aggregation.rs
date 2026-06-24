@@ -3,9 +3,14 @@
 
 use serde::{Deserialize, Serialize};
 
-use super::{ContainerStats, NetworkStats, StorageStats, SystemStatsDynamic};
+use super::{ContainerStats, CpuStats, NetworkStats, RamStats, StorageStats, SystemStatsDynamic};
 
 /// One aggregated row: bucket start time, resolution, scalar aggregates, and blob data.
+///
+/// `cpu` / `ram` carry the full structs from the last sample in the bucket (mirroring
+/// `storage` / `network` / `system`) so the rich fields — CPU temperature, per-core usage,
+/// RAM total/available/swap — survive aggregation. The scalar `cpu_load_*` / `memory_used_*`
+/// aggregates are retained for graphing.
 #[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct AggregatedSnapshot {
@@ -17,6 +22,8 @@ pub struct AggregatedSnapshot {
     pub memory_used_avg: i64,
     pub memory_used_min: i64,
     pub memory_used_max: i64,
+    pub cpu: CpuStats,
+    pub ram: RamStats,
     pub containers: Vec<ContainerStats>,
     pub storage: StorageStats,
     pub network: NetworkStats,

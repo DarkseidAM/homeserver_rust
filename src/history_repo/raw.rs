@@ -3,11 +3,10 @@
 use crate::history_repo::HistoryRepo;
 use crate::history_repo::blob;
 use crate::history_repo::history_merge::{
-    deserialize_container_data, deserialize_network_data, deserialize_storage_data,
+    deserialize_container_data, deserialize_cpu_data, deserialize_network_data,
+    deserialize_ram_data, deserialize_storage_data,
 };
-use crate::models::{
-    CpuStats, FullSystemSnapshot, RamStats, SystemInfo, SystemStats, SystemStatsDynamic,
-};
+use crate::models::{FullSystemSnapshot, SystemInfo, SystemStats, SystemStatsDynamic};
 use sqlx::Row;
 use tracing::instrument;
 
@@ -47,8 +46,16 @@ impl HistoryRepo {
                 blob::BLOB_VERSION_SYSTEM_DYNAMIC,
                 wincode::serialize(&s.system).map_err(|e| anyhow::anyhow!("wincode: {}", e))?,
             );
+            let cpu_data = blob::with_version_prefix(
+                blob::BLOB_VERSION,
+                wincode::serialize(&s.cpu).map_err(|e| anyhow::anyhow!("wincode: {}", e))?,
+            );
+            let ram_data = blob::with_version_prefix(
+                blob::BLOB_VERSION,
+                wincode::serialize(&s.ram).map_err(|e| anyhow::anyhow!("wincode: {}", e))?,
+            );
             sqlx::query(
-                "INSERT INTO system_history (created_at, cpu_load, memory_used, container_data, storage_data, network_data, system_data) VALUES ($1, $2, $3, $4, $5, $6, $7)",
+                "INSERT INTO system_history (created_at, cpu_load, memory_used, container_data, storage_data, network_data, system_data, cpu_data, ram_data) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)",
             )
             .bind(s.timestamp as i64)
             .bind(s.cpu.usage_percent)
@@ -57,6 +64,8 @@ impl HistoryRepo {
             .bind(&storage_data)
             .bind(&network_data)
             .bind(&system_data)
+            .bind(&cpu_data)
+            .bind(&ram_data)
             .execute(&mut *tx)
             .await?;
         }
@@ -97,7 +106,7 @@ impl HistoryRepo {
         let stored_info = self.get_stored_system_info().await?;
 
         let rows = sqlx::query(
-            "SELECT created_at, cpu_load, memory_used, container_data, storage_data, network_data, system_data
+            "SELECT created_at, cpu_load, memory_used, container_data, storage_data, network_data, system_data, cpu_data, ram_data
              FROM system_history ORDER BY id DESC LIMIT $1",
         )
         .bind(limit as i64)
@@ -123,7 +132,7 @@ impl HistoryRepo {
         to_ts: i64,
     ) -> anyhow::Result<Vec<FullSystemSnapshot>> {
         let rows = sqlx::query(
-            "SELECT created_at, cpu_load, memory_used, container_data, storage_data, network_data, system_data
+            "SELECT created_at, cpu_load, memory_used, container_data, storage_data, network_data, system_data, cpu_data, ram_data
              FROM system_history WHERE created_at >= $1 AND created_at < $2 ORDER BY created_at ASC",
         )
         .bind(from_ts)
@@ -172,10 +181,15 @@ impl HistoryRepo {
         let storage_data: Vec<u8> = row.try_get("storage_data")?;
         let network_data: Vec<u8> = row.try_get("network_data")?;
         let system_data: Vec<u8> = row.try_get("system_data")?;
+        // Nullable on rows written before schema v3 (full CPU/RAM persistence).
+        let cpu_data: Option<Vec<u8>> = row.try_get("cpu_data")?;
+        let ram_data: Option<Vec<u8>> = row.try_get("ram_data")?;
 
         let containers = deserialize_container_data(&container_data);
         let storage = deserialize_storage_data(&storage_data);
         let network = deserialize_network_data(&network_data);
+        let cpu = deserialize_cpu_data(cpu_data.as_deref(), cpu_load);
+        let ram = deserialize_ram_data(ram_data.as_deref(), memory_used as u64);
 
         let system = match blob::blob_version(&system_data) {
             blob::BLOB_VERSION_SYSTEM_DYNAMIC => {
@@ -225,23 +239,8 @@ impl HistoryRepo {
 
         Ok(FullSystemSnapshot {
             timestamp: created_at as u64,
-            cpu: CpuStats {
-                model: String::new(),
-                physical_cores: 0,
-                logical_cores: 0,
-                usage_percent: cpu_load,
-                temperature: 0.0,
-                core_usages: vec![],
-            },
-            ram: RamStats {
-                total: 0,
-                used: memory_used as u64,
-                available: 0,
-                usage_percent: 0.0,
-                swap_total: 0,
-                swap_used: 0,
-                swap_free: 0,
-            },
+            cpu,
+            ram,
             containers,
             storage,
             network,
