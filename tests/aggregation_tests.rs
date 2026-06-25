@@ -138,3 +138,70 @@ fn aggregate_aggregated_snapshots_five_one_min_produces_5min() {
     assert_eq!(out.memory_used_min, 90);
     assert_eq!(out.memory_used_max, 510);
 }
+
+/// A snapshot whose full CPU/RAM/GPU/SMART detail is distinctive, to verify it survives aggregation.
+fn rich_snapshot(ts: u64) -> FullSystemSnapshot {
+    FullSystemSnapshot {
+        timestamp: ts,
+        cpu: CpuStats {
+            model: "Rich CPU".into(),
+            physical_cores: 8,
+            logical_cores: 16,
+            usage_percent: 42.0,
+            temperature: 65.5,
+            core_usages: vec![1.0, 2.0],
+        },
+        ram: RamStats {
+            total: 32_000,
+            used: 8_000,
+            available: 24_000,
+            usage_percent: 25.0,
+            swap_total: 4_000,
+            swap_used: 256,
+            swap_free: 3_744,
+        },
+        containers: vec![],
+        storage: StorageStats::default(),
+        network: NetworkStats::default(),
+        system: SystemStatsDynamic::default(),
+        gpus: vec![GpuStats {
+            index: 0,
+            vendor: "amd".into(),
+            name: "RX".into(),
+            utilization_percent: 55.0,
+            memory_used_bytes: 1024,
+            memory_total_bytes: 8192,
+            temperature_c: 70.0,
+            power_watts: Some(120.0),
+            fan_percent: Some(40.0),
+        }],
+        smart: vec![SmartHealth {
+            device: "/dev/sda".into(),
+            model: "Disk".into(),
+            health_passed: true,
+            temperature_c: Some(38),
+            power_on_hours: Some(42),
+            reallocated_sectors: Some(0),
+            wear_level_percent: Some(3),
+        }],
+    }
+}
+
+#[test]
+fn aggregate_snapshots_carries_full_detail_from_last_sample() {
+    // First sample is sparse; the last (rich) sample's full structs must be the ones kept.
+    let snaps = vec![snapshot(60_000, 10.0, 100), rich_snapshot(60_001)];
+    let out = aggregate_snapshots(&snaps, 60_000, 60).unwrap();
+    // Scalars still aggregate across the bucket...
+    assert_eq!(out.cpu_load_min, 10.0);
+    // ...but cpu/ram/gpu/smart come verbatim from the last sample.
+    assert_eq!(out.cpu.model, "Rich CPU");
+    assert!((out.cpu.temperature - 65.5).abs() < 0.001);
+    assert_eq!(out.ram.swap_total, 4_000);
+    assert_eq!(out.gpus.len(), 1);
+    assert_eq!(out.gpus[0].vendor, "amd");
+    assert_eq!(out.gpus[0].power_watts, Some(120.0));
+    assert_eq!(out.smart.len(), 1);
+    assert_eq!(out.smart[0].device, "/dev/sda");
+    assert_eq!(out.smart[0].wear_level_percent, Some(3));
+}

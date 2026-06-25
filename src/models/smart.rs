@@ -3,7 +3,7 @@
 use serde::{Deserialize, Serialize};
 use wincode::{SchemaRead, SchemaWrite};
 
-#[derive(Debug, Clone, Default, Serialize, Deserialize, SchemaRead, SchemaWrite)]
+#[derive(Debug, Clone, Default, PartialEq, Serialize, Deserialize, SchemaRead, SchemaWrite)]
 #[serde(rename_all = "camelCase")]
 pub struct SmartHealth {
     /// Device path, e.g. "/dev/sda".

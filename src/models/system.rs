@@ -30,7 +30,7 @@ pub struct RamStats {
 }
 
 /// Static system identity; fetched once at startup and exposed via GET /api/info.
-#[derive(Debug, Clone, Serialize, Deserialize, SchemaRead, SchemaWrite)]
+#[derive(Debug, Clone, Default, Serialize, Deserialize, SchemaRead, SchemaWrite)]
 #[serde(rename_all = "camelCase")]
 pub struct SystemInfo {
     pub os_family: String,
