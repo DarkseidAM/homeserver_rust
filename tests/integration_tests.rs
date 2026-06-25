@@ -161,6 +161,12 @@ async fn test_api_history_endpoint() {
         .get("/api/history?from=1700000000000&to=1700864000000&resolution=1s")
         .await;
     response.assert_status(axum::http::StatusCode::BAD_REQUEST);
+
+    // Extreme bounds whose difference overflows i64 are rejected (not panicked on).
+    let response = server
+        .get("/api/history?from=-9223372036854775808&to=9223372036854775807")
+        .await;
+    response.assert_status(axum::http::StatusCode::BAD_REQUEST);
 }
 
 // --- WebSocket message tests (require http_transport + ws feature) ---
