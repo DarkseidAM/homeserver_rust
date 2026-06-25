@@ -13,6 +13,11 @@ All notable changes to this project will be documented in this file.
 ### CI/CD
 
 - **docs:** Add workflow_dispatch trigger
+- **cd:** Multi-arch (amd64+arm64) images and RustSec dependency audit
+
+### Documentation
+
+- Format CI audit step to lead with `cargo audit` for consistency
 
 ### Features
 
