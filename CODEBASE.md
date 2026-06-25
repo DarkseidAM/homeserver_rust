@@ -605,7 +605,7 @@ Runs on every push/PR to `main`:
 2. `cargo clippy --all-targets --all-features -- -D warnings`
 3. `cargo test --all-features`
 4. `cargo build --release`
-5. Security audit job (`rustsec/audit-check`): scans `Cargo.lock` for known RustSec advisories.
+5. `cargo audit` (via the `rustsec/audit-check` action): scans `Cargo.lock` for known RustSec advisories.
 
 ### `.github/workflows/tag-version.yml`
 Runs after CI succeeds on `main`:
