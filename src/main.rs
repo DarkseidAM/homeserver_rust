@@ -46,6 +46,7 @@ async fn main() -> Result<()> {
     );
     let docker_repo = Arc::new(docker_repo::DockerRepo::connect()?);
     let gpu_repo = Arc::new(gpu_repo::GpuRepo::new());
+    let smart_repo = Arc::new(smart_repo::SmartRepo::new());
     let history_repo = Arc::new(
         history_repo::HistoryRepo::connect(
             &app_config.database.path,
@@ -93,6 +94,7 @@ async fn main() -> Result<()> {
             flush_rate: app_config.database.flush_rate,
             flush_interval_secs: app_config.database.flush_interval_secs,
             persist_gpu: app_config.database.persist_gpu,
+            persist_smart: app_config.database.persist_smart,
         },
         snapshots_saved_total.clone(),
     );
@@ -102,6 +104,7 @@ async fn main() -> Result<()> {
             system_info: system_info.clone(),
             docker_repo: docker_repo.clone(),
             gpu_repo: gpu_repo.clone(),
+            smart_repo: smart_repo.clone(),
             history_repo: history_repo.clone(),
             tx: tx.clone(),
             write_tx,
@@ -114,6 +117,8 @@ async fn main() -> Result<()> {
             stats_log_interval_secs: app_config.monitoring.stats_log_interval_secs,
             prune_interval_secs: app_config.database.prune_interval_secs,
             collect_gpu: app_config.monitoring.collect_gpu,
+            collect_smart: app_config.monitoring.collect_smart,
+            smart_poll_interval_secs: app_config.monitoring.smart_poll_interval_secs,
         },
     );
 

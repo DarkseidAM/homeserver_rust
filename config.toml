@@ -23,6 +23,8 @@ vacuum_schedule = "0 3 * * *"
 vacuum_interval_secs = 86400
 # Persist GPU metrics to history (gpu_data blobs). Live WS always includes GPUs regardless.
 persist_gpu = true
+# Persist SMART disk health to history (smart_data blobs). Live WS always includes it regardless.
+persist_smart = true
 
 [publishing]
 cpu_stats_frequency_ms = 1000
@@ -34,3 +36,7 @@ sample_interval_ms = 1000
 stats_log_interval_secs = 60
 # Collect GPU metrics each tick. NVIDIA requires building with --features gpu-nvidia; AMD/Intel via /sys.
 collect_gpu = true
+# Collect SMART disk health. Requires smartctl (smartmontools) + device privileges (e.g. --cap-add SYS_RAWIO). Off by default.
+collect_smart = false
+# How often to refresh SMART data (seconds). SMART reads are slow/privileged; poll infrequently.
+smart_poll_interval_secs = 900

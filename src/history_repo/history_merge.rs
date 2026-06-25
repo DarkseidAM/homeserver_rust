@@ -3,7 +3,7 @@
 use crate::history_repo::{HistoryRepo, blob};
 use crate::models::{
     AggregatedSnapshot, ContainerStats, CpuStats, FullSystemSnapshot, GpuStats, NetworkStats,
-    RamStats, StorageStats,
+    RamStats, SmartHealth, StorageStats,
 };
 use std::collections::BTreeMap;
 use tracing::instrument;
@@ -39,6 +39,18 @@ pub(in crate::history_repo) fn deserialize_gpu_data(bytes: Option<&[u8]>) -> Vec
         Some(b) if !b.is_empty() => wincode::deserialize(blob::blob_payload(b, blob::BLOB_VERSION))
             .unwrap_or_else(|e| {
                 tracing::debug!(error = %e, "wincode deserialize gpus (legacy/corrupt), using empty");
+                vec![]
+            }),
+        _ => vec![],
+    }
+}
+
+/// Deserialize the optional `smart_data` blob (schema v5+). NULL/empty/corrupt → empty vec.
+pub(in crate::history_repo) fn deserialize_smart_data(bytes: Option<&[u8]>) -> Vec<SmartHealth> {
+    match bytes {
+        Some(b) if !b.is_empty() => wincode::deserialize(blob::blob_payload(b, blob::BLOB_VERSION))
+            .unwrap_or_else(|e| {
+                tracing::debug!(error = %e, "wincode deserialize smart (legacy/corrupt), using empty");
                 vec![]
             }),
         _ => vec![],
@@ -101,6 +113,7 @@ pub(in crate::history_repo) fn aggregated_to_snapshot(
         network: agg.network,
         system: agg.system,
         gpus: agg.gpus,
+        smart: agg.smart,
     }
 }
 

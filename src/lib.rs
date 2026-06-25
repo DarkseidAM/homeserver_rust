@@ -8,6 +8,7 @@ pub mod gpu_repo;
 pub mod history_repo;
 pub mod models;
 pub mod routes;
+pub mod smart_repo;
 pub mod sysinfo_repo;
 pub mod version;
 pub mod worker;

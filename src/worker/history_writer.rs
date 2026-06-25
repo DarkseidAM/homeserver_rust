@@ -21,6 +21,7 @@ pub fn spawn_history_writer(
 ) -> tokio::task::JoinHandle<()> {
     let flush_interval = Duration::from_secs(config.flush_interval_secs);
     let persist_gpu = config.persist_gpu;
+    let persist_smart = config.persist_smart;
     tokio::spawn(async move {
         let mut buffer: Vec<FullSystemSnapshot> = Vec::new();
         let mut flush_tick = interval(flush_interval);
@@ -33,6 +34,9 @@ pub fn spawn_history_writer(
                         Some(mut snapshot) => {
                             if !persist_gpu {
                                 snapshot.gpus.clear();
+                            }
+                            if !persist_smart {
+                                snapshot.smart.clear();
                             }
                             buffer.push(snapshot);
                             if buffer.len() >= config.flush_rate as usize

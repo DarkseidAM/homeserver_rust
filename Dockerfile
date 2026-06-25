@@ -28,6 +28,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     tini \
     gosu \
     curl \
+    smartmontools \
     && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app

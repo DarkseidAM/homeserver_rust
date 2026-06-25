@@ -48,6 +48,15 @@ fn test_full_system_snapshot_wincode_roundtrip() {
             power_watts: Some(120.0),
             fan_percent: Some(35.0),
         }],
+        smart: vec![SmartHealth {
+            device: "/dev/sda".into(),
+            model: "Test SSD".into(),
+            health_passed: true,
+            temperature_c: Some(40),
+            power_on_hours: Some(1234),
+            reallocated_sectors: Some(0),
+            wear_level_percent: Some(5),
+        }],
     };
     let bytes = wincode::serialize(&snapshot).unwrap();
     let back: FullSystemSnapshot = wincode::deserialize(&bytes).unwrap();
@@ -56,6 +65,10 @@ fn test_full_system_snapshot_wincode_roundtrip() {
     assert_eq!(back.gpus.len(), 1);
     assert_eq!(back.gpus[0].name, "Test GPU");
     assert_eq!(back.gpus[0].power_watts, Some(120.0));
+    assert_eq!(back.smart.len(), 1);
+    assert_eq!(back.smart[0].device, "/dev/sda");
+    assert_eq!(back.smart[0].power_on_hours, Some(1234));
+    assert_eq!(back.smart[0].wear_level_percent, Some(5));
 }
 
 #[test]

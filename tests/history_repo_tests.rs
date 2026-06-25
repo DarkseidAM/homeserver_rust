@@ -63,6 +63,7 @@ fn minimal_snapshot(timestamp: u64) -> FullSystemSnapshot {
             load_avg_15: 0.0,
         },
         gpus: vec![],
+        smart: vec![],
     }
 }
 

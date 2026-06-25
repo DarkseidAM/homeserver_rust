@@ -56,10 +56,17 @@ pub struct DatabaseConfig {
     /// Persist GPU metrics to history (gpu_data blobs). Live WS always includes GPUs regardless.
     #[serde(default = "default_true")]
     pub persist_gpu: bool,
+    /// Persist SMART disk health to history (smart_data blobs). Live WS always includes it regardless.
+    #[serde(default = "default_true")]
+    pub persist_smart: bool,
 }
 
 fn default_true() -> bool {
     true
+}
+
+fn default_smart_poll_interval_secs() -> u64 {
+    900
 }
 
 fn default_retention_days() -> u32 {
@@ -110,6 +117,12 @@ pub struct MonitoringConfig {
     /// Collect GPU metrics each tick (NVIDIA needs the `gpu-nvidia` build feature; AMD/Intel via /sys).
     #[serde(default = "default_true")]
     pub collect_gpu: bool,
+    /// Collect SMART disk health (requires smartctl + device privileges). Off by default.
+    #[serde(default)]
+    pub collect_smart: bool,
+    /// How often to refresh SMART data (seconds). SMART reads are slow/privileged.
+    #[serde(default = "default_smart_poll_interval_secs")]
+    pub smart_poll_interval_secs: u64,
 }
 
 impl AppConfig {

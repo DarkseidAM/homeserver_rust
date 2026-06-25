@@ -7,6 +7,7 @@ use crate::docker_repo::DockerRepo;
 use crate::gpu_repo::GpuRepo;
 use crate::history_repo::HistoryRepo;
 use crate::models::{FullSystemSnapshot, SystemInfo};
+use crate::smart_repo::SmartRepo;
 use crate::sysinfo_repo::SysinfoRepo;
 pub use history_writer::spawn_history_writer;
 use std::sync::Arc;
@@ -28,6 +29,7 @@ pub struct WorkerDeps {
     pub system_info: Arc<SystemInfo>,
     pub docker_repo: Arc<DockerRepo>,
     pub gpu_repo: Arc<GpuRepo>,
+    pub smart_repo: Arc<SmartRepo>,
     pub history_repo: Arc<HistoryRepo>,
     pub tx: broadcast::Sender<FullSystemSnapshot>,
     pub write_tx: mpsc::Sender<FullSystemSnapshot>,
@@ -46,6 +48,10 @@ pub struct WorkerConfig {
     pub prune_interval_secs: u64,
     /// Collect GPU metrics each tick.
     pub collect_gpu: bool,
+    /// Collect SMART disk health (slow background poll).
+    pub collect_smart: bool,
+    /// How often to refresh SMART data (real seconds).
+    pub smart_poll_interval_secs: u64,
 }
 
 /// Writer config: batching for the dedicated history writer task.
@@ -54,6 +60,8 @@ pub struct HistoryWriterConfig {
     pub flush_interval_secs: u64,
     /// When false, GPU data is dropped before persisting (live WS still includes it).
     pub persist_gpu: bool,
+    /// When false, SMART data is dropped before persisting (live WS still includes it).
+    pub persist_smart: bool,
 }
 
 pub fn spawn(deps: WorkerDeps, config: WorkerConfig) -> tokio::task::JoinHandle<()> {
@@ -62,6 +70,7 @@ pub fn spawn(deps: WorkerDeps, config: WorkerConfig) -> tokio::task::JoinHandle<
         system_info: _,
         docker_repo,
         gpu_repo,
+        smart_repo,
         history_repo,
         tx,
         write_tx,
@@ -74,6 +83,8 @@ pub fn spawn(deps: WorkerDeps, config: WorkerConfig) -> tokio::task::JoinHandle<
         stats_log_interval_secs,
         prune_interval_secs,
         collect_gpu,
+        collect_smart,
+        smart_poll_interval_secs,
     } = config;
 
     let stats_log_interval = Duration::from_secs(stats_log_interval_secs);
@@ -86,6 +97,8 @@ pub fn spawn(deps: WorkerDeps, config: WorkerConfig) -> tokio::task::JoinHandle<
         stats_log_tick.set_missed_tick_behavior(tokio::time::MissedTickBehavior::Skip);
         let mut prune_tick = interval(prune_interval);
         prune_tick.set_missed_tick_behavior(tokio::time::MissedTickBehavior::Skip);
+        let mut smart_tick = interval(Duration::from_secs(smart_poll_interval_secs.max(1)));
+        smart_tick.set_missed_tick_behavior(tokio::time::MissedTickBehavior::Skip);
 
         let mut snapshots_pruned_total: u64 = 0;
         let mut last_no_receivers_warn: Option<Instant> = None;
@@ -137,6 +150,8 @@ pub fn spawn(deps: WorkerDeps, config: WorkerConfig) -> tokio::task::JoinHandle<
             } else {
                 Vec::new()
             };
+            // SMART is refreshed on its own slow cadence (smart_tick); read the cached value here.
+            let smart = smart_repo.current();
 
             let snapshot = FullSystemSnapshot {
                 timestamp,
@@ -147,6 +162,7 @@ pub fn spawn(deps: WorkerDeps, config: WorkerConfig) -> tokio::task::JoinHandle<
                 network,
                 system,
                 gpus,
+                smart,
             };
 
             // Only clone for the broadcast when someone is actually listening.
@@ -179,6 +195,13 @@ pub fn spawn(deps: WorkerDeps, config: WorkerConfig) -> tokio::task::JoinHandle<
                         snapshots_pruned_total = snapshots_pruned_total,
                         "app stats"
                     );
+                }
+                _ = smart_tick.tick() => {
+                    // smartctl is slow/blocking; refresh in a detached task so the loop stays responsive.
+                    if collect_smart {
+                        let repo = smart_repo.clone();
+                        tokio::spawn(async move { repo.refresh().await });
+                    }
                 }
                 _ = prune_tick.tick() => {
                     if let Err(e) = history_repo.prune_old_data().await {

@@ -3,7 +3,7 @@
 use serde::{Deserialize, Serialize};
 use wincode::{SchemaRead, SchemaWrite};
 
-use super::{ContainerStats, GpuStats, NetworkStats, StorageStats};
+use super::{ContainerStats, GpuStats, NetworkStats, SmartHealth, StorageStats};
 
 #[derive(Debug, Clone, Default, Serialize, Deserialize, SchemaRead, SchemaWrite)]
 #[serde(rename_all = "camelCase")]
@@ -119,6 +119,8 @@ pub struct FullSystemSnapshot {
     pub system: SystemStatsDynamic,
     #[serde(default)]
     pub gpus: Vec<GpuStats>,
+    #[serde(default)]
+    pub smart: Vec<SmartHealth>,
 }
 
 /// Snapshot with merged system (static + dynamic) for display, e.g. dump_history.
@@ -134,4 +136,6 @@ pub struct FullSystemSnapshotDisplay {
     pub system: SystemStats,
     #[serde(default)]
     pub gpus: Vec<GpuStats>,
+    #[serde(default)]
+    pub smart: Vec<SmartHealth>,
 }

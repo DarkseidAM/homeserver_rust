@@ -4,7 +4,8 @@ use crate::history_repo::HistoryRepo;
 use crate::history_repo::blob;
 use crate::history_repo::history_merge::{
     deserialize_container_data, deserialize_cpu_data, deserialize_gpu_data,
-    deserialize_network_data, deserialize_ram_data, deserialize_storage_data,
+    deserialize_network_data, deserialize_ram_data, deserialize_smart_data,
+    deserialize_storage_data,
 };
 use crate::models::{AggregatedSnapshot, SystemStatsDynamic};
 use sqlx::Row;
@@ -44,14 +45,18 @@ impl HistoryRepo {
             blob::BLOB_VERSION,
             wincode::serialize(&agg.gpus).map_err(|e| anyhow::anyhow!("wincode: {}", e))?,
         );
+        let smart_data = blob::with_version_prefix(
+            blob::BLOB_VERSION,
+            wincode::serialize(&agg.smart).map_err(|e| anyhow::anyhow!("wincode: {}", e))?,
+        );
 
         sqlx::query(
             r#"
             INSERT INTO system_history_aggregated
             (created_at, resolution_seconds, cpu_load_avg, cpu_load_min, cpu_load_max,
              memory_used_avg, memory_used_min, memory_used_max,
-             container_data, storage_data, network_data, system_data, cpu_data, ram_data, gpu_data)
-            VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15)
+             container_data, storage_data, network_data, system_data, cpu_data, ram_data, gpu_data, smart_data)
+            VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16)
             "#,
         )
         .bind(agg.created_at)
@@ -69,6 +74,7 @@ impl HistoryRepo {
         .bind(&cpu_data)
         .bind(&ram_data)
         .bind(&gpu_data)
+        .bind(&smart_data)
         .execute(&self.pool)
         .await?;
 
@@ -89,7 +95,7 @@ impl HistoryRepo {
         let rows = sqlx::query(
             "SELECT created_at, resolution_seconds, cpu_load_avg, cpu_load_min, cpu_load_max,
                     memory_used_avg, memory_used_min, memory_used_max,
-                    container_data, storage_data, network_data, system_data, cpu_data, ram_data, gpu_data
+                    container_data, storage_data, network_data, system_data, cpu_data, ram_data, gpu_data, smart_data
              FROM system_history_aggregated
              WHERE created_at >= $1 AND created_at < $2 AND resolution_seconds = $3
              ORDER BY created_at ASC",
@@ -179,6 +185,7 @@ impl HistoryRepo {
         let cpu_data: Option<Vec<u8>> = row.try_get("cpu_data")?;
         let ram_data: Option<Vec<u8>> = row.try_get("ram_data")?;
         let gpu_data: Option<Vec<u8>> = row.try_get("gpu_data")?;
+        let smart_data: Option<Vec<u8>> = row.try_get("smart_data")?;
 
         let containers = deserialize_container_data(&container_data);
         let storage = deserialize_storage_data(&storage_data);
@@ -186,6 +193,7 @@ impl HistoryRepo {
         let cpu = deserialize_cpu_data(cpu_data.as_deref(), cpu_load_avg);
         let ram = deserialize_ram_data(ram_data.as_deref(), memory_used_avg as u64);
         let gpus = deserialize_gpu_data(gpu_data.as_deref());
+        let smart = deserialize_smart_data(smart_data.as_deref());
         let system = wincode::deserialize(blob::blob_payload(
             &system_data,
             blob::BLOB_VERSION_SYSTEM_DYNAMIC,
@@ -211,6 +219,7 @@ impl HistoryRepo {
             network,
             system,
             gpus,
+            smart,
         })
     }
 }

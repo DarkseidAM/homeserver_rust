@@ -66,6 +66,7 @@ src/
 │   ├── network.rs              # InterfaceStat, NetworkStats
 │   ├── storage.rs              # PartitionStat, DiskDeviceStat, StorageStats
 │   ├── gpu.rs                  # GpuStats
+│   ├── smart.rs                # SmartHealth
 │   └── system.rs               # CpuStats, RamStats, SystemInfo, SystemStatsDynamic,
 │                               #   SystemStats, FullSystemSnapshot, FullSystemSnapshotDisplay
 │
@@ -88,6 +89,10 @@ src/
 │   ├── mod.rs                  # GpuRepo::collect — merges backends
 │   ├── sysfs.rs                # AMD/Intel via /sys/class/drm + hwmon (pure parsers)
 │   └── nvidia.rs               # NVIDIA via NVML (feature `gpu-nvidia`)
+│
+├── smart_repo/
+│   ├── mod.rs                  # SmartRepo: slow smartctl poll + cache
+│   └── parse.rs                # parse_smartctl_json / parse_scan_devices (pure)
 │
 ├── history_repo/
 │   ├── mod.rs                  # HistoryRepo struct (SqlitePool + retention_ms)
@@ -128,6 +133,7 @@ graph LR
     sysinfo_repo --> models
     docker_repo --> models
     gpu_repo["gpu_repo"]
+    smart_repo["smart_repo"]
     history_repo --> models
     routes --> models
     routes --> config
@@ -139,6 +145,8 @@ graph LR
     worker --> docker_repo
     worker --> gpu_repo
     gpu_repo --> models
+    worker --> smart_repo
+    smart_repo --> models
     worker --> history_repo
     aggregation_worker --> models
     aggregation_worker --> config
@@ -159,8 +167,9 @@ All model types derive `serde::{Serialize, Deserialize}` (for JSON API) and `win
 
 | Type | Fields | Purpose |
 |---|---|---|
-| `FullSystemSnapshot` | `timestamp`, `cpu`, `ram`, `containers`, `storage`, `network`, `system`, `gpus` | Single raw sample; broadcast on WS and persisted to DB |
+| `FullSystemSnapshot` | `timestamp`, `cpu`, `ram`, `containers`, `storage`, `network`, `system`, `gpus`, `smart` | Single raw sample; broadcast on WS and persisted to DB |
 | `GpuStats` | `index`, `vendor`, `name`, `utilization_percent`, `memory_used/total_bytes`, `temperature_c`, `power_watts?`, `fan_percent?` | One GPU (NVIDIA via NVML feature; AMD/Intel via /sys) |
+| `SmartHealth` | `device`, `model`, `health_passed`, `temperature_c?`, `power_on_hours?`, `reallocated_sectors?`, `wear_level_percent?` | One disk's SMART status (via `smartctl --json`) |
 | `AggregatedSnapshot` | `created_at`, `resolution_seconds`, `cpu_load_{avg,min,max}`, `memory_used_{avg,min,max}`, `cpu`, `ram`, `containers`, `storage`, `network`, `system` | One downsampled bucket (60 s or 300 s); `cpu`/`ram` carry full detail from the last sample |
 | `FullSystemSnapshotDisplay` | Same as `FullSystemSnapshot` but `system: SystemStats` (merged static + dynamic) | Used in history display / dump_history |
 
@@ -267,7 +276,7 @@ Connects to the Docker daemon via `Docker::connect_with_unix_defaults()` (Unix s
 
 Thin wrapper around an `sqlx::SqlitePool`. WAL journal mode, 5-second busy timeout, Normal synchronous mode.
 
-`CURRENT_SCHEMA_VERSION = 4`. On `init()`, `ensure_schema_version()` handles these cases:
+`CURRENT_SCHEMA_VERSION = 5`. On `init()`, `ensure_schema_version()` handles these cases:
 - No schema row + no legacy tables → fresh install, write current version.
 - No schema row + legacy tables present → drop and recreate (data purge with a warning).
 - Older version (`found < current`) → run ordered, additive, data-preserving migrations
@@ -276,14 +285,15 @@ Thin wrapper around an `sqlx::SqlitePool`. WAL journal mode, 5-second busy timeo
 
 Migrations are declared in `schema.rs::MIGRATIONS` as `(from_version, &[sql])` and applied in
 their own transactions. `v2 → v3` adds nullable `cpu_data` / `ram_data` BLOB columns so full
-CPU/RAM detail is persisted; `v3 → v4` adds a nullable `gpu_data` BLOB for GPU metrics. Rows written
-before a column existed keep `NULL` and are read via a scalar/empty fallback.
+CPU/RAM detail is persisted; `v3 → v4` adds a nullable `gpu_data` BLOB for GPU metrics; `v4 → v5`
+adds a nullable `smart_data` BLOB for SMART disk health. Rows written before a column existed keep
+`NULL` and are read via a scalar/empty fallback.
 
 ### Tables
 
 | Table | Purpose |
 |---|---|
-| `schema_version` | Single row `(key='schema', value=4)` |
+| `schema_version` | Single row `(key='schema', value=5)` |
 | `system_info` | Single row (id=1): wincode-serialised `SystemInfo` (overwritten on each flush) |
 | `system_history` | Raw 1-second snapshots |
 | `system_history_aggregated` | Downsampled snapshots at 60 s or 300 s resolution |
@@ -291,7 +301,7 @@ before a column existed keep `NULL` and are read via a scalar/empty fallback.
 ### Blob Encoding
 
 Binary fields are prefixed with a version byte (`blob.rs`):
-- `BLOB_VERSION = 1` — containers, storage, network, `cpu_data`, `ram_data`, `gpu_data` blobs; also legacy system blob
+- `BLOB_VERSION = 1` — containers, storage, network, `cpu_data`, `ram_data`, `gpu_data`, `smart_data` blobs; also legacy system blob
 - `BLOB_VERSION_SYSTEM_DYNAMIC = 2` — `SystemStatsDynamic` blobs
 
 `blob_payload(bytes, expected_version)` strips the prefix byte when it matches, or returns the full slice (legacy path). On deserialization failure, functions return safe empty defaults and log at debug.
@@ -507,7 +517,7 @@ CREATE TABLE schema_version (
   key   TEXT PRIMARY KEY,
   value INTEGER NOT NULL
 );
--- Single row: key='schema', value=4
+-- Single row: key='schema', value=5
 ```
 
 ### `system_history`
@@ -523,7 +533,8 @@ CREATE TABLE system_history (
   system_data     BLOB    NOT NULL,   -- wincode SystemStatsDynamic (v2) or SystemStats (v1)
   cpu_data        BLOB,               -- wincode CpuStats (schema v3+; NULL on older rows)
   ram_data        BLOB,               -- wincode RamStats (schema v3+; NULL on older rows)
-  gpu_data        BLOB                -- wincode Vec<GpuStats> (schema v4+; NULL on older rows)
+  gpu_data        BLOB,               -- wincode Vec<GpuStats> (schema v4+; NULL on older rows)
+  smart_data      BLOB                -- wincode Vec<SmartHealth> (schema v5+; NULL on older rows)
 );
 CREATE INDEX idx_history_created_at ON system_history(created_at);
 ```
@@ -554,7 +565,8 @@ CREATE TABLE system_history_aggregated (
   system_data        BLOB    NOT NULL,
   cpu_data           BLOB,            -- wincode CpuStats (schema v3+; NULL on older rows)
   ram_data           BLOB,            -- wincode RamStats (schema v3+; NULL on older rows)
-  gpu_data           BLOB             -- wincode Vec<GpuStats> (schema v4+; NULL on older rows)
+  gpu_data           BLOB,            -- wincode Vec<GpuStats> (schema v4+; NULL on older rows)
+  smart_data         BLOB             -- wincode Vec<SmartHealth> (schema v5+; NULL on older rows)
 );
 CREATE INDEX idx_aggregated_created_at_resolution
   ON system_history_aggregated(created_at, resolution_seconds);
@@ -667,6 +679,7 @@ minute_retention_hours = 24
 vacuum_schedule = "0 3 * * *"   # 03:00 daily local time; omit to use vacuum_interval_secs
 vacuum_interval_secs = 86400
 persist_gpu = true                # persist GPU metrics to history (live WS always includes them)
+persist_smart = true              # persist SMART disk health to history (live WS always includes it)
 
 [publishing]
 cpu_stats_frequency_ms = 1000
@@ -677,6 +690,8 @@ broadcast_capacity = 60
 sample_interval_ms = 1000
 stats_log_interval_secs = 60
 collect_gpu = true                # collect GPU metrics each tick (NVIDIA needs --features gpu-nvidia)
+collect_smart = false             # collect SMART disk health (needs smartctl + device privileges)
+smart_poll_interval_secs = 900    # how often to refresh SMART (slow/privileged)
 ```
 
 `CONFIG_FILE` environment variable overrides the config file path.

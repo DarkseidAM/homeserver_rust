@@ -29,6 +29,14 @@ const MIGRATIONS: &[(u32, &[&str])] = &[
             "ALTER TABLE system_history_aggregated ADD COLUMN gpu_data BLOB",
         ],
     ),
+    // v4 → v5: persist SMART disk health. Nullable; absent → empty list.
+    (
+        4,
+        &[
+            "ALTER TABLE system_history ADD COLUMN smart_data BLOB",
+            "ALTER TABLE system_history_aggregated ADD COLUMN smart_data BLOB",
+        ],
+    ),
 ];
 
 impl HistoryRepo {
@@ -185,7 +193,8 @@ impl HistoryRepo {
                 system_data BLOB NOT NULL,
                 cpu_data BLOB,
                 ram_data BLOB,
-                gpu_data BLOB
+                gpu_data BLOB,
+                smart_data BLOB
             )
             "#,
         )

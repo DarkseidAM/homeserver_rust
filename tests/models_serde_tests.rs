@@ -109,6 +109,7 @@ fn test_full_system_snapshot_serialization() {
             load_avg_15: 0.0,
         },
         gpus: vec![],
+        smart: vec![],
     };
     let json = serde_json::to_string(&snapshot).unwrap();
     assert!(json.contains("\"timestamp\""));

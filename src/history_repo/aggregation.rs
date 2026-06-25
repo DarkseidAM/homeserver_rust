@@ -26,7 +26,8 @@ pub async fn init_aggregated_table(pool: &SqlitePool) -> anyhow::Result<()> {
             system_data BLOB NOT NULL,
             cpu_data BLOB,
             ram_data BLOB,
-            gpu_data BLOB
+            gpu_data BLOB,
+            smart_data BLOB
         )
         "#,
     )
@@ -72,6 +73,7 @@ pub fn aggregate_snapshots(
     let network = last.network.clone();
     let system = last.system.clone();
     let gpus = last.gpus.clone();
+    let smart = last.smart.clone();
 
     Some(AggregatedSnapshot {
         created_at: bucket_start_ts,
@@ -89,6 +91,7 @@ pub fn aggregate_snapshots(
         network,
         system,
         gpus,
+        smart,
     })
 }
 
@@ -124,6 +127,7 @@ pub fn aggregate_aggregated_snapshots(
     let network = last.network.clone();
     let system = last.system.clone();
     let gpus = last.gpus.clone();
+    let smart = last.smart.clone();
 
     Some(AggregatedSnapshot {
         created_at: bucket_start_ts,
@@ -141,6 +145,7 @@ pub fn aggregate_aggregated_snapshots(
         network,
         system,
         gpus,
+        smart,
     })
 }
 
