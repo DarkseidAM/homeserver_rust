@@ -4,15 +4,11 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+## [0.8.0] - 2026-06-25
+
 ### Bug Fixes
 
 - **http:** Guard /api/history against i64 overflow/underflow on extreme bounds
-
-### Performance
-
-- Phase 1 correctness & performance hardening
-
-## [0.8.0] - 2026-06-24
 
 ### CI/CD
 
@@ -23,10 +19,15 @@ All notable changes to this project will be documented in this file.
 - **homeserver:** V0.8.0 — monitoring metrics, SQLite schema versioning ([#58](https://github.com/DarkseidAM/homeserver_rust/pull/58))
 - Agent map, rustdoc on Pages, automated releases ([#71](https://github.com/DarkseidAM/homeserver_rust/pull/71))
 - Add graphify knowledge graph (416 nodes, 917 edges, 25 communities)
+- **history:** Full CPU/RAM fidelity + additive schema migrations
 
 ### Other
 
 - Add graphify-rs MCP server config and enable it for Claude Code
+
+### Performance
+
+- Phase 1 correctness & performance hardening
 
 ## [0.7.1] - 2026-06-21
 
