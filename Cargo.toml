@@ -56,6 +56,9 @@ thiserror = "2.0"
 anyhow = "1.0"
 futures-util = "0.3"
 
+# Alert webhook HTTP client (rustls TLS; isolated to the alerting module)
+reqwest = { version = "0.13", default-features = false, features = ["rustls", "webpki-roots", "json"] }
+
 # Memory allocator
 tikv-jemallocator = "0.7"
 

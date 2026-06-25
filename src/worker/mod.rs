@@ -3,6 +3,7 @@
 
 mod history_writer;
 
+use crate::alerting::{AlertEngine, Notifier};
 use crate::docker_repo::DockerRepo;
 use crate::gpu_repo::GpuRepo;
 use crate::history_repo::HistoryRepo;
@@ -35,6 +36,8 @@ pub struct WorkerDeps {
     pub write_tx: mpsc::Sender<FullSystemSnapshot>,
     pub ws_system_connections: Arc<AtomicUsize>,
     pub snapshots_saved_total: Arc<AtomicU64>,
+    pub alert_engine: AlertEngine,
+    pub notifier: Notifier,
     pub shutdown_rx: tokio::sync::oneshot::Receiver<()>,
 }
 
@@ -76,6 +79,8 @@ pub fn spawn(deps: WorkerDeps, config: WorkerConfig) -> tokio::task::JoinHandle<
         write_tx,
         ws_system_connections,
         snapshots_saved_total,
+        mut alert_engine,
+        notifier,
         mut shutdown_rx,
     } = deps;
     let WorkerConfig {
@@ -164,6 +169,14 @@ pub fn spawn(deps: WorkerDeps, config: WorkerConfig) -> tokio::task::JoinHandle<
                 gpus,
                 smart,
             };
+
+            // Evaluate alert rules and dispatch any fire/resolve events (webhook POST is detached).
+            if !alert_engine.is_empty() {
+                for ev in alert_engine.evaluate(&snapshot, std::time::Instant::now()) {
+                    let notifier = notifier.clone();
+                    tokio::spawn(async move { notifier.notify(&ev).await });
+                }
+            }
 
             // Only clone for the broadcast when someone is actually listening.
             if tx.receiver_count() > 0 {

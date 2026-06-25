@@ -110,6 +110,8 @@ async fn main() -> Result<()> {
             write_tx,
             ws_system_connections: ws_system_connections.clone(),
             snapshots_saved_total,
+            alert_engine: alerting::AlertEngine::new(app_config.alerts.rules.clone()),
+            notifier: alerting::Notifier::new(app_config.alerts.webhook_url.clone()),
             shutdown_rx,
         },
         worker::WorkerConfig {

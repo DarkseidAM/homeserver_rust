@@ -18,7 +18,52 @@ pub struct AppConfig {
     pub database: DatabaseConfig,
     pub publishing: PublishingConfig,
     pub monitoring: MonitoringConfig,
+    #[serde(default)]
+    pub alerts: AlertsConfig,
 }
+
+/// Threshold-based alerting. `webhook_url` (optional) receives a JSON POST per event;
+/// every event is also logged via `tracing`.
+#[derive(Debug, Clone, Default, Deserialize)]
+pub struct AlertsConfig {
+    #[serde(default)]
+    pub webhook_url: Option<String>,
+    #[serde(default)]
+    pub rules: Vec<AlertRule>,
+}
+
+/// One alert rule: fire when `metric op threshold` holds for `duration_secs`, then debounce
+/// re-notification for `cooldown_secs`.
+#[derive(Debug, Clone, Deserialize)]
+pub struct AlertRule {
+    pub name: String,
+    /// One of: cpu_usage, mem_usage_percent, swap_usage_percent, load_avg_1, cpu_temperature,
+    /// disk_usage_percent, gpu_temperature, gpu_utilization.
+    pub metric: String,
+    /// Comparison operator: ">", ">=", "<", "<=".
+    pub op: String,
+    pub threshold: f64,
+    #[serde(default)]
+    pub duration_secs: u64,
+    #[serde(default = "default_cooldown_secs")]
+    pub cooldown_secs: u64,
+}
+
+fn default_cooldown_secs() -> u64 {
+    300
+}
+
+/// Metric names accepted in alert rules.
+pub(crate) const ALERT_METRICS: &[&str] = &[
+    "cpu_usage",
+    "mem_usage_percent",
+    "swap_usage_percent",
+    "load_avg_1",
+    "cpu_temperature",
+    "disk_usage_percent",
+    "gpu_temperature",
+    "gpu_utilization",
+];
 
 #[derive(Debug, Clone, Deserialize)]
 pub struct ServerConfig {
@@ -228,6 +273,22 @@ impl AppConfig {
             "monitoring.stats_log_interval_secs must be > 0, got {}",
             self.monitoring.stats_log_interval_secs
         );
+        for rule in &self.alerts.rules {
+            anyhow::ensure!(!rule.name.is_empty(), "alert rule name must be non-empty");
+            anyhow::ensure!(
+                ALERT_METRICS.contains(&rule.metric.as_str()),
+                "alert rule '{}' has unknown metric '{}' (expected one of {:?})",
+                rule.name,
+                rule.metric,
+                ALERT_METRICS
+            );
+            anyhow::ensure!(
+                matches!(rule.op.as_str(), ">" | ">=" | "<" | "<="),
+                "alert rule '{}' has invalid op '{}' (expected >, >=, <, <=)",
+                rule.name,
+                rule.op
+            );
+        }
         Ok(())
     }
 }

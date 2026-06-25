@@ -65,6 +65,8 @@ async fn worker_spawn_ticks_and_shutdown_flushes_history() {
         write_tx,
         ws_system_connections,
         snapshots_saved_total,
+        alert_engine: homeserver::alerting::AlertEngine::new(vec![]),
+        notifier: homeserver::alerting::Notifier::new(None),
         shutdown_rx,
     };
     let config = WorkerConfig {

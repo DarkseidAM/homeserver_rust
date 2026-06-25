@@ -94,6 +94,11 @@ src/
 │   ├── mod.rs                  # SmartRepo: slow smartctl poll + cache
 │   └── parse.rs                # parse_smartctl_json / parse_scan_devices (pure)
 │
+├── alerting/
+│   ├── mod.rs                  # AlertEngine (fire/resolve/cooldown state machine), AlertEvent
+│   ├── metrics.rs              # extract_metric / compare (pure)
+│   └── notify.rs               # Notifier: tracing log + optional webhook POST (reqwest)
+│
 ├── history_repo/
 │   ├── mod.rs                  # HistoryRepo struct (SqlitePool + retention_ms)
 │   ├── schema.rs               # connect, init, schema version migration, DDL
@@ -134,6 +139,7 @@ graph LR
     docker_repo --> models
     gpu_repo["gpu_repo"]
     smart_repo["smart_repo"]
+    alerting["alerting"]
     history_repo --> models
     routes --> models
     routes --> config
@@ -147,6 +153,9 @@ graph LR
     gpu_repo --> models
     worker --> smart_repo
     smart_repo --> models
+    worker --> alerting
+    alerting --> models
+    alerting --> config
     worker --> history_repo
     aggregation_worker --> models
     aggregation_worker --> config
@@ -202,7 +211,8 @@ Config is loaded from a TOML file at the path given by the `CONFIG_FILE` env var
 | `[server]` | `ServerConfig` | `port: u16`, `host: String` |
 | `[database]` | `DatabaseConfig` | see below |
 | `[publishing]` | `PublishingConfig` | `cpu_stats_frequency_ms`, `ram_stats_frequency_ms`, `broadcast_capacity` |
-| `[monitoring]` | `MonitoringConfig` | `sample_interval_ms`, `stats_log_interval_secs` |
+| `[monitoring]` | `MonitoringConfig` | `sample_interval_ms`, `stats_log_interval_secs`, `collect_gpu`, `collect_smart`, `smart_poll_interval_secs` |
+| `[alerts]` | `AlertsConfig` | `webhook_url`, `rules: Vec<AlertRule>` (`[[alerts.rules]]`) |
 
 ### `[database]` Fields and Defaults
 
@@ -595,6 +605,7 @@ CREATE INDEX idx_aggregated_created_at_resolution
 | `anyhow` | 1 | Error propagation |
 | `tikv-jemallocator` | 0.7 | jemalloc global allocator (non-MSVC) |
 | `nvml-wrapper` | 0.10 | NVIDIA GPU metrics via NVML — optional, enabled by the `gpu-nvidia` feature |
+| `reqwest` | 0.13 | Alert webhook HTTPS POST (rustls TLS + webpki-roots; no OpenSSL) |
 | `futures-util` | 0.3 | `StreamExt` for Docker stats stream |
 
 Dev dependencies: `tokio` (rt+macros), `tempfile`, `axum-test` (WS integration tests).
@@ -692,6 +703,17 @@ stats_log_interval_secs = 60
 collect_gpu = true                # collect GPU metrics each tick (NVIDIA needs --features gpu-nvidia)
 collect_smart = false             # collect SMART disk health (needs smartctl + device privileges)
 smart_poll_interval_secs = 900    # how often to refresh SMART (slow/privileged)
+
+[alerts]
+# webhook_url = "https://example.com/hook"   # optional; omit to log-only
+# [[alerts.rules]]
+# name = "cpu hot"
+# metric = "cpu_temperature"   # cpu_usage|mem_usage_percent|swap_usage_percent|load_avg_1|
+#                              # cpu_temperature|disk_usage_percent|gpu_temperature|gpu_utilization
+# op = ">"                     # > >= < <=
+# threshold = 85.0
+# duration_secs = 30           # sustained breach before firing (default 0)
+# cooldown_secs = 300          # min seconds between repeat notifications (default 300)
 ```
 
 `CONFIG_FILE` environment variable overrides the config file path.
