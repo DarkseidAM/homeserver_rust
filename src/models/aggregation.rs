@@ -3,7 +3,9 @@
 
 use serde::{Deserialize, Serialize};
 
-use super::{ContainerStats, CpuStats, NetworkStats, RamStats, StorageStats, SystemStatsDynamic};
+use super::{
+    ContainerStats, CpuStats, GpuStats, NetworkStats, RamStats, StorageStats, SystemStatsDynamic,
+};
 
 /// One aggregated row: bucket start time, resolution, scalar aggregates, and blob data.
 ///
@@ -28,4 +30,5 @@ pub struct AggregatedSnapshot {
     pub storage: StorageStats,
     pub network: NetworkStats,
     pub system: SystemStatsDynamic,
+    pub gpus: Vec<GpuStats>,
 }

@@ -45,6 +45,7 @@ async fn main() -> Result<()> {
             .map_err(|e| anyhow::anyhow!("system info: {}", e))?,
     );
     let docker_repo = Arc::new(docker_repo::DockerRepo::connect()?);
+    let gpu_repo = Arc::new(gpu_repo::GpuRepo::new());
     let history_repo = Arc::new(
         history_repo::HistoryRepo::connect(
             &app_config.database.path,
@@ -91,6 +92,7 @@ async fn main() -> Result<()> {
         worker::HistoryWriterConfig {
             flush_rate: app_config.database.flush_rate,
             flush_interval_secs: app_config.database.flush_interval_secs,
+            persist_gpu: app_config.database.persist_gpu,
         },
         snapshots_saved_total.clone(),
     );
@@ -99,6 +101,7 @@ async fn main() -> Result<()> {
             sysinfo_repo: sysinfo_repo.clone(),
             system_info: system_info.clone(),
             docker_repo: docker_repo.clone(),
+            gpu_repo: gpu_repo.clone(),
             history_repo: history_repo.clone(),
             tx: tx.clone(),
             write_tx,
@@ -110,6 +113,7 @@ async fn main() -> Result<()> {
             sample_interval_ms: app_config.monitoring.sample_interval_ms,
             stats_log_interval_secs: app_config.monitoring.stats_log_interval_secs,
             prune_interval_secs: app_config.database.prune_interval_secs,
+            collect_gpu: app_config.monitoring.collect_gpu,
         },
     );
 

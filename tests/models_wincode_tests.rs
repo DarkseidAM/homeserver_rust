@@ -37,11 +37,25 @@ fn test_full_system_snapshot_wincode_roundtrip() {
             load_avg_5: 0.0,
             load_avg_15: 0.0,
         },
+        gpus: vec![GpuStats {
+            index: 0,
+            vendor: "nvidia".into(),
+            name: "Test GPU".into(),
+            utilization_percent: 42.0,
+            memory_used_bytes: 1024,
+            memory_total_bytes: 8192,
+            temperature_c: 60.0,
+            power_watts: Some(120.0),
+            fan_percent: Some(35.0),
+        }],
     };
     let bytes = wincode::serialize(&snapshot).unwrap();
     let back: FullSystemSnapshot = wincode::deserialize(&bytes).unwrap();
     assert_eq!(back.timestamp, snapshot.timestamp);
     assert_eq!(back.cpu.model, snapshot.cpu.model);
+    assert_eq!(back.gpus.len(), 1);
+    assert_eq!(back.gpus[0].name, "Test GPU");
+    assert_eq!(back.gpus[0].power_watts, Some(120.0));
 }
 
 #[test]

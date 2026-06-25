@@ -37,6 +37,7 @@ fn snapshot(ts: u64, cpu_percent: f64, memory_used: u64) -> FullSystemSnapshot {
             load_avg_5: 0.0,
             load_avg_15: 0.0,
         },
+        gpus: vec![],
     }
 }
 
@@ -114,6 +115,7 @@ fn aggregate_aggregated_snapshots_five_one_min_produces_5min() {
                 load_avg_5: 0.0,
                 load_avg_15: 0.0,
             },
+            gpus: vec![],
         };
     let aggs = vec![
         one_min(300_000, 10.0, 100),

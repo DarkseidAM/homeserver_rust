@@ -53,6 +53,13 @@ pub struct DatabaseConfig {
     /// Fallback: run VACUUM every N seconds when vacuum_schedule is not set. Default 86400 (24h).
     #[serde(default = "default_vacuum_interval_secs")]
     pub vacuum_interval_secs: u64,
+    /// Persist GPU metrics to history (gpu_data blobs). Live WS always includes GPUs regardless.
+    #[serde(default = "default_true")]
+    pub persist_gpu: bool,
+}
+
+fn default_true() -> bool {
+    true
 }
 
 fn default_retention_days() -> u32 {
@@ -100,6 +107,9 @@ pub struct MonitoringConfig {
     pub sample_interval_ms: u64,
     /// How often to log app stats (ws_system clients, snapshots saved/pruned) at INFO level.
     pub stats_log_interval_secs: u64,
+    /// Collect GPU metrics each tick (NVIDIA needs the `gpu-nvidia` build feature; AMD/Intel via /sys).
+    #[serde(default = "default_true")]
+    pub collect_gpu: bool,
 }
 
 impl AppConfig {

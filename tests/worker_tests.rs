@@ -1,6 +1,7 @@
 // Worker integration test: spawn collector + writer, tick, shutdown, assert history flushed
 
 use homeserver::docker_repo::DockerRepo;
+use homeserver::gpu_repo::GpuRepo;
 use homeserver::history_repo::HistoryRepo;
 use homeserver::sysinfo_repo::SysinfoRepo;
 use homeserver::worker::{
@@ -18,6 +19,7 @@ async fn worker_spawn_ticks_and_shutdown_flushes_history() {
     };
 
     let sysinfo_repo = Arc::new(SysinfoRepo::new());
+    let gpu_repo = Arc::new(GpuRepo::new());
     let system_info = Arc::new(
         sysinfo_repo
             .get_system_info()
@@ -45,6 +47,7 @@ async fn worker_spawn_ticks_and_shutdown_flushes_history() {
         HistoryWriterConfig {
             flush_rate: 2,
             flush_interval_secs: 60,
+            persist_gpu: true,
         },
         snapshots_saved_total.clone(),
     );
@@ -53,6 +56,7 @@ async fn worker_spawn_ticks_and_shutdown_flushes_history() {
         sysinfo_repo,
         system_info,
         docker_repo,
+        gpu_repo,
         history_repo: history_repo.clone(),
         tx,
         write_tx,
@@ -64,6 +68,7 @@ async fn worker_spawn_ticks_and_shutdown_flushes_history() {
         sample_interval_ms: 25,
         stats_log_interval_secs: 3600,
         prune_interval_secs: 3600,
+        collect_gpu: true,
     };
 
     let worker_handle = spawn(deps, config);

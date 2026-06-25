@@ -7,7 +7,7 @@ mod history_merge;
 mod raw;
 mod schema;
 
-pub const CURRENT_SCHEMA_VERSION: u32 = 3;
+pub const CURRENT_SCHEMA_VERSION: u32 = 4;
 
 use sqlx::sqlite::SqlitePool;
 

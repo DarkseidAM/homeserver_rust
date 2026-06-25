@@ -59,6 +59,13 @@ futures-util = "0.3"
 # Memory allocator
 tikv-jemallocator = "0.7"
 
+# Optional: NVIDIA GPU metrics via NVML (loaded at runtime; off by default).
+nvml-wrapper = { version = "0.10", optional = true }
+
+[features]
+# Enable NVIDIA GPU metrics (links the nvml-wrapper crate; libnvidia-ml is dlopen'd at runtime).
+gpu-nvidia = ["dep:nvml-wrapper"]
+
 [dev-dependencies]
 tokio = { version = "1", features = ["rt", "macros"] }
 tempfile = "3"

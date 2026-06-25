@@ -2,12 +2,14 @@
 
 mod aggregation;
 mod container;
+mod gpu;
 mod network;
 mod storage;
 mod system;
 
 pub use aggregation::AggregatedSnapshot;
 pub use container::{ContainerState, ContainerStats};
+pub use gpu::GpuStats;
 pub use network::{InterfaceStat, NetworkStats};
 pub use storage::{DiskDeviceStat, PartitionStat, StorageStats};
 pub use system::{

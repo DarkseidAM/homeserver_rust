@@ -4,6 +4,7 @@
 mod history_writer;
 
 use crate::docker_repo::DockerRepo;
+use crate::gpu_repo::GpuRepo;
 use crate::history_repo::HistoryRepo;
 use crate::models::{FullSystemSnapshot, SystemInfo};
 use crate::sysinfo_repo::SysinfoRepo;
@@ -26,6 +27,7 @@ pub struct WorkerDeps {
     pub sysinfo_repo: Arc<SysinfoRepo>,
     pub system_info: Arc<SystemInfo>,
     pub docker_repo: Arc<DockerRepo>,
+    pub gpu_repo: Arc<GpuRepo>,
     pub history_repo: Arc<HistoryRepo>,
     pub tx: broadcast::Sender<FullSystemSnapshot>,
     pub write_tx: mpsc::Sender<FullSystemSnapshot>,
@@ -42,12 +44,16 @@ pub struct WorkerConfig {
     pub stats_log_interval_secs: u64,
     /// How often to prune old data (real seconds).
     pub prune_interval_secs: u64,
+    /// Collect GPU metrics each tick.
+    pub collect_gpu: bool,
 }
 
 /// Writer config: batching for the dedicated history writer task.
 pub struct HistoryWriterConfig {
     pub flush_rate: u64,
     pub flush_interval_secs: u64,
+    /// When false, GPU data is dropped before persisting (live WS still includes it).
+    pub persist_gpu: bool,
 }
 
 pub fn spawn(deps: WorkerDeps, config: WorkerConfig) -> tokio::task::JoinHandle<()> {
@@ -55,6 +61,7 @@ pub fn spawn(deps: WorkerDeps, config: WorkerConfig) -> tokio::task::JoinHandle<
         sysinfo_repo,
         system_info: _,
         docker_repo,
+        gpu_repo,
         history_repo,
         tx,
         write_tx,
@@ -66,6 +73,7 @@ pub fn spawn(deps: WorkerDeps, config: WorkerConfig) -> tokio::task::JoinHandle<
         sample_interval_ms,
         stats_log_interval_secs,
         prune_interval_secs,
+        collect_gpu,
     } = config;
 
     let stats_log_interval = Duration::from_secs(stats_log_interval_secs);
@@ -123,6 +131,12 @@ pub fn spawn(deps: WorkerDeps, config: WorkerConfig) -> tokio::task::JoinHandle<
                 tracing::warn!(error = %e, operation = "get_system_stats", "system stats failed; using defaults");
                 Default::default()
             });
+            // GPU collection is cheap (small sysfs reads / NVML queries) so it runs inline.
+            let gpus = if collect_gpu {
+                gpu_repo.collect()
+            } else {
+                Vec::new()
+            };
 
             let snapshot = FullSystemSnapshot {
                 timestamp,
@@ -132,6 +146,7 @@ pub fn spawn(deps: WorkerDeps, config: WorkerConfig) -> tokio::task::JoinHandle<
                 storage,
                 network,
                 system,
+                gpus,
             };
 
             // Only clone for the broadcast when someone is actually listening.

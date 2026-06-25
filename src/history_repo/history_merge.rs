@@ -2,8 +2,8 @@
 
 use crate::history_repo::{HistoryRepo, blob};
 use crate::models::{
-    AggregatedSnapshot, ContainerStats, CpuStats, FullSystemSnapshot, NetworkStats, RamStats,
-    StorageStats,
+    AggregatedSnapshot, ContainerStats, CpuStats, FullSystemSnapshot, GpuStats, NetworkStats,
+    RamStats, StorageStats,
 };
 use std::collections::BTreeMap;
 use tracing::instrument;
@@ -31,6 +31,18 @@ pub(in crate::history_repo) fn deserialize_network_data(bytes: &[u8]) -> Network
         tracing::debug!(error = %e, "wincode deserialize network (legacy/corrupt), using empty");
         NetworkStats { interfaces: vec![] }
     })
+}
+
+/// Deserialize the optional `gpu_data` blob (schema v4+). NULL/empty/corrupt → empty vec.
+pub(in crate::history_repo) fn deserialize_gpu_data(bytes: Option<&[u8]>) -> Vec<GpuStats> {
+    match bytes {
+        Some(b) if !b.is_empty() => wincode::deserialize(blob::blob_payload(b, blob::BLOB_VERSION))
+            .unwrap_or_else(|e| {
+                tracing::debug!(error = %e, "wincode deserialize gpus (legacy/corrupt), using empty");
+                vec![]
+            }),
+        _ => vec![],
+    }
 }
 
 /// Deserialize the optional `cpu_data` blob. For legacy rows (NULL/empty) or corrupt data,
@@ -88,6 +100,7 @@ pub(in crate::history_repo) fn aggregated_to_snapshot(
         storage: agg.storage,
         network: agg.network,
         system: agg.system,
+        gpus: agg.gpus,
     }
 }
 

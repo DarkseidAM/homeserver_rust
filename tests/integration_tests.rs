@@ -241,6 +241,7 @@ async fn test_ws_system_receives_broadcast_snapshot() {
             load_avg_5: 0.0,
             load_avg_15: 0.0,
         },
+        gpus: vec![],
     };
     let mut ws = server
         .get_websocket("/ws/system")
