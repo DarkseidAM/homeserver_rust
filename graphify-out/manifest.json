@@ -115,8 +115,8 @@
     "semantic_hash": ""
   },
   "src/models/system.rs": {
-    "mtime": 1782404132.2075694,
-    "ast_hash": "0d92cc55c5caea0c08e5be2e4fcb4926",
+    "mtime": 1782406553.643967,
+    "ast_hash": "97cfd387e02d04738de0a8ed465d52d7",
     "semantic_hash": ""
   },
   "src/routes/http.rs": {
@@ -170,8 +170,8 @@
     "semantic_hash": ""
   },
   "tests/aggregation_tests.rs": {
-    "mtime": 1782404723.2645156,
-    "ast_hash": "667f9e965064bd0c4853931c1aaad9bf",
+    "mtime": 1782406421.5456102,
+    "ast_hash": "56f8de034f05c800ef8018e20a9377fe",
     "semantic_hash": ""
   },
   "tests/common/mod.rs": {
@@ -370,13 +370,13 @@
     "semantic_hash": ""
   },
   "src/models/gpu.rs": {
-    "mtime": 1782330080.7646987,
-    "ast_hash": "5e7877ace00f492a413dcd891268a11a",
+    "mtime": 1782406451.3704252,
+    "ast_hash": "4620e0d765da4e5395b7c9b270dc35ba",
     "semantic_hash": ""
   },
   "src/models/smart.rs": {
-    "mtime": 1782404107.5159473,
-    "ast_hash": "61efc4bb2fa86cb3c9c8fb13b287c9b1",
+    "mtime": 1782406503.895312,
+    "ast_hash": "634d4699c35c6eba5fe81edd98d8506a",
     "semantic_hash": ""
   },
   "src/smart_repo/mod.rs": {
@@ -407,6 +407,16 @@
   "docs/superpowers/specs/2026-06-25-phase5-gpu-smart-alerting-design.md": {
     "mtime": 1782329728.5570924,
     "ast_hash": "c603b1a11718e872ffa7b9d2c1863059",
+    "semantic_hash": ""
+  },
+  "tests/history_blob_roundtrip_tests.rs": {
+    "mtime": 1782406439.7119803,
+    "ast_hash": "0ab5a39eacd98ce86c817a54fa18ffdf",
+    "semantic_hash": ""
+  },
+  "tests/history_writer_tests.rs": {
+    "mtime": 1782406533.1277032,
+    "ast_hash": "d6926f7bc9268f49b8b8fd85a14a09c3",
     "semantic_hash": ""
   }
 }

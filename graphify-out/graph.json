@@ -89,7 +89,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "examples_dump_history",
-      "community": 8,
+      "community": 45,
       "norm_label": "dump_history.rs"
     },
     {
@@ -99,7 +99,7 @@
       "source_location": "L13",
       "_origin": "ast",
       "id": "examples_dump_history_main",
-      "community": 8,
+      "community": 45,
       "norm_label": "main()"
     },
     {
@@ -369,7 +369,7 @@
       "source_location": "",
       "_origin": "ast",
       "id": "sender",
-      "community": 7,
+      "community": 1,
       "norm_label": "sender"
     },
     {
@@ -489,7 +489,7 @@
       "source_location": "",
       "_origin": "ast",
       "id": "vec",
-      "community": 0,
+      "community": 47,
       "norm_label": "vec"
     },
     {
@@ -509,7 +509,7 @@
       "source_location": "",
       "_origin": "ast",
       "id": "self",
-      "community": 8,
+      "community": 44,
       "norm_label": "self"
     },
     {
@@ -619,7 +619,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_config",
-      "community": 4,
+      "community": 43,
       "norm_label": "config.rs"
     },
     {
@@ -629,7 +629,7 @@
       "source_location": "L6",
       "_origin": "ast",
       "id": "src_config_normalize_cron_expression",
-      "community": 4,
+      "community": 43,
       "norm_label": "normalize_cron_expression()"
     },
     {
@@ -639,7 +639,7 @@
       "source_location": "L16",
       "_origin": "ast",
       "id": "src_config_appconfig",
-      "community": 4,
+      "community": 43,
       "norm_label": "appconfig"
     },
     {
@@ -649,7 +649,7 @@
       "source_location": "L28",
       "_origin": "ast",
       "id": "src_config_alertsconfig",
-      "community": 34,
+      "community": 43,
       "norm_label": "alertsconfig"
     },
     {
@@ -669,7 +669,7 @@
       "source_location": "L52",
       "_origin": "ast",
       "id": "src_config_default_cooldown_secs",
-      "community": 4,
+      "community": 43,
       "norm_label": "default_cooldown_secs()"
     },
     {
@@ -679,7 +679,7 @@
       "source_location": "L69",
       "_origin": "ast",
       "id": "src_config_serverconfig",
-      "community": 4,
+      "community": 43,
       "norm_label": "serverconfig"
     },
     {
@@ -689,7 +689,7 @@
       "source_location": "L75",
       "_origin": "ast",
       "id": "src_config_databaseconfig",
-      "community": 4,
+      "community": 43,
       "norm_label": "databaseconfig"
     },
     {
@@ -699,7 +699,7 @@
       "source_location": "L109",
       "_origin": "ast",
       "id": "src_config_default_true",
-      "community": 4,
+      "community": 43,
       "norm_label": "default_true()"
     },
     {
@@ -709,7 +709,7 @@
       "source_location": "L113",
       "_origin": "ast",
       "id": "src_config_default_smart_poll_interval_secs",
-      "community": 4,
+      "community": 43,
       "norm_label": "default_smart_poll_interval_secs()"
     },
     {
@@ -719,7 +719,7 @@
       "source_location": "L117",
       "_origin": "ast",
       "id": "src_config_default_retention_days",
-      "community": 4,
+      "community": 43,
       "norm_label": "default_retention_days()"
     },
     {
@@ -729,7 +729,7 @@
       "source_location": "L121",
       "_origin": "ast",
       "id": "src_config_default_flush_interval_secs",
-      "community": 4,
+      "community": 43,
       "norm_label": "default_flush_interval_secs()"
     },
     {
@@ -739,7 +739,7 @@
       "source_location": "L125",
       "_origin": "ast",
       "id": "src_config_default_prune_interval_secs",
-      "community": 4,
+      "community": 43,
       "norm_label": "default_prune_interval_secs()"
     },
     {
@@ -749,7 +749,7 @@
       "source_location": "L129",
       "_origin": "ast",
       "id": "src_config_default_vacuum_interval_secs",
-      "community": 4,
+      "community": 43,
       "norm_label": "default_vacuum_interval_secs()"
     },
     {
@@ -759,7 +759,7 @@
       "source_location": "L133",
       "_origin": "ast",
       "id": "src_config_default_enable_aggregation",
-      "community": 4,
+      "community": 43,
       "norm_label": "default_enable_aggregation()"
     },
     {
@@ -769,7 +769,7 @@
       "source_location": "L137",
       "_origin": "ast",
       "id": "src_config_default_aggregation_interval_secs",
-      "community": 4,
+      "community": 43,
       "norm_label": "default_aggregation_interval_secs()"
     },
     {
@@ -779,7 +779,7 @@
       "source_location": "L141",
       "_origin": "ast",
       "id": "src_config_default_raw_retention_hours",
-      "community": 4,
+      "community": 43,
       "norm_label": "default_raw_retention_hours()"
     },
     {
@@ -789,7 +789,7 @@
       "source_location": "L145",
       "_origin": "ast",
       "id": "src_config_default_minute_retention_hours",
-      "community": 4,
+      "community": 43,
       "norm_label": "default_minute_retention_hours()"
     },
     {
@@ -799,7 +799,7 @@
       "source_location": "L150",
       "_origin": "ast",
       "id": "src_config_publishingconfig",
-      "community": 4,
+      "community": 43,
       "norm_label": "publishingconfig"
     },
     {
@@ -809,7 +809,7 @@
       "source_location": "L158",
       "_origin": "ast",
       "id": "src_config_monitoringconfig",
-      "community": 4,
+      "community": 43,
       "norm_label": "monitoringconfig"
     },
     {
@@ -819,7 +819,7 @@
       "source_location": "L174",
       "_origin": "ast",
       "id": "src_config_appconfig_load",
-      "community": 8,
+      "community": 44,
       "norm_label": ".load()"
     },
     {
@@ -829,7 +829,7 @@
       "source_location": "L181",
       "_origin": "ast",
       "id": "src_config_appconfig_load_from_str",
-      "community": 8,
+      "community": 44,
       "norm_label": ".load_from_str()"
     },
     {
@@ -839,7 +839,7 @@
       "source_location": "L187",
       "_origin": "ast",
       "id": "src_config_appconfig_validate",
-      "community": 4,
+      "community": 43,
       "norm_label": ".validate()"
     },
     {
@@ -899,7 +899,7 @@
       "source_location": "L23",
       "_origin": "ast",
       "id": "docker_repo_mod_dockerrepo_connect",
-      "community": 8,
+      "community": 44,
       "norm_label": ".connect()"
     },
     {
@@ -1009,7 +1009,7 @@
       "source_location": "",
       "_origin": "ast",
       "id": "default",
-      "community": 33,
+      "community": 11,
       "norm_label": "default"
     },
     {
@@ -1269,7 +1269,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "history_repo_aggregation",
-      "community": 0,
+      "community": 38,
       "norm_label": "aggregation.rs"
     },
     {
@@ -1279,7 +1279,7 @@
       "source_location": "L10",
       "_origin": "ast",
       "id": "history_repo_aggregation_init_aggregated_table",
-      "community": 9,
+      "community": 38,
       "norm_label": "init_aggregated_table()"
     },
     {
@@ -1289,7 +1289,7 @@
       "source_location": "",
       "_origin": "ast",
       "id": "sqlitepool",
-      "community": 9,
+      "community": 38,
       "norm_label": "sqlitepool"
     },
     {
@@ -1299,7 +1299,7 @@
       "source_location": "L48",
       "_origin": "ast",
       "id": "history_repo_aggregation_aggregate_snapshots",
-      "community": 0,
+      "community": 38,
       "norm_label": "aggregate_snapshots()"
     },
     {
@@ -1309,7 +1309,7 @@
       "source_location": "L99",
       "_origin": "ast",
       "id": "history_repo_aggregation_aggregate_aggregated_snapshots",
-      "community": 0,
+      "community": 38,
       "norm_label": "aggregate_aggregated_snapshots()"
     },
     {
@@ -1319,7 +1319,7 @@
       "source_location": "L153",
       "_origin": "ast",
       "id": "history_repo_aggregation_aggregate_containers_from_aggregated",
-      "community": 0,
+      "community": 38,
       "norm_label": "aggregate_containers_from_aggregated()"
     },
     {
@@ -1329,7 +1329,7 @@
       "source_location": "L172",
       "_origin": "ast",
       "id": "history_repo_aggregation_aggregate_containers",
-      "community": 0,
+      "community": 38,
       "norm_label": "aggregate_containers()"
     },
     {
@@ -1339,7 +1339,7 @@
       "source_location": "L193",
       "_origin": "ast",
       "id": "history_repo_aggregation_aggregate_one_container",
-      "community": 0,
+      "community": 38,
       "norm_label": "aggregate_one_container()"
     },
     {
@@ -1349,7 +1349,7 @@
       "source_location": "L259",
       "_origin": "ast",
       "id": "history_repo_aggregation_mean_f64",
-      "community": 0,
+      "community": 38,
       "norm_label": "mean_f64()"
     },
     {
@@ -1359,7 +1359,7 @@
       "source_location": "L266",
       "_origin": "ast",
       "id": "history_repo_aggregation_mean_i64",
-      "community": 0,
+      "community": 38,
       "norm_label": "mean_i64()"
     },
     {
@@ -1369,7 +1369,7 @@
       "source_location": "L273",
       "_origin": "ast",
       "id": "history_repo_aggregation_mean_u64",
-      "community": 0,
+      "community": 38,
       "norm_label": "mean_u64()"
     },
     {
@@ -1379,7 +1379,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "history_repo_blob",
-      "community": 0,
+      "community": 51,
       "norm_label": "blob.rs"
     },
     {
@@ -1389,7 +1389,7 @@
       "source_location": "L8",
       "_origin": "ast",
       "id": "history_repo_blob_with_version_prefix",
-      "community": 0,
+      "community": 51,
       "norm_label": "with_version_prefix()"
     },
     {
@@ -1399,7 +1399,7 @@
       "source_location": "L16",
       "_origin": "ast",
       "id": "history_repo_blob_blob_payload",
-      "community": 0,
+      "community": 51,
       "norm_label": "blob_payload()"
     },
     {
@@ -1409,7 +1409,7 @@
       "source_location": "L26",
       "_origin": "ast",
       "id": "history_repo_blob_blob_version",
-      "community": 0,
+      "community": 51,
       "norm_label": "blob_version()"
     },
     {
@@ -1439,7 +1439,7 @@
       "source_location": "L19",
       "_origin": "ast",
       "id": "history_repo_history_merge_deserialize_storage_data",
-      "community": 0,
+      "community": 50,
       "norm_label": "deserialize_storage_data()"
     },
     {
@@ -1459,7 +1459,7 @@
       "source_location": "L37",
       "_origin": "ast",
       "id": "history_repo_history_merge_deserialize_gpu_data",
-      "community": 0,
+      "community": 11,
       "norm_label": "deserialize_gpu_data()"
     },
     {
@@ -1489,7 +1489,7 @@
       "source_location": "L84",
       "_origin": "ast",
       "id": "history_repo_history_merge_deserialize_ram_data",
-      "community": 0,
+      "community": 45,
       "norm_label": "deserialize_ram_data()"
     },
     {
@@ -1509,7 +1509,7 @@
       "source_location": "L120",
       "_origin": "ast",
       "id": "history_repo_history_merge_downsample_snapshots",
-      "community": 0,
+      "community": 47,
       "norm_label": "downsample_snapshots()"
     },
     {
@@ -1529,7 +1529,7 @@
       "source_location": "L140",
       "_origin": "ast",
       "id": "history_repo_history_merge_historyrepo_get_history",
-      "community": 0,
+      "community": 47,
       "norm_label": ".get_history()"
     },
     {
@@ -1559,7 +1559,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "history_repo_mod",
-      "community": 9,
+      "community": 38,
       "norm_label": "mod.rs"
     },
     {
@@ -1569,7 +1569,7 @@
       "source_location": "L14",
       "_origin": "ast",
       "id": "history_repo_mod_historyrepo",
-      "community": 9,
+      "community": 38,
       "norm_label": "historyrepo"
     },
     {
@@ -1639,7 +1639,7 @@
       "source_location": "L140",
       "_origin": "ast",
       "id": "history_repo_raw_historyrepo_get_raw_snapshots_by_time_range",
-      "community": 0,
+      "community": 8,
       "norm_label": ".get_raw_snapshots_by_time_range()"
     },
     {
@@ -1669,7 +1669,7 @@
       "source_location": "L187",
       "_origin": "ast",
       "id": "history_repo_raw_historyrepo_parse_snapshot_row",
-      "community": 0,
+      "community": 8,
       "norm_label": ".parse_snapshot_row()"
     },
     {
@@ -1689,7 +1689,7 @@
       "source_location": "L42",
       "_origin": "ast",
       "id": "history_repo_schema_historyrepo",
-      "community": 8,
+      "community": 49,
       "norm_label": "historyrepo"
     },
     {
@@ -1699,7 +1699,7 @@
       "source_location": "L43",
       "_origin": "ast",
       "id": "history_repo_schema_historyrepo_connect",
-      "community": 8,
+      "community": 44,
       "norm_label": ".connect()"
     },
     {
@@ -1709,7 +1709,7 @@
       "source_location": "L57",
       "_origin": "ast",
       "id": "history_repo_schema_historyrepo_drop_history_user_tables",
-      "community": 8,
+      "community": 49,
       "norm_label": ".drop_history_user_tables()"
     },
     {
@@ -1719,7 +1719,7 @@
       "source_location": "",
       "_origin": "ast",
       "id": "transaction",
-      "community": 8,
+      "community": 49,
       "norm_label": "transaction"
     },
     {
@@ -1739,7 +1739,7 @@
       "source_location": "L72",
       "_origin": "ast",
       "id": "history_repo_schema_historyrepo_ensure_schema_version",
-      "community": 8,
+      "community": 49,
       "norm_label": ".ensure_schema_version()"
     },
     {
@@ -1749,7 +1749,7 @@
       "source_location": "L147",
       "_origin": "ast",
       "id": "history_repo_schema_historyrepo_run_migrations",
-      "community": 8,
+      "community": 49,
       "norm_label": ".run_migrations()"
     },
     {
@@ -1759,7 +1759,7 @@
       "source_location": "L180",
       "_origin": "ast",
       "id": "history_repo_schema_historyrepo_init",
-      "community": 8,
+      "community": 49,
       "norm_label": ".init()"
     },
     {
@@ -1779,7 +1779,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_main",
-      "community": 8,
+      "community": 48,
       "norm_label": "main.rs"
     },
     {
@@ -1789,7 +1789,7 @@
       "source_location": "L16",
       "_origin": "ast",
       "id": "src_main_localtimer",
-      "community": 8,
+      "community": 48,
       "norm_label": "localtimer"
     },
     {
@@ -1799,7 +1799,7 @@
       "source_location": "",
       "_origin": "ast",
       "id": "formattime",
-      "community": 8,
+      "community": 48,
       "norm_label": "formattime"
     },
     {
@@ -1809,7 +1809,7 @@
       "source_location": "L19",
       "_origin": "ast",
       "id": "src_main_localtimer_format_time",
-      "community": 8,
+      "community": 48,
       "norm_label": ".format_time()"
     },
     {
@@ -1819,7 +1819,7 @@
       "source_location": "",
       "_origin": "ast",
       "id": "writer",
-      "community": 8,
+      "community": 48,
       "norm_label": "writer"
     },
     {
@@ -1829,7 +1829,7 @@
       "source_location": "L29",
       "_origin": "ast",
       "id": "src_main_main",
-      "community": 8,
+      "community": 48,
       "norm_label": "main()"
     },
     {
@@ -1839,7 +1839,7 @@
       "source_location": "L159",
       "_origin": "ast",
       "id": "src_main_shutdown_signal",
-      "community": 8,
+      "community": 48,
       "norm_label": "shutdown_signal()"
     },
     {
@@ -1869,7 +1869,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "models_container",
-      "community": 1,
+      "community": 38,
       "norm_label": "container.rs"
     },
     {
@@ -1879,7 +1879,7 @@
       "source_location": "L9",
       "_origin": "ast",
       "id": "models_container_containerstate",
-      "community": 1,
+      "community": 38,
       "norm_label": "containerstate"
     },
     {
@@ -1889,7 +1889,7 @@
       "source_location": "L20",
       "_origin": "ast",
       "id": "models_container_containerstate_from_docker",
-      "community": 1,
+      "community": 38,
       "norm_label": ".from_docker()"
     },
     {
@@ -1899,7 +1899,7 @@
       "source_location": "L33",
       "_origin": "ast",
       "id": "models_container_containerstats",
-      "community": 1,
+      "community": 38,
       "norm_label": "containerstats"
     },
     {
@@ -1929,7 +1929,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "models_mod",
-      "community": 33,
+      "community": 0,
       "norm_label": "mod.rs"
     },
     {
@@ -1939,7 +1939,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "models_network",
-      "community": 0,
+      "community": 47,
       "norm_label": "network.rs"
     },
     {
@@ -1949,7 +1949,7 @@
       "source_location": "L8",
       "_origin": "ast",
       "id": "models_network_interfacestat",
-      "community": 0,
+      "community": 47,
       "norm_label": "interfacestat"
     },
     {
@@ -1959,7 +1959,7 @@
       "source_location": "L28",
       "_origin": "ast",
       "id": "models_network_networkstats",
-      "community": 0,
+      "community": 47,
       "norm_label": "networkstats"
     },
     {
@@ -1969,7 +1969,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "models_smart",
-      "community": 33,
+      "community": 46,
       "norm_label": "smart.rs"
     },
     {
@@ -1979,7 +1979,7 @@
       "source_location": "L8",
       "_origin": "ast",
       "id": "models_smart_smarthealth",
-      "community": 33,
+      "community": 46,
       "norm_label": "smarthealth"
     },
     {
@@ -1989,7 +1989,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "models_storage",
-      "community": 0,
+      "community": 50,
       "norm_label": "storage.rs"
     },
     {
@@ -1999,7 +1999,7 @@
       "source_location": "L8",
       "_origin": "ast",
       "id": "models_storage_partitionstat",
-      "community": 0,
+      "community": 50,
       "norm_label": "partitionstat"
     },
     {
@@ -2009,7 +2009,7 @@
       "source_location": "L21",
       "_origin": "ast",
       "id": "models_storage_diskdevicestat",
-      "community": 0,
+      "community": 50,
       "norm_label": "diskdevicestat"
     },
     {
@@ -2019,7 +2019,7 @@
       "source_location": "L34",
       "_origin": "ast",
       "id": "models_storage_storagestats",
-      "community": 0,
+      "community": 50,
       "norm_label": "storagestats"
     },
     {
@@ -2029,7 +2029,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "models_system",
-      "community": 0,
+      "community": 45,
       "norm_label": "system.rs"
     },
     {
@@ -2049,7 +2049,7 @@
       "source_location": "L22",
       "_origin": "ast",
       "id": "models_system_ramstats",
-      "community": 0,
+      "community": 45,
       "norm_label": "ramstats"
     },
     {
@@ -2059,7 +2059,7 @@
       "source_location": "L35",
       "_origin": "ast",
       "id": "models_system_systeminfo",
-      "community": 8,
+      "community": 1,
       "norm_label": "systeminfo"
     },
     {
@@ -2069,7 +2069,7 @@
       "source_location": "L47",
       "_origin": "ast",
       "id": "models_system_systemstatsdynamic",
-      "community": 0,
+      "community": 45,
       "norm_label": "systemstatsdynamic"
     },
     {
@@ -2079,7 +2079,7 @@
       "source_location": "L58",
       "_origin": "ast",
       "id": "models_system_systemstats",
-      "community": 0,
+      "community": 45,
       "norm_label": "systemstats"
     },
     {
@@ -2089,7 +2089,7 @@
       "source_location": "L74",
       "_origin": "ast",
       "id": "models_system_merge_system_info",
-      "community": 0,
+      "community": 45,
       "norm_label": "merge_system_info()"
     },
     {
@@ -2099,7 +2099,7 @@
       "source_location": "L112",
       "_origin": "ast",
       "id": "models_system_fullsystemsnapshot",
-      "community": 0,
+      "community": 47,
       "norm_label": "fullsystemsnapshot"
     },
     {
@@ -2109,7 +2109,7 @@
       "source_location": "L129",
       "_origin": "ast",
       "id": "models_system_fullsystemsnapshotdisplay",
-      "community": 0,
+      "community": 45,
       "norm_label": "fullsystemsnapshotdisplay"
     },
     {
@@ -2239,7 +2239,7 @@
       "source_location": "L18",
       "_origin": "ast",
       "id": "routes_mod_appstate",
-      "community": 32,
+      "community": 1,
       "norm_label": "appstate"
     },
     {
@@ -2279,7 +2279,7 @@
       "source_location": "",
       "_origin": "ast",
       "id": "router",
-      "community": 1,
+      "community": 7,
       "norm_label": "router"
     },
     {
@@ -2499,7 +2499,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "smart_repo_mod",
-      "community": 33,
+      "community": 46,
       "norm_label": "mod.rs"
     },
     {
@@ -2509,7 +2509,7 @@
       "source_location": "L13",
       "_origin": "ast",
       "id": "smart_repo_mod_smartrepo",
-      "community": 33,
+      "community": 46,
       "norm_label": "smartrepo"
     },
     {
@@ -2519,7 +2519,7 @@
       "source_location": "",
       "_origin": "ast",
       "id": "mutex",
-      "community": 33,
+      "community": 44,
       "norm_label": "mutex"
     },
     {
@@ -2529,7 +2529,7 @@
       "source_location": "L18",
       "_origin": "ast",
       "id": "smart_repo_mod_smartrepo_new",
-      "community": 33,
+      "community": 46,
       "norm_label": ".new()"
     },
     {
@@ -2539,7 +2539,7 @@
       "source_location": "L25",
       "_origin": "ast",
       "id": "smart_repo_mod_smartrepo_current",
-      "community": 33,
+      "community": 46,
       "norm_label": ".current()"
     },
     {
@@ -2549,7 +2549,7 @@
       "source_location": "L31",
       "_origin": "ast",
       "id": "smart_repo_mod_smartrepo_refresh",
-      "community": 33,
+      "community": 46,
       "norm_label": ".refresh()"
     },
     {
@@ -2559,7 +2559,7 @@
       "source_location": "L58",
       "_origin": "ast",
       "id": "smart_repo_mod_smartrepo_default",
-      "community": 33,
+      "community": 46,
       "norm_label": ".default()"
     },
     {
@@ -2569,7 +2569,7 @@
       "source_location": "L65",
       "_origin": "ast",
       "id": "smart_repo_mod_run_smartctl",
-      "community": 33,
+      "community": 46,
       "norm_label": "run_smartctl()"
     },
     {
@@ -2589,7 +2589,7 @@
       "source_location": "L7",
       "_origin": "ast",
       "id": "smart_repo_parse_parse_scan_devices",
-      "community": 33,
+      "community": 46,
       "norm_label": "parse_scan_devices()"
     },
     {
@@ -2899,7 +2899,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "sysinfo_repo_mod_sysinforepo",
-      "community": 33,
+      "community": 44,
       "norm_label": "sysinforepo"
     },
     {
@@ -2909,7 +2909,7 @@
       "source_location": "",
       "_origin": "ast",
       "id": "system",
-      "community": 33,
+      "community": 0,
       "norm_label": "system"
     },
     {
@@ -2919,7 +2919,7 @@
       "source_location": "",
       "_origin": "ast",
       "id": "disks",
-      "community": 33,
+      "community": 44,
       "norm_label": "disks"
     },
     {
@@ -2929,7 +2929,7 @@
       "source_location": "",
       "_origin": "ast",
       "id": "networks",
-      "community": 33,
+      "community": 44,
       "norm_label": "networks"
     },
     {
@@ -2939,7 +2939,7 @@
       "source_location": "L21",
       "_origin": "ast",
       "id": "sysinfo_repo_mod_sysinforepo_default",
-      "community": 33,
+      "community": 44,
       "norm_label": ".default()"
     },
     {
@@ -2949,7 +2949,7 @@
       "source_location": "L27",
       "_origin": "ast",
       "id": "sysinfo_repo_mod_sysinforepo_new",
-      "community": 33,
+      "community": 44,
       "norm_label": ".new()"
     },
     {
@@ -2959,7 +2959,7 @@
       "source_location": "L42",
       "_origin": "ast",
       "id": "sysinfo_repo_mod_sysinforepo_get_cpu_stats",
-      "community": 33,
+      "community": 0,
       "norm_label": ".get_cpu_stats()"
     },
     {
@@ -2969,7 +2969,7 @@
       "source_location": "L108",
       "_origin": "ast",
       "id": "sysinfo_repo_mod_sysinforepo_get_ram_stats",
-      "community": 33,
+      "community": 45,
       "norm_label": ".get_ram_stats()"
     },
     {
@@ -3089,7 +3089,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "tests_aggregation_tests",
-      "community": 0,
+      "community": 38,
       "norm_label": "aggregation_tests.rs"
     },
     {
@@ -3099,7 +3099,7 @@
       "source_location": "L6",
       "_origin": "ast",
       "id": "tests_aggregation_tests_snapshot",
-      "community": 0,
+      "community": 38,
       "norm_label": "snapshot()"
     },
     {
@@ -3109,7 +3109,7 @@
       "source_location": "L46",
       "_origin": "ast",
       "id": "tests_aggregation_tests_aggregate_snapshots_empty_returns_none",
-      "community": 0,
+      "community": 38,
       "norm_label": "aggregate_snapshots_empty_returns_none()"
     },
     {
@@ -3119,7 +3119,7 @@
       "source_location": "L53",
       "_origin": "ast",
       "id": "tests_aggregation_tests_aggregate_snapshots_single_snapshot",
-      "community": 0,
+      "community": 38,
       "norm_label": "aggregate_snapshots_single_snapshot()"
     },
     {
@@ -3129,7 +3129,7 @@
       "source_location": "L67",
       "_origin": "ast",
       "id": "tests_aggregation_tests_aggregate_snapshots_multiple_computes_avg_min_max",
-      "community": 0,
+      "community": 38,
       "norm_label": "aggregate_snapshots_multiple_computes_avg_min_max()"
     },
     {
@@ -3139,7 +3139,7 @@
       "source_location": "L84",
       "_origin": "ast",
       "id": "tests_aggregation_tests_aggregate_aggregated_snapshots_empty_returns_none",
-      "community": 0,
+      "community": 38,
       "norm_label": "aggregate_aggregated_snapshots_empty_returns_none()"
     },
     {
@@ -3149,8 +3149,28 @@
       "source_location": "L92",
       "_origin": "ast",
       "id": "tests_aggregation_tests_aggregate_aggregated_snapshots_five_one_min_produces_5min",
-      "community": 0,
+      "community": 38,
       "norm_label": "aggregate_aggregated_snapshots_five_one_min_produces_5min()"
+    },
+    {
+      "label": "rich_snapshot()",
+      "file_type": "code",
+      "source_file": "tests/aggregation_tests.rs",
+      "source_location": "L143",
+      "_origin": "ast",
+      "id": "tests_aggregation_tests_rich_snapshot",
+      "community": 38,
+      "norm_label": "rich_snapshot()"
+    },
+    {
+      "label": "aggregate_snapshots_carries_full_detail_from_last_sample()",
+      "file_type": "code",
+      "source_file": "tests/aggregation_tests.rs",
+      "source_location": "L191",
+      "_origin": "ast",
+      "id": "tests_aggregation_tests_aggregate_snapshots_carries_full_detail_from_last_sample",
+      "community": 38,
+      "norm_label": "aggregate_snapshots_carries_full_detail_from_last_sample()"
     },
     {
       "label": "alerting_tests.rs",
@@ -3249,7 +3269,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "common_mod",
-      "community": 0,
+      "community": 47,
       "norm_label": "mod.rs"
     },
     {
@@ -3259,7 +3279,7 @@
       "source_location": "L5",
       "_origin": "ast",
       "id": "common_mod_minimal_snapshot",
-      "community": 0,
+      "community": 47,
       "norm_label": "minimal_snapshot()"
     },
     {
@@ -3579,7 +3599,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "tests_gpu_repo_tests",
-      "community": 38,
+      "community": 11,
       "norm_label": "gpu_repo_tests.rs"
     },
     {
@@ -3589,7 +3609,7 @@
       "source_location": "L8",
       "_origin": "ast",
       "id": "tests_gpu_repo_tests_vendor_id_maps_amd_and_intel_only",
-      "community": 38,
+      "community": 11,
       "norm_label": "vendor_id_maps_amd_and_intel_only()"
     },
     {
@@ -3599,7 +3619,7 @@
       "source_location": "L18",
       "_origin": "ast",
       "id": "tests_gpu_repo_tests_busy_percent_parses_and_clamps",
-      "community": 38,
+      "community": 11,
       "norm_label": "busy_percent_parses_and_clamps()"
     },
     {
@@ -3609,7 +3629,7 @@
       "source_location": "L26",
       "_origin": "ast",
       "id": "tests_gpu_repo_tests_u64_parses_byte_counters",
-      "community": 38,
+      "community": 11,
       "norm_label": "u64_parses_byte_counters()"
     },
     {
@@ -3619,7 +3639,7 @@
       "source_location": "L34",
       "_origin": "ast",
       "id": "tests_gpu_repo_tests_power_microwatts_to_watts",
-      "community": 38,
+      "community": 11,
       "norm_label": "power_microwatts_to_watts()"
     },
     {
@@ -3629,8 +3649,68 @@
       "source_location": "L41",
       "_origin": "ast",
       "id": "tests_gpu_repo_tests_pwm_to_percent",
-      "community": 38,
+      "community": 11,
       "norm_label": "pwm_to_percent()"
+    },
+    {
+      "label": "history_blob_roundtrip_tests.rs",
+      "file_type": "code",
+      "source_file": "tests/history_blob_roundtrip_tests.rs",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "tests_history_blob_roundtrip_tests",
+      "community": 7,
+      "norm_label": "history_blob_roundtrip_tests.rs"
+    },
+    {
+      "label": "gpu()",
+      "file_type": "code",
+      "source_file": "tests/history_blob_roundtrip_tests.rs",
+      "source_location": "L8",
+      "_origin": "ast",
+      "id": "tests_history_blob_roundtrip_tests_gpu",
+      "community": 7,
+      "norm_label": "gpu()"
+    },
+    {
+      "label": "smart()",
+      "file_type": "code",
+      "source_file": "tests/history_blob_roundtrip_tests.rs",
+      "source_location": "L22",
+      "_origin": "ast",
+      "id": "tests_history_blob_roundtrip_tests_smart",
+      "community": 7,
+      "norm_label": "smart()"
+    },
+    {
+      "label": "snapshot()",
+      "file_type": "code",
+      "source_file": "tests/history_blob_roundtrip_tests.rs",
+      "source_location": "L34",
+      "_origin": "ast",
+      "id": "tests_history_blob_roundtrip_tests_snapshot",
+      "community": 7,
+      "norm_label": "snapshot()"
+    },
+    {
+      "label": "raw_snapshot_round_trip_preserves_gpu_and_smart()",
+      "file_type": "code",
+      "source_file": "tests/history_blob_roundtrip_tests.rs",
+      "source_location": "L49",
+      "_origin": "ast",
+      "id": "tests_history_blob_roundtrip_tests_raw_snapshot_round_trip_preserves_gpu_and_smart",
+      "community": 7,
+      "norm_label": "raw_snapshot_round_trip_preserves_gpu_and_smart()"
+    },
+    {
+      "label": "aggregated_snapshot_round_trip_preserves_gpu_and_smart()",
+      "file_type": "code",
+      "source_file": "tests/history_blob_roundtrip_tests.rs",
+      "source_location": "L67",
+      "_origin": "ast",
+      "id": "tests_history_blob_roundtrip_tests_aggregated_snapshot_round_trip_preserves_gpu_and_smart",
+      "community": 7,
+      "norm_label": "aggregated_snapshot_round_trip_preserves_gpu_and_smart()"
     },
     {
       "label": "history_repo_aggregation_tests.rs",
@@ -3891,6 +3971,56 @@
       "id": "tests_history_repo_tests_schema_version_missing_row_with_existing_history_purges",
       "community": 9,
       "norm_label": "schema_version_missing_row_with_existing_history_purges()"
+    },
+    {
+      "label": "history_writer_tests.rs",
+      "file_type": "code",
+      "source_file": "tests/history_writer_tests.rs",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "tests_history_writer_tests",
+      "community": 1,
+      "norm_label": "history_writer_tests.rs"
+    },
+    {
+      "label": "snapshot_with_gpu_smart()",
+      "file_type": "code",
+      "source_file": "tests/history_writer_tests.rs",
+      "source_location": "L11",
+      "_origin": "ast",
+      "id": "tests_history_writer_tests_snapshot_with_gpu_smart",
+      "community": 1,
+      "norm_label": "snapshot_with_gpu_smart()"
+    },
+    {
+      "label": "persist_and_read()",
+      "file_type": "code",
+      "source_file": "tests/history_writer_tests.rs",
+      "source_location": "L32",
+      "_origin": "ast",
+      "id": "tests_history_writer_tests_persist_and_read",
+      "community": 1,
+      "norm_label": "persist_and_read()"
+    },
+    {
+      "label": "persist_flags_off_strips_gpu_and_smart()",
+      "file_type": "code",
+      "source_file": "tests/history_writer_tests.rs",
+      "source_location": "L67",
+      "_origin": "ast",
+      "id": "tests_history_writer_tests_persist_flags_off_strips_gpu_and_smart",
+      "community": 1,
+      "norm_label": "persist_flags_off_strips_gpu_and_smart()"
+    },
+    {
+      "label": "persist_flags_on_keeps_gpu_and_smart()",
+      "file_type": "code",
+      "source_file": "tests/history_writer_tests.rs",
+      "source_location": "L77",
+      "_origin": "ast",
+      "id": "tests_history_writer_tests_persist_flags_on_keeps_gpu_and_smart",
+      "community": 1,
+      "norm_label": "persist_flags_on_keeps_gpu_and_smart()"
     },
     {
       "label": "integration_tests.rs",
@@ -7889,9 +8019,9 @@
       "source_location": "L7",
       "weight": 1.0,
       "context": "return_type",
+      "confidence_score": 1.0,
       "source": "alerting_metrics_extract_metric",
-      "target": "option",
-      "confidence_score": 1.0
+      "target": "option"
     },
     {
       "relation": "references",
@@ -7900,9 +8030,9 @@
       "source_location": "L47",
       "weight": 1.0,
       "context": "return_type",
+      "confidence_score": 1.0,
       "source": "alerting_metrics_fold_max",
-      "target": "option",
-      "confidence_score": 1.0
+      "target": "option"
     },
     {
       "relation": "references",
@@ -7911,9 +8041,9 @@
       "source_location": "L35",
       "weight": 1.0,
       "context": "field",
+      "confidence_score": 1.0,
       "source": "alerting_mod_rulestate",
-      "target": "option",
-      "confidence_score": 1.0
+      "target": "option"
     },
     {
       "relation": "references",
@@ -7922,9 +8052,9 @@
       "source_location": "L10",
       "weight": 1.0,
       "context": "field",
+      "confidence_score": 1.0,
       "source": "alerting_notify_notifier",
-      "target": "option",
-      "confidence_score": 1.0
+      "target": "option"
     },
     {
       "relation": "references",
@@ -7933,9 +8063,9 @@
       "source_location": "L14",
       "weight": 1.0,
       "context": "parameter_type",
+      "confidence_score": 1.0,
       "source": "alerting_notify_notifier_new",
-      "target": "option",
-      "confidence_score": 1.0
+      "target": "option"
     },
     {
       "relation": "references",
@@ -7955,9 +8085,9 @@
       "source_location": "L18",
       "weight": 1.0,
       "context": "field",
+      "confidence_score": 1.0,
       "source": "gpu_repo_mod_gpurepo",
-      "target": "option",
-      "confidence_score": 1.0
+      "target": "option"
     },
     {
       "relation": "references",
@@ -7966,9 +8096,9 @@
       "source_location": "L12",
       "weight": 1.0,
       "context": "return_type",
+      "confidence_score": 1.0,
       "source": "gpu_repo_nvidia_init",
-      "target": "option",
-      "confidence_score": 1.0
+      "target": "option"
     },
     {
       "relation": "references",
@@ -7977,9 +8107,9 @@
       "source_location": "L19",
       "weight": 1.0,
       "context": "return_type",
+      "confidence_score": 1.0,
       "source": "gpu_repo_sysfs_parse_busy_percent",
-      "target": "option",
-      "confidence_score": 1.0
+      "target": "option"
     },
     {
       "relation": "references",
@@ -7988,9 +8118,9 @@
       "source_location": "L33",
       "weight": 1.0,
       "context": "return_type",
+      "confidence_score": 1.0,
       "source": "gpu_repo_sysfs_parse_power_microwatts",
-      "target": "option",
-      "confidence_score": 1.0
+      "target": "option"
     },
     {
       "relation": "references",
@@ -7999,9 +8129,9 @@
       "source_location": "L38",
       "weight": 1.0,
       "context": "return_type",
+      "confidence_score": 1.0,
       "source": "gpu_repo_sysfs_parse_pwm_percent",
-      "target": "option",
-      "confidence_score": 1.0
+      "target": "option"
     },
     {
       "relation": "references",
@@ -8010,9 +8140,9 @@
       "source_location": "L28",
       "weight": 1.0,
       "context": "return_type",
+      "confidence_score": 1.0,
       "source": "gpu_repo_sysfs_parse_u64",
-      "target": "option",
-      "confidence_score": 1.0
+      "target": "option"
     },
     {
       "relation": "references",
@@ -8021,9 +8151,9 @@
       "source_location": "L10",
       "weight": 1.0,
       "context": "return_type",
+      "confidence_score": 1.0,
       "source": "gpu_repo_sysfs_parse_vendor_id",
-      "target": "option",
-      "confidence_score": 1.0
+      "target": "option"
     },
     {
       "relation": "references",
@@ -8032,9 +8162,9 @@
       "source_location": "L123",
       "weight": 1.0,
       "context": "return_type",
+      "confidence_score": 1.0,
       "source": "gpu_repo_sysfs_read_hwmon",
-      "target": "option",
-      "confidence_score": 1.0
+      "target": "option"
     },
     {
       "relation": "references",
@@ -8087,9 +8217,9 @@
       "source_location": "L37",
       "weight": 1.0,
       "context": "parameter_type",
+      "confidence_score": 1.0,
       "source": "history_repo_history_merge_deserialize_gpu_data",
-      "target": "option",
-      "confidence_score": 1.0
+      "target": "option"
     },
     {
       "relation": "references",
@@ -8109,9 +8239,9 @@
       "source_location": "L49",
       "weight": 1.0,
       "context": "parameter_type",
+      "confidence_score": 1.0,
       "source": "history_repo_history_merge_deserialize_smart_data",
-      "target": "option",
-      "confidence_score": 1.0
+      "target": "option"
     },
     {
       "relation": "references",
@@ -8252,9 +8382,9 @@
       "source_location": "L21",
       "weight": 1.0,
       "context": "field",
+      "confidence_score": 1.0,
       "source": "models_gpu_gpustats",
-      "target": "option",
-      "confidence_score": 1.0
+      "target": "option"
     },
     {
       "relation": "references",
@@ -8263,9 +8393,9 @@
       "source_location": "L19",
       "weight": 1.0,
       "context": "field",
+      "confidence_score": 1.0,
       "source": "models_smart_smarthealth",
-      "target": "option",
-      "confidence_score": 1.0
+      "target": "option"
     },
     {
       "relation": "references",
@@ -8318,9 +8448,9 @@
       "source_location": "L65",
       "weight": 1.0,
       "context": "return_type",
+      "confidence_score": 1.0,
       "source": "smart_repo_mod_run_smartctl",
-      "target": "option",
-      "confidence_score": 1.0
+      "target": "option"
     },
     {
       "relation": "references",
@@ -8329,9 +8459,9 @@
       "source_location": "L37",
       "weight": 1.0,
       "context": "return_type",
+      "confidence_score": 1.0,
       "source": "smart_repo_parse_ata_attr_raw",
-      "target": "option",
-      "confidence_score": 1.0
+      "target": "option"
     },
     {
       "relation": "references",
@@ -8340,9 +8470,9 @@
       "source_location": "L23",
       "weight": 1.0,
       "context": "return_type",
+      "confidence_score": 1.0,
       "source": "smart_repo_parse_parse_smartctl_json",
-      "target": "option",
-      "confidence_score": 1.0
+      "target": "option"
     },
     {
       "relation": "references",
@@ -8351,9 +8481,9 @@
       "source_location": "L47",
       "weight": 1.0,
       "context": "return_type",
+      "confidence_score": 1.0,
       "source": "smart_repo_parse_wear_level",
-      "target": "option",
-      "confidence_score": 1.0
+      "target": "option"
     },
     {
       "relation": "references",
@@ -8362,9 +8492,9 @@
       "source_location": "L30",
       "weight": 1.0,
       "context": "field",
+      "confidence_score": 1.0,
       "source": "src_config_alertsconfig",
-      "target": "option",
-      "confidence_score": 1.0
+      "target": "option"
     },
     {
       "relation": "references",
@@ -8406,9 +8536,9 @@
       "source_location": "L25",
       "weight": 1.0,
       "context": "field",
+      "confidence_score": 1.0,
       "source": "alerting_mod_alertevent",
-      "target": "string",
-      "confidence_score": 1.0
+      "target": "string"
     },
     {
       "relation": "references",
@@ -8417,9 +8547,9 @@
       "source_location": "L10",
       "weight": 1.0,
       "context": "generic_arg",
+      "confidence_score": 1.0,
       "source": "alerting_notify_notifier",
-      "target": "string",
-      "confidence_score": 1.0
+      "target": "string"
     },
     {
       "relation": "references",
@@ -8428,9 +8558,9 @@
       "source_location": "L14",
       "weight": 1.0,
       "context": "generic_arg",
+      "confidence_score": 1.0,
       "source": "alerting_notify_notifier_new",
-      "target": "string",
-      "confidence_score": 1.0
+      "target": "string"
     },
     {
       "relation": "references",
@@ -8538,9 +8668,9 @@
       "source_location": "L13",
       "weight": 1.0,
       "context": "field",
+      "confidence_score": 1.0,
       "source": "models_gpu_gpustats",
-      "target": "string",
-      "confidence_score": 1.0
+      "target": "string"
     },
     {
       "relation": "references",
@@ -8560,9 +8690,9 @@
       "source_location": "L11",
       "weight": 1.0,
       "context": "field",
+      "confidence_score": 1.0,
       "source": "models_smart_smarthealth",
-      "target": "string",
-      "confidence_score": 1.0
+      "target": "string"
     },
     {
       "relation": "references",
@@ -8637,9 +8767,9 @@
       "source_location": "L65",
       "weight": 1.0,
       "context": "generic_arg",
+      "confidence_score": 1.0,
       "source": "smart_repo_mod_run_smartctl",
-      "target": "string",
-      "confidence_score": 1.0
+      "target": "string"
     },
     {
       "relation": "references",
@@ -8648,9 +8778,9 @@
       "source_location": "L7",
       "weight": 1.0,
       "context": "generic_arg",
+      "confidence_score": 1.0,
       "source": "smart_repo_parse_parse_scan_devices",
-      "target": "string",
-      "confidence_score": 1.0
+      "target": "string"
     },
     {
       "relation": "references",
@@ -8659,9 +8789,9 @@
       "source_location": "L44",
       "weight": 1.0,
       "context": "field",
+      "confidence_score": 1.0,
       "source": "src_config_alertrule",
-      "target": "string",
-      "confidence_score": 1.0
+      "target": "string"
     },
     {
       "relation": "references",
@@ -8670,9 +8800,9 @@
       "source_location": "L30",
       "weight": 1.0,
       "context": "generic_arg",
+      "confidence_score": 1.0,
       "source": "src_config_alertsconfig",
-      "target": "string",
-      "confidence_score": 1.0
+      "target": "string"
     },
     {
       "relation": "references",
@@ -8846,9 +8976,9 @@
       "source_location": "L14",
       "weight": 1.0,
       "context": "field",
+      "confidence_score": 1.0,
       "source": "smart_repo_mod_smartrepo",
-      "target": "arc",
-      "confidence_score": 1.0
+      "target": "arc"
     },
     {
       "relation": "references",
@@ -8915,6 +9045,17 @@
       "confidence_score": 1.0,
       "source": "sysinfo_repo_mod_sysinforepo",
       "target": "arc"
+    },
+    {
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/history_writer_tests.rs",
+      "source_location": "L7",
+      "weight": 1.0,
+      "context": "import",
+      "source": "tests_history_writer_tests",
+      "target": "arc",
+      "confidence_score": 1.0
     },
     {
       "relation": "imports_from",
@@ -9095,6 +9236,17 @@
     {
       "relation": "imports_from",
       "confidence": "EXTRACTED",
+      "source_file": "tests/history_blob_roundtrip_tests.rs",
+      "source_location": "L4",
+      "weight": 1.0,
+      "context": "import",
+      "source": "tests_history_blob_roundtrip_tests",
+      "target": "historyrepo",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
       "source_file": "tests/history_repo_aggregation_tests.rs",
       "source_location": "L4",
       "weight": 1.0,
@@ -9113,6 +9265,17 @@
       "confidence_score": 1.0,
       "source": "tests_history_repo_migration_tests",
       "target": "historyrepo"
+    },
+    {
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/history_writer_tests.rs",
+      "source_location": "L4",
+      "weight": 1.0,
+      "context": "import",
+      "source": "tests_history_writer_tests",
+      "target": "historyrepo",
+      "confidence_score": 1.0
     },
     {
       "relation": "imports_from",
@@ -9362,9 +9525,9 @@
       "source_file": "src/alerting/metrics.rs",
       "source_location": "L37",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "alerting_metrics",
-      "target": "alerting_metrics_compare",
-      "confidence_score": 1.0
+      "target": "alerting_metrics_compare"
     },
     {
       "relation": "contains",
@@ -9372,9 +9535,9 @@
       "source_file": "src/alerting/metrics.rs",
       "source_location": "L7",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "alerting_metrics",
-      "target": "alerting_metrics_extract_metric",
-      "confidence_score": 1.0
+      "target": "alerting_metrics_extract_metric"
     },
     {
       "relation": "contains",
@@ -9382,9 +9545,9 @@
       "source_file": "src/alerting/metrics.rs",
       "source_location": "L47",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "alerting_metrics",
-      "target": "alerting_metrics_fold_max",
-      "confidence_score": 1.0
+      "target": "alerting_metrics_fold_max"
     },
     {
       "relation": "imports_from",
@@ -9393,9 +9556,9 @@
       "source_location": "L3",
       "weight": 1.0,
       "context": "import",
+      "confidence_score": 1.0,
       "source": "alerting_metrics",
-      "target": "models_system_fullsystemsnapshot",
-      "confidence_score": 1.0
+      "target": "models_system_fullsystemsnapshot"
     },
     {
       "relation": "references",
@@ -9404,9 +9567,9 @@
       "source_location": "L7",
       "weight": 1.0,
       "context": "parameter_type",
+      "confidence_score": 1.0,
       "source": "alerting_metrics_extract_metric",
-      "target": "models_system_fullsystemsnapshot",
-      "confidence_score": 1.0
+      "target": "models_system_fullsystemsnapshot"
     },
     {
       "relation": "calls",
@@ -9436,9 +9599,9 @@
       "source_file": "src/alerting/mod.rs",
       "source_location": "L39",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "alerting_mod",
-      "target": "alerting_mod_alertengine",
-      "confidence_score": 1.0
+      "target": "alerting_mod_alertengine"
     },
     {
       "relation": "contains",
@@ -9446,9 +9609,9 @@
       "source_file": "src/alerting/mod.rs",
       "source_location": "L22",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "alerting_mod",
-      "target": "alerting_mod_alertevent",
-      "confidence_score": 1.0
+      "target": "alerting_mod_alertevent"
     },
     {
       "relation": "contains",
@@ -9456,9 +9619,9 @@
       "source_file": "src/alerting/mod.rs",
       "source_location": "L15",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "alerting_mod",
-      "target": "alerting_mod_alertstate",
-      "confidence_score": 1.0
+      "target": "alerting_mod_alertstate"
     },
     {
       "relation": "contains",
@@ -9466,9 +9629,9 @@
       "source_file": "src/alerting/mod.rs",
       "source_location": "L87",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "alerting_mod",
-      "target": "alerting_mod_event",
-      "confidence_score": 1.0
+      "target": "alerting_mod_event"
     },
     {
       "relation": "contains",
@@ -9476,9 +9639,9 @@
       "source_file": "src/alerting/mod.rs",
       "source_location": "L32",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "alerting_mod",
-      "target": "alerting_mod_rulestate",
-      "confidence_score": 1.0
+      "target": "alerting_mod_rulestate"
     },
     {
       "relation": "imports_from",
@@ -9487,9 +9650,9 @@
       "source_location": "L8",
       "weight": 1.0,
       "context": "import",
+      "confidence_score": 1.0,
       "source": "alerting_mod",
-      "target": "alerting_notify_notifier",
-      "confidence_score": 1.0
+      "target": "alerting_notify_notifier"
     },
     {
       "relation": "imports_from",
@@ -9498,9 +9661,9 @@
       "source_location": "L11",
       "weight": 1.0,
       "context": "import",
+      "confidence_score": 1.0,
       "source": "alerting_mod",
-      "target": "models_system_fullsystemsnapshot",
-      "confidence_score": 1.0
+      "target": "models_system_fullsystemsnapshot"
     },
     {
       "relation": "imports_from",
@@ -9509,9 +9672,9 @@
       "source_location": "L10",
       "weight": 1.0,
       "context": "import",
+      "confidence_score": 1.0,
       "source": "alerting_mod",
-      "target": "src_config_alertrule",
-      "confidence_score": 1.0
+      "target": "src_config_alertrule"
     },
     {
       "relation": "references",
@@ -9520,9 +9683,9 @@
       "source_location": "L28",
       "weight": 1.0,
       "context": "field",
+      "confidence_score": 1.0,
       "source": "alerting_mod_alertevent",
-      "target": "alerting_mod_alertstate",
-      "confidence_score": 1.0
+      "target": "alerting_mod_alertstate"
     },
     {
       "relation": "references",
@@ -9531,9 +9694,9 @@
       "source_location": "L87",
       "weight": 1.0,
       "context": "parameter_type",
+      "confidence_score": 1.0,
       "source": "alerting_mod_event",
-      "target": "alerting_mod_alertstate",
-      "confidence_score": 1.0
+      "target": "alerting_mod_alertstate"
     },
     {
       "relation": "references",
@@ -9542,9 +9705,9 @@
       "source_location": "L57",
       "weight": 1.0,
       "context": "generic_arg",
+      "confidence_score": 1.0,
       "source": "alerting_mod_alertengine_evaluate",
-      "target": "alerting_mod_alertevent",
-      "confidence_score": 1.0
+      "target": "alerting_mod_alertevent"
     },
     {
       "relation": "references",
@@ -9553,9 +9716,9 @@
       "source_location": "L87",
       "weight": 1.0,
       "context": "return_type",
+      "confidence_score": 1.0,
       "source": "alerting_mod_event",
-      "target": "alerting_mod_alertevent",
-      "confidence_score": 1.0
+      "target": "alerting_mod_alertevent"
     },
     {
       "relation": "references",
@@ -9564,9 +9727,9 @@
       "source_location": "L22",
       "weight": 1.0,
       "context": "parameter_type",
+      "confidence_score": 1.0,
       "source": "alerting_notify_notifier_notify",
-      "target": "alerting_mod_alertevent",
-      "confidence_score": 1.0
+      "target": "alerting_mod_alertevent"
     },
     {
       "relation": "references",
@@ -9575,9 +9738,9 @@
       "source_location": "L41",
       "weight": 1.0,
       "context": "generic_arg",
+      "confidence_score": 1.0,
       "source": "alerting_mod_alertengine",
-      "target": "alerting_mod_rulestate",
-      "confidence_score": 1.0
+      "target": "alerting_mod_rulestate"
     },
     {
       "relation": "references",
@@ -9586,9 +9749,9 @@
       "source_location": "L35",
       "weight": 1.0,
       "context": "generic_arg",
+      "confidence_score": 1.0,
       "source": "alerting_mod_rulestate",
-      "target": "instant",
-      "confidence_score": 1.0
+      "target": "instant"
     },
     {
       "relation": "references",
@@ -9597,9 +9760,9 @@
       "source_location": "L57",
       "weight": 1.0,
       "context": "parameter_type",
+      "confidence_score": 1.0,
       "source": "alerting_mod_alertengine_evaluate",
-      "target": "instant",
-      "confidence_score": 1.0
+      "target": "instant"
     },
     {
       "relation": "imports_from",
@@ -9640,9 +9803,9 @@
       "source_file": "src/alerting/mod.rs",
       "source_location": "L57",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "alerting_mod_alertengine",
-      "target": "alerting_mod_alertengine_evaluate",
-      "confidence_score": 1.0
+      "target": "alerting_mod_alertengine_evaluate"
     },
     {
       "relation": "method",
@@ -9650,9 +9813,9 @@
       "source_file": "src/alerting/mod.rs",
       "source_location": "L50",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "alerting_mod_alertengine",
-      "target": "alerting_mod_alertengine_is_empty",
-      "confidence_score": 1.0
+      "target": "alerting_mod_alertengine_is_empty"
     },
     {
       "relation": "method",
@@ -9660,9 +9823,9 @@
       "source_file": "src/alerting/mod.rs",
       "source_location": "L45",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "alerting_mod_alertengine",
-      "target": "alerting_mod_alertengine_new",
-      "confidence_score": 1.0
+      "target": "alerting_mod_alertengine_new"
     },
     {
       "relation": "references",
@@ -9671,9 +9834,9 @@
       "source_location": "L40",
       "weight": 1.0,
       "context": "generic_arg",
+      "confidence_score": 1.0,
       "source": "alerting_mod_alertengine",
-      "target": "src_config_alertrule",
-      "confidence_score": 1.0
+      "target": "src_config_alertrule"
     },
     {
       "relation": "references",
@@ -9682,9 +9845,9 @@
       "source_location": "L41",
       "weight": 1.0,
       "context": "field",
+      "confidence_score": 1.0,
       "source": "alerting_mod_alertengine",
-      "target": "vec",
-      "confidence_score": 1.0
+      "target": "vec"
     },
     {
       "relation": "references",
@@ -9693,9 +9856,9 @@
       "source_location": "L39",
       "weight": 1.0,
       "context": "field",
+      "confidence_score": 1.0,
       "source": "worker_mod_workerdeps",
-      "target": "alerting_mod_alertengine",
-      "confidence_score": 1.0
+      "target": "alerting_mod_alertengine"
     },
     {
       "relation": "references",
@@ -9704,9 +9867,9 @@
       "source_location": "L57",
       "weight": 1.0,
       "context": "return_type",
+      "confidence_score": 1.0,
       "source": "alerting_mod_alertengine_evaluate",
-      "target": "vec",
-      "confidence_score": 1.0
+      "target": "vec"
     },
     {
       "relation": "references",
@@ -9715,9 +9878,9 @@
       "source_location": "L45",
       "weight": 1.0,
       "context": "parameter_type",
+      "confidence_score": 1.0,
       "source": "alerting_mod_alertengine_new",
-      "target": "vec",
-      "confidence_score": 1.0
+      "target": "vec"
     },
     {
       "relation": "references",
@@ -9748,9 +9911,9 @@
       "source_location": "L30",
       "weight": 1.0,
       "context": "return_type",
+      "confidence_score": 1.0,
       "source": "gpu_repo_mod_gpurepo_collect",
-      "target": "vec",
-      "confidence_score": 1.0
+      "target": "vec"
     },
     {
       "relation": "references",
@@ -9759,9 +9922,9 @@
       "source_location": "L23",
       "weight": 1.0,
       "context": "return_type",
+      "confidence_score": 1.0,
       "source": "gpu_repo_nvidia_collect",
-      "target": "vec",
-      "confidence_score": 1.0
+      "target": "vec"
     },
     {
       "relation": "references",
@@ -9770,9 +9933,9 @@
       "source_location": "L47",
       "weight": 1.0,
       "context": "return_type",
+      "confidence_score": 1.0,
       "source": "gpu_repo_sysfs_collect",
-      "target": "vec",
-      "confidence_score": 1.0
+      "target": "vec"
     },
     {
       "relation": "references",
@@ -9781,9 +9944,9 @@
       "source_location": "L59",
       "weight": 1.0,
       "context": "return_type",
+      "confidence_score": 1.0,
       "source": "gpu_repo_sysfs_collect_linux",
-      "target": "vec",
-      "confidence_score": 1.0
+      "target": "vec"
     },
     {
       "relation": "references",
@@ -9847,9 +10010,9 @@
       "source_location": "L37",
       "weight": 1.0,
       "context": "return_type",
+      "confidence_score": 1.0,
       "source": "history_repo_history_merge_deserialize_gpu_data",
-      "target": "vec",
-      "confidence_score": 1.0
+      "target": "vec"
     },
     {
       "relation": "references",
@@ -9858,9 +10021,9 @@
       "source_location": "L49",
       "weight": 1.0,
       "context": "return_type",
+      "confidence_score": 1.0,
       "source": "history_repo_history_merge_deserialize_smart_data",
-      "target": "vec",
-      "confidence_score": 1.0
+      "target": "vec"
     },
     {
       "relation": "references",
@@ -9990,9 +10153,9 @@
       "source_location": "L14",
       "weight": 1.0,
       "context": "generic_arg",
+      "confidence_score": 1.0,
       "source": "smart_repo_mod_smartrepo",
-      "target": "vec",
-      "confidence_score": 1.0
+      "target": "vec"
     },
     {
       "relation": "references",
@@ -10001,9 +10164,9 @@
       "source_location": "L25",
       "weight": 1.0,
       "context": "return_type",
+      "confidence_score": 1.0,
       "source": "smart_repo_mod_smartrepo_current",
-      "target": "vec",
-      "confidence_score": 1.0
+      "target": "vec"
     },
     {
       "relation": "references",
@@ -10012,9 +10175,9 @@
       "source_location": "L7",
       "weight": 1.0,
       "context": "return_type",
+      "confidence_score": 1.0,
       "source": "smart_repo_parse_parse_scan_devices",
-      "target": "vec",
-      "confidence_score": 1.0
+      "target": "vec"
     },
     {
       "relation": "references",
@@ -10023,9 +10186,9 @@
       "source_location": "L32",
       "weight": 1.0,
       "context": "field",
+      "confidence_score": 1.0,
       "source": "src_config_alertsconfig",
-      "target": "vec",
-      "confidence_score": 1.0
+      "target": "vec"
     },
     {
       "relation": "references",
@@ -10045,9 +10208,9 @@
       "source_file": "src/alerting/mod.rs",
       "source_location": "L58",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "alerting_mod_alertengine_evaluate",
-      "target": "alerting_mod_alertengine_new",
-      "confidence_score": 1.0
+      "target": "alerting_mod_alertengine_new"
     },
     {
       "relation": "references",
@@ -10056,9 +10219,9 @@
       "source_location": "L45",
       "weight": 1.0,
       "context": "return_type",
+      "confidence_score": 1.0,
       "source": "alerting_mod_alertengine_new",
-      "target": "self",
-      "confidence_score": 1.0
+      "target": "self"
     },
     {
       "relation": "references",
@@ -10067,9 +10230,9 @@
       "source_location": "L45",
       "weight": 1.0,
       "context": "generic_arg",
+      "confidence_score": 1.0,
       "source": "alerting_mod_alertengine_new",
-      "target": "src_config_alertrule",
-      "confidence_score": 1.0
+      "target": "src_config_alertrule"
     },
     {
       "relation": "references",
@@ -10078,9 +10241,9 @@
       "source_location": "L14",
       "weight": 1.0,
       "context": "return_type",
+      "confidence_score": 1.0,
       "source": "alerting_notify_notifier_new",
-      "target": "self",
-      "confidence_score": 1.0
+      "target": "self"
     },
     {
       "relation": "references",
@@ -10100,9 +10263,9 @@
       "source_location": "L42",
       "weight": 1.0,
       "context": "return_type",
+      "confidence_score": 1.0,
       "source": "gpu_repo_mod_gpurepo_default",
-      "target": "self",
-      "confidence_score": 1.0
+      "target": "self"
     },
     {
       "relation": "references",
@@ -10111,9 +10274,9 @@
       "source_location": "L22",
       "weight": 1.0,
       "context": "return_type",
+      "confidence_score": 1.0,
       "source": "gpu_repo_mod_gpurepo_new",
-      "target": "self",
-      "confidence_score": 1.0
+      "target": "self"
     },
     {
       "relation": "references",
@@ -10144,9 +10307,9 @@
       "source_location": "L58",
       "weight": 1.0,
       "context": "return_type",
+      "confidence_score": 1.0,
       "source": "smart_repo_mod_smartrepo_default",
-      "target": "self",
-      "confidence_score": 1.0
+      "target": "self"
     },
     {
       "relation": "references",
@@ -10155,9 +10318,9 @@
       "source_location": "L18",
       "weight": 1.0,
       "context": "return_type",
+      "confidence_score": 1.0,
       "source": "smart_repo_mod_smartrepo_new",
-      "target": "self",
-      "confidence_score": 1.0
+      "target": "self"
     },
     {
       "relation": "references",
@@ -10210,9 +10373,9 @@
       "source_file": "src/alerting/mod.rs",
       "source_location": "L73",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "alerting_mod_alertengine_evaluate",
-      "target": "alerting_mod_event",
-      "confidence_score": 1.0
+      "target": "alerting_mod_event"
     },
     {
       "relation": "references",
@@ -10221,9 +10384,9 @@
       "source_location": "L57",
       "weight": 1.0,
       "context": "parameter_type",
+      "confidence_score": 1.0,
       "source": "alerting_mod_alertengine_evaluate",
-      "target": "models_system_fullsystemsnapshot",
-      "confidence_score": 1.0
+      "target": "models_system_fullsystemsnapshot"
     },
     {
       "relation": "references",
@@ -10232,9 +10395,9 @@
       "source_location": "L87",
       "weight": 1.0,
       "context": "parameter_type",
+      "confidence_score": 1.0,
       "source": "alerting_mod_event",
-      "target": "src_config_alertrule",
-      "confidence_score": 1.0
+      "target": "src_config_alertrule"
     },
     {
       "relation": "contains",
@@ -10242,9 +10405,9 @@
       "source_file": "src/alerting/notify.rs",
       "source_location": "L8",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "alerting_notify",
-      "target": "alerting_notify_notifier",
-      "confidence_score": 1.0
+      "target": "alerting_notify_notifier"
     },
     {
       "relation": "method",
@@ -10252,9 +10415,9 @@
       "source_file": "src/alerting/notify.rs",
       "source_location": "L14",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "alerting_notify_notifier",
-      "target": "alerting_notify_notifier_new",
-      "confidence_score": 1.0
+      "target": "alerting_notify_notifier_new"
     },
     {
       "relation": "method",
@@ -10262,9 +10425,9 @@
       "source_file": "src/alerting/notify.rs",
       "source_location": "L22",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "alerting_notify_notifier",
-      "target": "alerting_notify_notifier_notify",
-      "confidence_score": 1.0
+      "target": "alerting_notify_notifier_notify"
     },
     {
       "relation": "references",
@@ -10273,9 +10436,9 @@
       "source_location": "L9",
       "weight": 1.0,
       "context": "generic_arg",
+      "confidence_score": 1.0,
       "source": "alerting_notify_notifier",
-      "target": "client",
-      "confidence_score": 1.0
+      "target": "client"
     },
     {
       "relation": "references",
@@ -10284,9 +10447,9 @@
       "source_location": "L40",
       "weight": 1.0,
       "context": "field",
+      "confidence_score": 1.0,
       "source": "worker_mod_workerdeps",
-      "target": "alerting_notify_notifier",
-      "confidence_score": 1.0
+      "target": "alerting_notify_notifier"
     },
     {
       "relation": "contains",
@@ -10304,9 +10467,9 @@
       "source_file": "src/config.rs",
       "source_location": "L38",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_config",
-      "target": "src_config_alertrule",
-      "confidence_score": 1.0
+      "target": "src_config_alertrule"
     },
     {
       "relation": "contains",
@@ -10314,9 +10477,9 @@
       "source_file": "src/config.rs",
       "source_location": "L28",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_config",
-      "target": "src_config_alertsconfig",
-      "confidence_score": 1.0
+      "target": "src_config_alertsconfig"
     },
     {
       "relation": "contains",
@@ -10354,9 +10517,9 @@
       "source_file": "src/config.rs",
       "source_location": "L52",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_config",
-      "target": "src_config_default_cooldown_secs",
-      "confidence_score": 1.0
+      "target": "src_config_default_cooldown_secs"
     },
     {
       "relation": "contains",
@@ -10424,9 +10587,9 @@
       "source_file": "src/config.rs",
       "source_location": "L113",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_config",
-      "target": "src_config_default_smart_poll_interval_secs",
-      "confidence_score": 1.0
+      "target": "src_config_default_smart_poll_interval_secs"
     },
     {
       "relation": "contains",
@@ -10434,9 +10597,9 @@
       "source_file": "src/config.rs",
       "source_location": "L109",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_config",
-      "target": "src_config_default_true",
-      "confidence_score": 1.0
+      "target": "src_config_default_true"
     },
     {
       "relation": "contains",
@@ -10539,9 +10702,9 @@
       "source_location": "L22",
       "weight": 1.0,
       "context": "field",
+      "confidence_score": 1.0,
       "source": "src_config_appconfig",
-      "target": "src_config_alertsconfig",
-      "confidence_score": 1.0
+      "target": "src_config_alertsconfig"
     },
     {
       "relation": "method",
@@ -10657,9 +10820,9 @@
       "source_location": "L32",
       "weight": 1.0,
       "context": "generic_arg",
+      "confidence_score": 1.0,
       "source": "src_config_alertsconfig",
-      "target": "src_config_alertrule",
-      "confidence_score": 1.0
+      "target": "src_config_alertrule"
     },
     {
       "relation": "imports_from",
@@ -10668,9 +10831,9 @@
       "source_location": "L5",
       "weight": 1.0,
       "context": "import",
+      "confidence_score": 1.0,
       "source": "tests_alerting_tests",
-      "target": "src_config_alertrule",
-      "confidence_score": 1.0
+      "target": "src_config_alertrule"
     },
     {
       "relation": "references",
@@ -10679,9 +10842,9 @@
       "source_location": "L50",
       "weight": 1.0,
       "context": "return_type",
+      "confidence_score": 1.0,
       "source": "tests_alerting_tests_rule",
-      "target": "src_config_alertrule",
-      "confidence_score": 1.0
+      "target": "src_config_alertrule"
     },
     {
       "relation": "calls",
@@ -11057,9 +11220,9 @@
       "source_file": "src/gpu_repo/mod.rs",
       "source_location": "L16",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "gpu_repo_mod",
-      "target": "gpu_repo_mod_gpurepo",
-      "confidence_score": 1.0
+      "target": "gpu_repo_mod_gpurepo"
     },
     {
       "relation": "imports_from",
@@ -11068,9 +11231,9 @@
       "source_location": "L13",
       "weight": 1.0,
       "context": "import",
+      "confidence_score": 1.0,
       "source": "gpu_repo_mod",
-      "target": "models_gpu_gpustats",
-      "confidence_score": 1.0
+      "target": "models_gpu_gpustats"
     },
     {
       "relation": "implements",
@@ -11078,9 +11241,9 @@
       "source_file": "src/gpu_repo/mod.rs",
       "source_location": "L41",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "gpu_repo_mod_gpurepo",
-      "target": "default",
-      "confidence_score": 1.0
+      "target": "default"
     },
     {
       "relation": "method",
@@ -11088,9 +11251,9 @@
       "source_file": "src/gpu_repo/mod.rs",
       "source_location": "L30",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "gpu_repo_mod_gpurepo",
-      "target": "gpu_repo_mod_gpurepo_collect",
-      "confidence_score": 1.0
+      "target": "gpu_repo_mod_gpurepo_collect"
     },
     {
       "relation": "method",
@@ -11098,9 +11261,9 @@
       "source_file": "src/gpu_repo/mod.rs",
       "source_location": "L42",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "gpu_repo_mod_gpurepo",
-      "target": "gpu_repo_mod_gpurepo_default",
-      "confidence_score": 1.0
+      "target": "gpu_repo_mod_gpurepo_default"
     },
     {
       "relation": "method",
@@ -11108,9 +11271,9 @@
       "source_file": "src/gpu_repo/mod.rs",
       "source_location": "L22",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "gpu_repo_mod_gpurepo",
-      "target": "gpu_repo_mod_gpurepo_new",
-      "confidence_score": 1.0
+      "target": "gpu_repo_mod_gpurepo_new"
     },
     {
       "relation": "references",
@@ -11119,9 +11282,9 @@
       "source_location": "L18",
       "weight": 1.0,
       "context": "generic_arg",
+      "confidence_score": 1.0,
       "source": "gpu_repo_mod_gpurepo",
-      "target": "gpu_repo_nvidia_nvmlhandle",
-      "confidence_score": 1.0
+      "target": "gpu_repo_nvidia_nvmlhandle"
     },
     {
       "relation": "imports_from",
@@ -11130,9 +11293,9 @@
       "source_location": "L4",
       "weight": 1.0,
       "context": "import",
+      "confidence_score": 1.0,
       "source": "tests_worker_tests",
-      "target": "gpu_repo_mod_gpurepo",
-      "confidence_score": 1.0
+      "target": "gpu_repo_mod_gpurepo"
     },
     {
       "relation": "imports_from",
@@ -11141,9 +11304,9 @@
       "source_location": "L8",
       "weight": 1.0,
       "context": "import",
+      "confidence_score": 1.0,
       "source": "worker_mod",
-      "target": "gpu_repo_mod_gpurepo",
-      "confidence_score": 1.0
+      "target": "gpu_repo_mod_gpurepo"
     },
     {
       "relation": "references",
@@ -11152,9 +11315,9 @@
       "source_location": "L32",
       "weight": 1.0,
       "context": "generic_arg",
+      "confidence_score": 1.0,
       "source": "worker_mod_workerdeps",
-      "target": "gpu_repo_mod_gpurepo",
-      "confidence_score": 1.0
+      "target": "gpu_repo_mod_gpurepo"
     },
     {
       "relation": "calls",
@@ -11163,9 +11326,9 @@
       "source_file": "src/gpu_repo/mod.rs",
       "source_location": "L31",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "gpu_repo_mod_gpurepo_collect",
-      "target": "gpu_repo_mod_gpurepo_new",
-      "confidence_score": 1.0
+      "target": "gpu_repo_mod_gpurepo_new"
     },
     {
       "relation": "calls",
@@ -11174,9 +11337,9 @@
       "source_file": "src/gpu_repo/mod.rs",
       "source_location": "L43",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "gpu_repo_mod_gpurepo_default",
-      "target": "gpu_repo_mod_gpurepo_new",
-      "confidence_score": 1.0
+      "target": "gpu_repo_mod_gpurepo_new"
     },
     {
       "relation": "references",
@@ -11185,9 +11348,9 @@
       "source_location": "L30",
       "weight": 1.0,
       "context": "generic_arg",
+      "confidence_score": 1.0,
       "source": "gpu_repo_mod_gpurepo_collect",
-      "target": "models_gpu_gpustats",
-      "confidence_score": 1.0
+      "target": "models_gpu_gpustats"
     },
     {
       "relation": "implements",
@@ -11195,9 +11358,9 @@
       "source_file": "src/smart_repo/mod.rs",
       "source_location": "L57",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "smart_repo_mod_smartrepo",
-      "target": "default",
-      "confidence_score": 1.0
+      "target": "default"
     },
     {
       "relation": "implements",
@@ -11215,9 +11378,9 @@
       "source_file": "src/gpu_repo/nvidia.rs",
       "source_location": "L23",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "gpu_repo_nvidia",
-      "target": "gpu_repo_nvidia_collect",
-      "confidence_score": 1.0
+      "target": "gpu_repo_nvidia_collect"
     },
     {
       "relation": "contains",
@@ -11225,9 +11388,9 @@
       "source_file": "src/gpu_repo/nvidia.rs",
       "source_location": "L12",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "gpu_repo_nvidia",
-      "target": "gpu_repo_nvidia_init",
-      "confidence_score": 1.0
+      "target": "gpu_repo_nvidia_init"
     },
     {
       "relation": "contains",
@@ -11235,9 +11398,9 @@
       "source_file": "src/gpu_repo/nvidia.rs",
       "source_location": "L9",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "gpu_repo_nvidia",
-      "target": "gpu_repo_nvidia_nvmlhandle",
-      "confidence_score": 1.0
+      "target": "gpu_repo_nvidia_nvmlhandle"
     },
     {
       "relation": "imports_from",
@@ -11246,9 +11409,9 @@
       "source_location": "L4",
       "weight": 1.0,
       "context": "import",
+      "confidence_score": 1.0,
       "source": "gpu_repo_nvidia",
-      "target": "models_gpu_gpustats",
-      "confidence_score": 1.0
+      "target": "models_gpu_gpustats"
     },
     {
       "relation": "references",
@@ -11257,9 +11420,9 @@
       "source_location": "L23",
       "weight": 1.0,
       "context": "parameter_type",
+      "confidence_score": 1.0,
       "source": "gpu_repo_nvidia_collect",
-      "target": "gpu_repo_nvidia_nvmlhandle",
-      "confidence_score": 1.0
+      "target": "gpu_repo_nvidia_nvmlhandle"
     },
     {
       "relation": "references",
@@ -11268,9 +11431,9 @@
       "source_file": "src/gpu_repo/nvidia.rs",
       "source_location": "L12",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "gpu_repo_nvidia_init",
-      "target": "gpu_repo_nvidia_nvmlhandle",
-      "confidence_score": 1.0
+      "target": "gpu_repo_nvidia_nvmlhandle"
     },
     {
       "relation": "references",
@@ -11279,9 +11442,9 @@
       "source_location": "L23",
       "weight": 1.0,
       "context": "generic_arg",
+      "confidence_score": 1.0,
       "source": "gpu_repo_nvidia_collect",
-      "target": "models_gpu_gpustats",
-      "confidence_score": 1.0
+      "target": "models_gpu_gpustats"
     },
     {
       "relation": "contains",
@@ -11289,9 +11452,9 @@
       "source_file": "src/gpu_repo/sysfs.rs",
       "source_location": "L47",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "gpu_repo_sysfs",
-      "target": "gpu_repo_sysfs_collect",
-      "confidence_score": 1.0
+      "target": "gpu_repo_sysfs_collect"
     },
     {
       "relation": "contains",
@@ -11299,9 +11462,9 @@
       "source_file": "src/gpu_repo/sysfs.rs",
       "source_location": "L59",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "gpu_repo_sysfs",
-      "target": "gpu_repo_sysfs_collect_linux",
-      "confidence_score": 1.0
+      "target": "gpu_repo_sysfs_collect_linux"
     },
     {
       "relation": "contains",
@@ -11309,9 +11472,9 @@
       "source_file": "src/gpu_repo/sysfs.rs",
       "source_location": "L116",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "gpu_repo_sysfs",
-      "target": "gpu_repo_sysfs_is_card_node",
-      "confidence_score": 1.0
+      "target": "gpu_repo_sysfs_is_card_node"
     },
     {
       "relation": "contains",
@@ -11319,9 +11482,9 @@
       "source_file": "src/gpu_repo/sysfs.rs",
       "source_location": "L19",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "gpu_repo_sysfs",
-      "target": "gpu_repo_sysfs_parse_busy_percent",
-      "confidence_score": 1.0
+      "target": "gpu_repo_sysfs_parse_busy_percent"
     },
     {
       "relation": "contains",
@@ -11329,9 +11492,9 @@
       "source_file": "src/gpu_repo/sysfs.rs",
       "source_location": "L33",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "gpu_repo_sysfs",
-      "target": "gpu_repo_sysfs_parse_power_microwatts",
-      "confidence_score": 1.0
+      "target": "gpu_repo_sysfs_parse_power_microwatts"
     },
     {
       "relation": "contains",
@@ -11339,9 +11502,9 @@
       "source_file": "src/gpu_repo/sysfs.rs",
       "source_location": "L38",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "gpu_repo_sysfs",
-      "target": "gpu_repo_sysfs_parse_pwm_percent",
-      "confidence_score": 1.0
+      "target": "gpu_repo_sysfs_parse_pwm_percent"
     },
     {
       "relation": "contains",
@@ -11349,9 +11512,9 @@
       "source_file": "src/gpu_repo/sysfs.rs",
       "source_location": "L28",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "gpu_repo_sysfs",
-      "target": "gpu_repo_sysfs_parse_u64",
-      "confidence_score": 1.0
+      "target": "gpu_repo_sysfs_parse_u64"
     },
     {
       "relation": "contains",
@@ -11359,9 +11522,9 @@
       "source_file": "src/gpu_repo/sysfs.rs",
       "source_location": "L10",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "gpu_repo_sysfs",
-      "target": "gpu_repo_sysfs_parse_vendor_id",
-      "confidence_score": 1.0
+      "target": "gpu_repo_sysfs_parse_vendor_id"
     },
     {
       "relation": "contains",
@@ -11369,9 +11532,9 @@
       "source_file": "src/gpu_repo/sysfs.rs",
       "source_location": "L123",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "gpu_repo_sysfs",
-      "target": "gpu_repo_sysfs_read_hwmon",
-      "confidence_score": 1.0
+      "target": "gpu_repo_sysfs_read_hwmon"
     },
     {
       "relation": "imports_from",
@@ -11380,9 +11543,9 @@
       "source_location": "L6",
       "weight": 1.0,
       "context": "import",
+      "confidence_score": 1.0,
       "source": "gpu_repo_sysfs",
-      "target": "models_gpu_gpustats",
-      "confidence_score": 1.0
+      "target": "models_gpu_gpustats"
     },
     {
       "relation": "calls",
@@ -11391,9 +11554,9 @@
       "source_file": "src/gpu_repo/sysfs.rs",
       "source_location": "L78",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "gpu_repo_sysfs_collect_linux",
-      "target": "gpu_repo_sysfs_parse_vendor_id",
-      "confidence_score": 1.0
+      "target": "gpu_repo_sysfs_parse_vendor_id"
     },
     {
       "relation": "calls",
@@ -11402,9 +11565,9 @@
       "source_file": "src/gpu_repo/sysfs.rs",
       "source_location": "L86",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "gpu_repo_sysfs_collect_linux",
-      "target": "gpu_repo_sysfs_parse_busy_percent",
-      "confidence_score": 1.0
+      "target": "gpu_repo_sysfs_parse_busy_percent"
     },
     {
       "relation": "calls",
@@ -11413,9 +11576,9 @@
       "source_file": "src/gpu_repo/sysfs.rs",
       "source_location": "L90",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "gpu_repo_sysfs_collect_linux",
-      "target": "gpu_repo_sysfs_parse_u64",
-      "confidence_score": 1.0
+      "target": "gpu_repo_sysfs_parse_u64"
     },
     {
       "relation": "calls",
@@ -11424,9 +11587,9 @@
       "source_file": "src/gpu_repo/sysfs.rs",
       "source_location": "L141",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "gpu_repo_sysfs_read_hwmon",
-      "target": "gpu_repo_sysfs_parse_power_microwatts",
-      "confidence_score": 1.0
+      "target": "gpu_repo_sysfs_parse_power_microwatts"
     },
     {
       "relation": "calls",
@@ -11435,9 +11598,9 @@
       "source_file": "src/gpu_repo/sysfs.rs",
       "source_location": "L144",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "gpu_repo_sysfs_read_hwmon",
-      "target": "gpu_repo_sysfs_parse_pwm_percent",
-      "confidence_score": 1.0
+      "target": "gpu_repo_sysfs_parse_pwm_percent"
     },
     {
       "relation": "calls",
@@ -11457,9 +11620,9 @@
       "source_file": "src/gpu_repo/sysfs.rs",
       "source_location": "L50",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "gpu_repo_sysfs_collect",
-      "target": "gpu_repo_sysfs_collect_linux",
-      "confidence_score": 1.0
+      "target": "gpu_repo_sysfs_collect_linux"
     },
     {
       "relation": "references",
@@ -11468,9 +11631,9 @@
       "source_location": "L47",
       "weight": 1.0,
       "context": "generic_arg",
+      "confidence_score": 1.0,
       "source": "gpu_repo_sysfs_collect",
-      "target": "models_gpu_gpustats",
-      "confidence_score": 1.0
+      "target": "models_gpu_gpustats"
     },
     {
       "relation": "calls",
@@ -11479,9 +11642,9 @@
       "source_file": "src/gpu_repo/sysfs.rs",
       "source_location": "L72",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "gpu_repo_sysfs_collect_linux",
-      "target": "gpu_repo_sysfs_is_card_node",
-      "confidence_score": 1.0
+      "target": "gpu_repo_sysfs_is_card_node"
     },
     {
       "relation": "calls",
@@ -11490,9 +11653,9 @@
       "source_file": "src/gpu_repo/sysfs.rs",
       "source_location": "L97",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "gpu_repo_sysfs_collect_linux",
-      "target": "gpu_repo_sysfs_read_hwmon",
-      "confidence_score": 1.0
+      "target": "gpu_repo_sysfs_read_hwmon"
     },
     {
       "relation": "references",
@@ -11501,9 +11664,9 @@
       "source_location": "L59",
       "weight": 1.0,
       "context": "generic_arg",
+      "confidence_score": 1.0,
       "source": "gpu_repo_sysfs_collect_linux",
-      "target": "models_gpu_gpustats",
-      "confidence_score": 1.0
+      "target": "models_gpu_gpustats"
     },
     {
       "relation": "calls",
@@ -11523,9 +11686,9 @@
       "source_location": "L123",
       "weight": 1.0,
       "context": "parameter_type",
+      "confidence_score": 1.0,
       "source": "gpu_repo_sysfs_read_hwmon",
-      "target": "path",
-      "confidence_score": 1.0
+      "target": "path"
     },
     {
       "relation": "imports_from",
@@ -11969,6 +12132,17 @@
       "confidence": "INFERRED",
       "confidence_score": 0.8,
       "source_file": "tests/aggregation_tests.rs",
+      "source_location": "L194",
+      "weight": 1.0,
+      "source": "tests_aggregation_tests_aggregate_snapshots_carries_full_detail_from_last_sample",
+      "target": "history_repo_aggregation_aggregate_snapshots"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
+      "source_file": "tests/aggregation_tests.rs",
       "source_location": "L46",
       "weight": 1.0,
       "source": "tests_aggregation_tests_aggregate_snapshots_empty_returns_none",
@@ -12205,9 +12379,9 @@
       "source_file": "src/history_repo/history_merge.rs",
       "source_location": "L37",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "history_repo_history_merge",
-      "target": "history_repo_history_merge_deserialize_gpu_data",
-      "confidence_score": 1.0
+      "target": "history_repo_history_merge_deserialize_gpu_data"
     },
     {
       "relation": "contains",
@@ -12235,9 +12409,9 @@
       "source_file": "src/history_repo/history_merge.rs",
       "source_location": "L49",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "history_repo_history_merge",
-      "target": "history_repo_history_merge_deserialize_smart_data",
-      "confidence_score": 1.0
+      "target": "history_repo_history_merge_deserialize_smart_data"
     },
     {
       "relation": "contains",
@@ -12332,9 +12506,9 @@
       "source_location": "L37",
       "weight": 1.0,
       "context": "generic_arg",
+      "confidence_score": 1.0,
       "source": "history_repo_history_merge_deserialize_gpu_data",
-      "target": "models_gpu_gpustats",
-      "confidence_score": 1.0
+      "target": "models_gpu_gpustats"
     },
     {
       "relation": "calls",
@@ -12354,9 +12528,9 @@
       "source_location": "L49",
       "weight": 1.0,
       "context": "generic_arg",
+      "confidence_score": 1.0,
       "source": "history_repo_history_merge_deserialize_smart_data",
-      "target": "models_smart_smarthealth",
-      "confidence_score": 1.0
+      "target": "models_smart_smarthealth"
     },
     {
       "relation": "calls",
@@ -12947,9 +13121,9 @@
       "source_location": "L34",
       "weight": 1.0,
       "context": "generic_arg",
+      "confidence_score": 1.0,
       "source": "models_aggregation_aggregatedsnapshot",
-      "target": "models_gpu_gpustats",
-      "confidence_score": 1.0
+      "target": "models_gpu_gpustats"
     },
     {
       "relation": "references",
@@ -12969,9 +13143,9 @@
       "source_location": "L35",
       "weight": 1.0,
       "context": "generic_arg",
+      "confidence_score": 1.0,
       "source": "models_aggregation_aggregatedsnapshot",
-      "target": "models_smart_smarthealth",
-      "confidence_score": 1.0
+      "target": "models_smart_smarthealth"
     },
     {
       "relation": "references",
@@ -13108,9 +13282,9 @@
       "source_file": "src/models/gpu.rs",
       "source_location": "L8",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "models_gpu",
-      "target": "models_gpu_gpustats",
-      "confidence_score": 1.0
+      "target": "models_gpu_gpustats"
     },
     {
       "relation": "imports_from",
@@ -13119,9 +13293,9 @@
       "source_location": "L13",
       "weight": 1.0,
       "context": "import",
+      "confidence_score": 1.0,
       "source": "models_mod",
-      "target": "models_gpu_gpustats",
-      "confidence_score": 1.0
+      "target": "models_gpu_gpustats"
     },
     {
       "relation": "references",
@@ -13130,9 +13304,9 @@
       "source_location": "L121",
       "weight": 1.0,
       "context": "generic_arg",
+      "confidence_score": 1.0,
       "source": "models_system_fullsystemsnapshot",
-      "target": "models_gpu_gpustats",
-      "confidence_score": 1.0
+      "target": "models_gpu_gpustats"
     },
     {
       "relation": "references",
@@ -13141,7 +13315,18 @@
       "source_location": "L138",
       "weight": 1.0,
       "context": "generic_arg",
+      "confidence_score": 1.0,
       "source": "models_system_fullsystemsnapshotdisplay",
+      "target": "models_gpu_gpustats"
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/history_blob_roundtrip_tests.rs",
+      "source_location": "L8",
+      "weight": 1.0,
+      "context": "return_type",
+      "source": "tests_history_blob_roundtrip_tests_gpu",
       "target": "models_gpu_gpustats",
       "confidence_score": 1.0
     },
@@ -13152,9 +13337,9 @@
       "source_location": "L15",
       "weight": 1.0,
       "context": "import",
+      "confidence_score": 1.0,
       "source": "models_mod",
-      "target": "models_smart_smarthealth",
-      "confidence_score": 1.0
+      "target": "models_smart_smarthealth"
     },
     {
       "relation": "imports_from",
@@ -13248,9 +13433,9 @@
       "source_file": "src/models/smart.rs",
       "source_location": "L8",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "models_smart",
-      "target": "models_smart_smarthealth",
-      "confidence_score": 1.0
+      "target": "models_smart_smarthealth"
     },
     {
       "relation": "references",
@@ -13259,9 +13444,9 @@
       "source_location": "L123",
       "weight": 1.0,
       "context": "generic_arg",
+      "confidence_score": 1.0,
       "source": "models_system_fullsystemsnapshot",
-      "target": "models_smart_smarthealth",
-      "confidence_score": 1.0
+      "target": "models_smart_smarthealth"
     },
     {
       "relation": "references",
@@ -13270,9 +13455,9 @@
       "source_location": "L140",
       "weight": 1.0,
       "context": "generic_arg",
+      "confidence_score": 1.0,
       "source": "models_system_fullsystemsnapshotdisplay",
-      "target": "models_smart_smarthealth",
-      "confidence_score": 1.0
+      "target": "models_smart_smarthealth"
     },
     {
       "relation": "imports_from",
@@ -13281,9 +13466,9 @@
       "source_location": "L8",
       "weight": 1.0,
       "context": "import",
+      "confidence_score": 1.0,
       "source": "smart_repo_mod",
-      "target": "models_smart_smarthealth",
-      "confidence_score": 1.0
+      "target": "models_smart_smarthealth"
     },
     {
       "relation": "references",
@@ -13292,9 +13477,9 @@
       "source_location": "L14",
       "weight": 1.0,
       "context": "generic_arg",
+      "confidence_score": 1.0,
       "source": "smart_repo_mod_smartrepo",
-      "target": "models_smart_smarthealth",
-      "confidence_score": 1.0
+      "target": "models_smart_smarthealth"
     },
     {
       "relation": "references",
@@ -13303,9 +13488,9 @@
       "source_location": "L25",
       "weight": 1.0,
       "context": "generic_arg",
+      "confidence_score": 1.0,
       "source": "smart_repo_mod_smartrepo_current",
-      "target": "models_smart_smarthealth",
-      "confidence_score": 1.0
+      "target": "models_smart_smarthealth"
     },
     {
       "relation": "imports_from",
@@ -13314,9 +13499,9 @@
       "source_location": "L3",
       "weight": 1.0,
       "context": "import",
+      "confidence_score": 1.0,
       "source": "smart_repo_parse",
-      "target": "models_smart_smarthealth",
-      "confidence_score": 1.0
+      "target": "models_smart_smarthealth"
     },
     {
       "relation": "references",
@@ -13325,7 +13510,18 @@
       "source_location": "L23",
       "weight": 1.0,
       "context": "generic_arg",
+      "confidence_score": 1.0,
       "source": "smart_repo_parse_parse_smartctl_json",
+      "target": "models_smart_smarthealth"
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/history_blob_roundtrip_tests.rs",
+      "source_location": "L22",
+      "weight": 1.0,
+      "context": "return_type",
+      "source": "tests_history_blob_roundtrip_tests_smart",
       "target": "models_smart_smarthealth",
       "confidence_score": 1.0
     },
@@ -13795,6 +13991,17 @@
       "relation": "references",
       "confidence": "EXTRACTED",
       "source_file": "tests/aggregation_tests.rs",
+      "source_location": "L143",
+      "weight": 1.0,
+      "context": "return_type",
+      "source": "tests_aggregation_tests_rich_snapshot",
+      "target": "models_system_fullsystemsnapshot",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/aggregation_tests.rs",
       "source_location": "L6",
       "weight": 1.0,
       "context": "return_type",
@@ -13809,7 +14016,18 @@
       "source_location": "L9",
       "weight": 1.0,
       "context": "return_type",
+      "confidence_score": 1.0,
       "source": "tests_alerting_tests_snapshot",
+      "target": "models_system_fullsystemsnapshot"
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/history_blob_roundtrip_tests.rs",
+      "source_location": "L34",
+      "weight": 1.0,
+      "context": "return_type",
+      "source": "tests_history_blob_roundtrip_tests_snapshot",
       "target": "models_system_fullsystemsnapshot",
       "confidence_score": 1.0
     },
@@ -13834,6 +14052,28 @@
       "confidence_score": 1.0,
       "source": "tests_history_repo_tests_minimal_snapshot",
       "target": "models_system_fullsystemsnapshot"
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/history_writer_tests.rs",
+      "source_location": "L32",
+      "weight": 1.0,
+      "context": "return_type",
+      "source": "tests_history_writer_tests_persist_and_read",
+      "target": "models_system_fullsystemsnapshot",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/history_writer_tests.rs",
+      "source_location": "L11",
+      "weight": 1.0,
+      "context": "return_type",
+      "source": "tests_history_writer_tests_snapshot_with_gpu_smart",
+      "target": "models_system_fullsystemsnapshot",
+      "confidence_score": 1.0
     },
     {
       "relation": "references",
@@ -14833,9 +15073,9 @@
       "source_file": "src/smart_repo/mod.rs",
       "source_location": "L65",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "smart_repo_mod",
-      "target": "smart_repo_mod_run_smartctl",
-      "confidence_score": 1.0
+      "target": "smart_repo_mod_run_smartctl"
     },
     {
       "relation": "contains",
@@ -14843,9 +15083,9 @@
       "source_file": "src/smart_repo/mod.rs",
       "source_location": "L13",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "smart_repo_mod",
-      "target": "smart_repo_mod_smartrepo",
-      "confidence_score": 1.0
+      "target": "smart_repo_mod_smartrepo"
     },
     {
       "relation": "references",
@@ -14854,9 +15094,9 @@
       "source_location": "L14",
       "weight": 1.0,
       "context": "generic_arg",
+      "confidence_score": 1.0,
       "source": "smart_repo_mod_smartrepo",
-      "target": "mutex",
-      "confidence_score": 1.0
+      "target": "mutex"
     },
     {
       "relation": "method",
@@ -14864,9 +15104,9 @@
       "source_file": "src/smart_repo/mod.rs",
       "source_location": "L25",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "smart_repo_mod_smartrepo",
-      "target": "smart_repo_mod_smartrepo_current",
-      "confidence_score": 1.0
+      "target": "smart_repo_mod_smartrepo_current"
     },
     {
       "relation": "method",
@@ -14874,9 +15114,9 @@
       "source_file": "src/smart_repo/mod.rs",
       "source_location": "L58",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "smart_repo_mod_smartrepo",
-      "target": "smart_repo_mod_smartrepo_default",
-      "confidence_score": 1.0
+      "target": "smart_repo_mod_smartrepo_default"
     },
     {
       "relation": "method",
@@ -14884,9 +15124,9 @@
       "source_file": "src/smart_repo/mod.rs",
       "source_location": "L18",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "smart_repo_mod_smartrepo",
-      "target": "smart_repo_mod_smartrepo_new",
-      "confidence_score": 1.0
+      "target": "smart_repo_mod_smartrepo_new"
     },
     {
       "relation": "method",
@@ -14894,9 +15134,9 @@
       "source_file": "src/smart_repo/mod.rs",
       "source_location": "L31",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "smart_repo_mod_smartrepo",
-      "target": "smart_repo_mod_smartrepo_refresh",
-      "confidence_score": 1.0
+      "target": "smart_repo_mod_smartrepo_refresh"
     },
     {
       "relation": "imports_from",
@@ -14905,9 +15145,9 @@
       "source_location": "L11",
       "weight": 1.0,
       "context": "import",
+      "confidence_score": 1.0,
       "source": "worker_mod",
-      "target": "smart_repo_mod_smartrepo",
-      "confidence_score": 1.0
+      "target": "smart_repo_mod_smartrepo"
     },
     {
       "relation": "references",
@@ -14916,9 +15156,9 @@
       "source_location": "L33",
       "weight": 1.0,
       "context": "generic_arg",
+      "confidence_score": 1.0,
       "source": "worker_mod_workerdeps",
-      "target": "smart_repo_mod_smartrepo",
-      "confidence_score": 1.0
+      "target": "smart_repo_mod_smartrepo"
     },
     {
       "relation": "references",
@@ -14938,9 +15178,9 @@
       "source_file": "src/smart_repo/mod.rs",
       "source_location": "L66",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "smart_repo_mod_run_smartctl",
-      "target": "smart_repo_mod_smartrepo_new",
-      "confidence_score": 1.0
+      "target": "smart_repo_mod_smartrepo_new"
     },
     {
       "relation": "calls",
@@ -14949,9 +15189,9 @@
       "source_file": "src/smart_repo/mod.rs",
       "source_location": "L59",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "smart_repo_mod_smartrepo_default",
-      "target": "smart_repo_mod_smartrepo_new",
-      "confidence_score": 1.0
+      "target": "smart_repo_mod_smartrepo_new"
     },
     {
       "relation": "calls",
@@ -14960,9 +15200,9 @@
       "source_file": "src/smart_repo/mod.rs",
       "source_location": "L32",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "smart_repo_mod_smartrepo_refresh",
-      "target": "smart_repo_mod_run_smartctl",
-      "confidence_score": 1.0
+      "target": "smart_repo_mod_run_smartctl"
     },
     {
       "relation": "calls",
@@ -14992,9 +15232,9 @@
       "source_file": "src/smart_repo/parse.rs",
       "source_location": "L37",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "smart_repo_parse",
-      "target": "smart_repo_parse_ata_attr_raw",
-      "confidence_score": 1.0
+      "target": "smart_repo_parse_ata_attr_raw"
     },
     {
       "relation": "contains",
@@ -15002,9 +15242,9 @@
       "source_file": "src/smart_repo/parse.rs",
       "source_location": "L7",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "smart_repo_parse",
-      "target": "smart_repo_parse_parse_scan_devices",
-      "confidence_score": 1.0
+      "target": "smart_repo_parse_parse_scan_devices"
     },
     {
       "relation": "contains",
@@ -15012,9 +15252,9 @@
       "source_file": "src/smart_repo/parse.rs",
       "source_location": "L23",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "smart_repo_parse",
-      "target": "smart_repo_parse_parse_smartctl_json",
-      "confidence_score": 1.0
+      "target": "smart_repo_parse_parse_smartctl_json"
     },
     {
       "relation": "contains",
@@ -15022,9 +15262,9 @@
       "source_file": "src/smart_repo/parse.rs",
       "source_location": "L47",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "smart_repo_parse",
-      "target": "smart_repo_parse_wear_level",
-      "confidence_score": 1.0
+      "target": "smart_repo_parse_wear_level"
     },
     {
       "relation": "imports_from",
@@ -15033,9 +15273,9 @@
       "source_location": "L4",
       "weight": 1.0,
       "context": "import",
+      "confidence_score": 1.0,
       "source": "smart_repo_parse",
-      "target": "value",
-      "confidence_score": 1.0
+      "target": "value"
     },
     {
       "relation": "calls",
@@ -15044,9 +15284,9 @@
       "source_file": "src/smart_repo/parse.rs",
       "source_location": "L31",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "smart_repo_parse_parse_smartctl_json",
-      "target": "smart_repo_parse_ata_attr_raw",
-      "confidence_score": 1.0
+      "target": "smart_repo_parse_ata_attr_raw"
     },
     {
       "relation": "calls",
@@ -15055,9 +15295,9 @@
       "source_file": "src/smart_repo/parse.rs",
       "source_location": "L32",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "smart_repo_parse_parse_smartctl_json",
-      "target": "smart_repo_parse_wear_level",
-      "confidence_score": 1.0
+      "target": "smart_repo_parse_wear_level"
     },
     {
       "relation": "calls",
@@ -15099,9 +15339,9 @@
       "source_location": "L37",
       "weight": 1.0,
       "context": "parameter_type",
+      "confidence_score": 1.0,
       "source": "smart_repo_parse_ata_attr_raw",
-      "target": "value",
-      "confidence_score": 1.0
+      "target": "value"
     },
     {
       "relation": "references",
@@ -15110,9 +15350,9 @@
       "source_location": "L47",
       "weight": 1.0,
       "context": "parameter_type",
+      "confidence_score": 1.0,
       "source": "smart_repo_parse_wear_level",
-      "target": "value",
-      "confidence_score": 1.0
+      "target": "value"
     },
     {
       "relation": "method",
@@ -15597,6 +15837,17 @@
       "context": "call",
       "confidence": "INFERRED",
       "confidence_score": 0.8,
+      "source_file": "tests/history_writer_tests.rs",
+      "source_location": "L42",
+      "weight": 1.0,
+      "source": "tests_history_writer_tests_persist_and_read",
+      "target": "worker_history_writer_spawn_history_writer"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
       "source_file": "tests/worker_tests.rs",
       "source_location": "L41",
       "weight": 1.0,
@@ -15635,6 +15886,17 @@
       "confidence_score": 1.0,
       "source": "worker_history_writer_spawn_history_writer",
       "target": "worker_mod_historywriterconfig"
+    },
+    {
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/history_writer_tests.rs",
+      "source_location": "L8",
+      "weight": 1.0,
+      "context": "import",
+      "source": "tests_history_writer_tests",
+      "target": "atomicu64",
+      "confidence_score": 1.0
     },
     {
       "relation": "references",
@@ -15754,6 +16016,16 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "tests/aggregation_tests.rs",
+      "source_location": "L191",
+      "weight": 1.0,
+      "source": "tests_aggregation_tests",
+      "target": "tests_aggregation_tests_aggregate_snapshots_carries_full_detail_from_last_sample",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/aggregation_tests.rs",
       "source_location": "L44",
       "weight": 1.0,
       "confidence_score": 1.0,
@@ -15784,6 +16056,16 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "tests/aggregation_tests.rs",
+      "source_location": "L143",
+      "weight": 1.0,
+      "source": "tests_aggregation_tests",
+      "target": "tests_aggregation_tests_rich_snapshot",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/aggregation_tests.rs",
       "source_location": "L6",
       "weight": 1.0,
       "confidence_score": 1.0,
@@ -15796,9 +16078,9 @@
       "source_file": "tests/alerting_tests.rs",
       "source_location": "L90",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "tests_alerting_tests",
-      "target": "tests_alerting_tests_compare_operators",
-      "confidence_score": 1.0
+      "target": "tests_alerting_tests_compare_operators"
     },
     {
       "relation": "contains",
@@ -15806,9 +16088,9 @@
       "source_file": "tests/alerting_tests.rs",
       "source_location": "L100",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "tests_alerting_tests",
-      "target": "tests_alerting_tests_duration_gates_firing",
-      "confidence_score": 1.0
+      "target": "tests_alerting_tests_duration_gates_firing"
     },
     {
       "relation": "contains",
@@ -15816,9 +16098,9 @@
       "source_file": "tests/alerting_tests.rs",
       "source_location": "L150",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "tests_alerting_tests",
-      "target": "tests_alerting_tests_empty_engine_emits_nothing",
-      "confidence_score": 1.0
+      "target": "tests_alerting_tests_empty_engine_emits_nothing"
     },
     {
       "relation": "contains",
@@ -15826,9 +16108,9 @@
       "source_file": "tests/alerting_tests.rs",
       "source_location": "L69",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "tests_alerting_tests",
-      "target": "tests_alerting_tests_extract_metric_covers_all_sources",
-      "confidence_score": 1.0
+      "target": "tests_alerting_tests_extract_metric_covers_all_sources"
     },
     {
       "relation": "contains",
@@ -15836,9 +16118,9 @@
       "source_file": "tests/alerting_tests.rs",
       "source_location": "L124",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "tests_alerting_tests",
-      "target": "tests_alerting_tests_resolves_then_cooldown_suppresses_refire",
-      "confidence_score": 1.0
+      "target": "tests_alerting_tests_resolves_then_cooldown_suppresses_refire"
     },
     {
       "relation": "contains",
@@ -15846,9 +16128,9 @@
       "source_file": "tests/alerting_tests.rs",
       "source_location": "L50",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "tests_alerting_tests",
-      "target": "tests_alerting_tests_rule",
-      "confidence_score": 1.0
+      "target": "tests_alerting_tests_rule"
     },
     {
       "relation": "contains",
@@ -15856,9 +16138,9 @@
       "source_file": "tests/alerting_tests.rs",
       "source_location": "L9",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "tests_alerting_tests",
-      "target": "tests_alerting_tests_snapshot",
-      "confidence_score": 1.0
+      "target": "tests_alerting_tests_snapshot"
     },
     {
       "relation": "contains",
@@ -15866,9 +16148,9 @@
       "source_file": "tests/alerting_tests.rs",
       "source_location": "L83",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "tests_alerting_tests",
-      "target": "tests_alerting_tests_swap_metric_none_when_no_swap",
-      "confidence_score": 1.0
+      "target": "tests_alerting_tests_swap_metric_none_when_no_swap"
     },
     {
       "relation": "calls",
@@ -15877,9 +16159,9 @@
       "source_file": "tests/alerting_tests.rs",
       "source_location": "L111",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "tests_alerting_tests_duration_gates_firing",
-      "target": "tests_alerting_tests_snapshot",
-      "confidence_score": 1.0
+      "target": "tests_alerting_tests_snapshot"
     },
     {
       "relation": "calls",
@@ -15888,9 +16170,9 @@
       "source_file": "tests/alerting_tests.rs",
       "source_location": "L70",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "tests_alerting_tests_extract_metric_covers_all_sources",
-      "target": "tests_alerting_tests_snapshot",
-      "confidence_score": 1.0
+      "target": "tests_alerting_tests_snapshot"
     },
     {
       "relation": "calls",
@@ -15899,9 +16181,9 @@
       "source_file": "tests/alerting_tests.rs",
       "source_location": "L128",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "tests_alerting_tests_resolves_then_cooldown_suppresses_refire",
-      "target": "tests_alerting_tests_snapshot",
-      "confidence_score": 1.0
+      "target": "tests_alerting_tests_snapshot"
     },
     {
       "relation": "calls",
@@ -15910,9 +16192,9 @@
       "source_file": "tests/alerting_tests.rs",
       "source_location": "L84",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "tests_alerting_tests_swap_metric_none_when_no_swap",
-      "target": "tests_alerting_tests_snapshot",
-      "confidence_score": 1.0
+      "target": "tests_alerting_tests_snapshot"
     },
     {
       "relation": "contains",
@@ -16266,9 +16548,9 @@
       "source_file": "tests/gpu_repo_tests.rs",
       "source_location": "L18",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "tests_gpu_repo_tests",
-      "target": "tests_gpu_repo_tests_busy_percent_parses_and_clamps",
-      "confidence_score": 1.0
+      "target": "tests_gpu_repo_tests_busy_percent_parses_and_clamps"
     },
     {
       "relation": "contains",
@@ -16276,9 +16558,9 @@
       "source_file": "tests/gpu_repo_tests.rs",
       "source_location": "L34",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "tests_gpu_repo_tests",
-      "target": "tests_gpu_repo_tests_power_microwatts_to_watts",
-      "confidence_score": 1.0
+      "target": "tests_gpu_repo_tests_power_microwatts_to_watts"
     },
     {
       "relation": "contains",
@@ -16286,9 +16568,9 @@
       "source_file": "tests/gpu_repo_tests.rs",
       "source_location": "L41",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "tests_gpu_repo_tests",
-      "target": "tests_gpu_repo_tests_pwm_to_percent",
-      "confidence_score": 1.0
+      "target": "tests_gpu_repo_tests_pwm_to_percent"
     },
     {
       "relation": "contains",
@@ -16296,9 +16578,9 @@
       "source_file": "tests/gpu_repo_tests.rs",
       "source_location": "L26",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "tests_gpu_repo_tests",
-      "target": "tests_gpu_repo_tests_u64_parses_byte_counters",
-      "confidence_score": 1.0
+      "target": "tests_gpu_repo_tests_u64_parses_byte_counters"
     },
     {
       "relation": "contains",
@@ -16306,8 +16588,80 @@
       "source_file": "tests/gpu_repo_tests.rs",
       "source_location": "L8",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "tests_gpu_repo_tests",
-      "target": "tests_gpu_repo_tests_vendor_id_maps_amd_and_intel_only",
+      "target": "tests_gpu_repo_tests_vendor_id_maps_amd_and_intel_only"
+    },
+    {
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/history_blob_roundtrip_tests.rs",
+      "source_location": "L6",
+      "weight": 1.0,
+      "context": "import",
+      "source": "tests_history_blob_roundtrip_tests",
+      "target": "tempdir",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/history_blob_roundtrip_tests.rs",
+      "source_location": "L67",
+      "weight": 1.0,
+      "source": "tests_history_blob_roundtrip_tests",
+      "target": "tests_history_blob_roundtrip_tests_aggregated_snapshot_round_trip_preserves_gpu_and_smart",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/history_blob_roundtrip_tests.rs",
+      "source_location": "L8",
+      "weight": 1.0,
+      "source": "tests_history_blob_roundtrip_tests",
+      "target": "tests_history_blob_roundtrip_tests_gpu",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/history_blob_roundtrip_tests.rs",
+      "source_location": "L49",
+      "weight": 1.0,
+      "source": "tests_history_blob_roundtrip_tests",
+      "target": "tests_history_blob_roundtrip_tests_raw_snapshot_round_trip_preserves_gpu_and_smart",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/history_blob_roundtrip_tests.rs",
+      "source_location": "L22",
+      "weight": 1.0,
+      "source": "tests_history_blob_roundtrip_tests",
+      "target": "tests_history_blob_roundtrip_tests_smart",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/history_blob_roundtrip_tests.rs",
+      "source_location": "L34",
+      "weight": 1.0,
+      "source": "tests_history_blob_roundtrip_tests",
+      "target": "tests_history_blob_roundtrip_tests_snapshot",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/history_blob_roundtrip_tests.rs",
+      "source_location": "L56",
+      "weight": 1.0,
+      "source": "tests_history_blob_roundtrip_tests_raw_snapshot_round_trip_preserves_gpu_and_smart",
+      "target": "tests_history_blob_roundtrip_tests_snapshot",
       "confidence_score": 1.0
     },
     {
@@ -16814,6 +17168,90 @@
       "confidence_score": 1.0,
       "source": "tests_history_repo_tests_schema_version_missing_row_with_existing_history_purges",
       "target": "tests_history_repo_tests_minimal_snapshot"
+    },
+    {
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/history_writer_tests.rs",
+      "source_location": "L9",
+      "weight": 1.0,
+      "context": "import",
+      "source": "tests_history_writer_tests",
+      "target": "tempdir",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/history_writer_tests.rs",
+      "source_location": "L32",
+      "weight": 1.0,
+      "source": "tests_history_writer_tests",
+      "target": "tests_history_writer_tests_persist_and_read",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/history_writer_tests.rs",
+      "source_location": "L67",
+      "weight": 1.0,
+      "source": "tests_history_writer_tests",
+      "target": "tests_history_writer_tests_persist_flags_off_strips_gpu_and_smart",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/history_writer_tests.rs",
+      "source_location": "L77",
+      "weight": 1.0,
+      "source": "tests_history_writer_tests",
+      "target": "tests_history_writer_tests_persist_flags_on_keeps_gpu_and_smart",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/history_writer_tests.rs",
+      "source_location": "L11",
+      "weight": 1.0,
+      "source": "tests_history_writer_tests",
+      "target": "tests_history_writer_tests_snapshot_with_gpu_smart",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/history_writer_tests.rs",
+      "source_location": "L55",
+      "weight": 1.0,
+      "source": "tests_history_writer_tests_persist_and_read",
+      "target": "tests_history_writer_tests_snapshot_with_gpu_smart",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/history_writer_tests.rs",
+      "source_location": "L68",
+      "weight": 1.0,
+      "source": "tests_history_writer_tests_persist_flags_off_strips_gpu_and_smart",
+      "target": "tests_history_writer_tests_persist_and_read",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/history_writer_tests.rs",
+      "source_location": "L78",
+      "weight": 1.0,
+      "source": "tests_history_writer_tests_persist_flags_on_keeps_gpu_and_smart",
+      "target": "tests_history_writer_tests_persist_and_read",
+      "confidence_score": 1.0
     },
     {
       "relation": "imports_from",
@@ -17420,9 +17858,9 @@
       "source_file": "tests/smart_repo_tests.rs",
       "source_location": "L20",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "tests_smart_repo_tests",
-      "target": "tests_smart_repo_tests_parse_ata_ssd_fields",
-      "confidence_score": 1.0
+      "target": "tests_smart_repo_tests_parse_ata_ssd_fields"
     },
     {
       "relation": "contains",
@@ -17430,9 +17868,9 @@
       "source_file": "tests/smart_repo_tests.rs",
       "source_location": "L60",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "tests_smart_repo_tests",
-      "target": "tests_smart_repo_tests_parse_failing_health_and_missing_fields",
-      "confidence_score": 1.0
+      "target": "tests_smart_repo_tests_parse_failing_health_and_missing_fields"
     },
     {
       "relation": "contains",
@@ -17440,9 +17878,9 @@
       "source_file": "tests/smart_repo_tests.rs",
       "source_location": "L70",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "tests_smart_repo_tests",
-      "target": "tests_smart_repo_tests_parse_invalid_json_returns_none",
-      "confidence_score": 1.0
+      "target": "tests_smart_repo_tests_parse_invalid_json_returns_none"
     },
     {
       "relation": "contains",
@@ -17450,9 +17888,9 @@
       "source_file": "tests/smart_repo_tests.rs",
       "source_location": "L45",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "tests_smart_repo_tests",
-      "target": "tests_smart_repo_tests_parse_nvme_uses_percentage_used",
-      "confidence_score": 1.0
+      "target": "tests_smart_repo_tests_parse_nvme_uses_percentage_used"
     },
     {
       "relation": "contains",
@@ -17460,9 +17898,9 @@
       "source_file": "tests/smart_repo_tests.rs",
       "source_location": "L13",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "tests_smart_repo_tests",
-      "target": "tests_smart_repo_tests_scan_devices_empty_or_invalid",
-      "confidence_score": 1.0
+      "target": "tests_smart_repo_tests_scan_devices_empty_or_invalid"
     },
     {
       "relation": "contains",
@@ -17470,9 +17908,9 @@
       "source_file": "tests/smart_repo_tests.rs",
       "source_location": "L6",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "tests_smart_repo_tests",
-      "target": "tests_smart_repo_tests_scan_devices_extracts_paths",
-      "confidence_score": 1.0
+      "target": "tests_smart_repo_tests_scan_devices_extracts_paths"
     },
     {
       "relation": "contains",
@@ -19020,9 +19458,9 @@
       "source_file": "docs/superpowers/specs/2026-06-25-phase5-gpu-smart-alerting-design.md",
       "source_location": "L1",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "specs_2026_06_25_phase5_gpu_smart_alerting_design",
-      "target": "specs_2026_06_25_phase5_gpu_smart_alerting_design_phase_5_design_gpu_metrics_smart_disk_health_alerting",
-      "confidence_score": 1.0
+      "target": "specs_2026_06_25_phase5_gpu_smart_alerting_design_phase_5_design_gpu_metrics_smart_disk_health_alerting"
     },
     {
       "relation": "contains",
@@ -19030,9 +19468,9 @@
       "source_file": "docs/superpowers/specs/2026-06-25-phase5-gpu-smart-alerting-design.md",
       "source_location": "L150",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "specs_2026_06_25_phase5_gpu_smart_alerting_design_phase_5_design_gpu_metrics_smart_disk_health_alerting",
-      "target": "specs_2026_06_25_phase5_gpu_smart_alerting_design_config_additions_summary",
-      "confidence_score": 1.0
+      "target": "specs_2026_06_25_phase5_gpu_smart_alerting_design_config_additions_summary"
     },
     {
       "relation": "contains",
@@ -19040,9 +19478,9 @@
       "source_file": "docs/superpowers/specs/2026-06-25-phase5-gpu-smart-alerting-design.md",
       "source_location": "L5",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "specs_2026_06_25_phase5_gpu_smart_alerting_design_phase_5_design_gpu_metrics_smart_disk_health_alerting",
-      "target": "specs_2026_06_25_phase5_gpu_smart_alerting_design_context",
-      "confidence_score": 1.0
+      "target": "specs_2026_06_25_phase5_gpu_smart_alerting_design_context"
     },
     {
       "relation": "contains",
@@ -19050,9 +19488,9 @@
       "source_file": "docs/superpowers/specs/2026-06-25-phase5-gpu-smart-alerting-design.md",
       "source_location": "L32",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "specs_2026_06_25_phase5_gpu_smart_alerting_design_phase_5_design_gpu_metrics_smart_disk_health_alerting",
-      "target": "specs_2026_06_25_phase5_gpu_smart_alerting_design_feature_5a_gpu_metrics",
-      "confidence_score": 1.0
+      "target": "specs_2026_06_25_phase5_gpu_smart_alerting_design_feature_5a_gpu_metrics"
     },
     {
       "relation": "contains",
@@ -19060,9 +19498,9 @@
       "source_file": "docs/superpowers/specs/2026-06-25-phase5-gpu-smart-alerting-design.md",
       "source_location": "L62",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "specs_2026_06_25_phase5_gpu_smart_alerting_design_phase_5_design_gpu_metrics_smart_disk_health_alerting",
-      "target": "specs_2026_06_25_phase5_gpu_smart_alerting_design_feature_5b_smart_disk_health",
-      "confidence_score": 1.0
+      "target": "specs_2026_06_25_phase5_gpu_smart_alerting_design_feature_5b_smart_disk_health"
     },
     {
       "relation": "contains",
@@ -19070,9 +19508,9 @@
       "source_file": "docs/superpowers/specs/2026-06-25-phase5-gpu-smart-alerting-design.md",
       "source_location": "L98",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "specs_2026_06_25_phase5_gpu_smart_alerting_design_phase_5_design_gpu_metrics_smart_disk_health_alerting",
-      "target": "specs_2026_06_25_phase5_gpu_smart_alerting_design_feature_5c_alerting_thresholds",
-      "confidence_score": 1.0
+      "target": "specs_2026_06_25_phase5_gpu_smart_alerting_design_feature_5c_alerting_thresholds"
     },
     {
       "relation": "contains",
@@ -19080,9 +19518,9 @@
       "source_file": "docs/superpowers/specs/2026-06-25-phase5-gpu-smart-alerting-design.md",
       "source_location": "L139",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "specs_2026_06_25_phase5_gpu_smart_alerting_design_phase_5_design_gpu_metrics_smart_disk_health_alerting",
-      "target": "specs_2026_06_25_phase5_gpu_smart_alerting_design_module_map_additions",
-      "confidence_score": 1.0
+      "target": "specs_2026_06_25_phase5_gpu_smart_alerting_design_module_map_additions"
     },
     {
       "relation": "contains",
@@ -19090,9 +19528,9 @@
       "source_file": "docs/superpowers/specs/2026-06-25-phase5-gpu-smart-alerting-design.md",
       "source_location": "L155",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "specs_2026_06_25_phase5_gpu_smart_alerting_design_phase_5_design_gpu_metrics_smart_disk_health_alerting",
-      "target": "specs_2026_06_25_phase5_gpu_smart_alerting_design_pr_breakdown_stacked",
-      "confidence_score": 1.0
+      "target": "specs_2026_06_25_phase5_gpu_smart_alerting_design_pr_breakdown_stacked"
     },
     {
       "relation": "contains",
@@ -19100,9 +19538,9 @@
       "source_file": "docs/superpowers/specs/2026-06-25-phase5-gpu-smart-alerting-design.md",
       "source_location": "L160",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "specs_2026_06_25_phase5_gpu_smart_alerting_design_phase_5_design_gpu_metrics_smart_disk_health_alerting",
-      "target": "specs_2026_06_25_phase5_gpu_smart_alerting_design_risks_notes",
-      "confidence_score": 1.0
+      "target": "specs_2026_06_25_phase5_gpu_smart_alerting_design_risks_notes"
     },
     {
       "relation": "contains",
@@ -19110,9 +19548,9 @@
       "source_file": "docs/superpowers/specs/2026-06-25-phase5-gpu-smart-alerting-design.md",
       "source_location": "L21",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "specs_2026_06_25_phase5_gpu_smart_alerting_design_context",
-      "target": "specs_2026_06_25_phase5_gpu_smart_alerting_design_cross_cutting_applies_to_all_three",
-      "confidence_score": 1.0
+      "target": "specs_2026_06_25_phase5_gpu_smart_alerting_design_cross_cutting_applies_to_all_three"
     },
     {
       "relation": "contains",
@@ -19120,9 +19558,9 @@
       "source_file": "docs/superpowers/specs/2026-06-25-phase5-gpu-smart-alerting-design.md",
       "source_location": "L12",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "specs_2026_06_25_phase5_gpu_smart_alerting_design_context",
-      "target": "specs_2026_06_25_phase5_gpu_smart_alerting_design_decisions_captured_brainstorming",
-      "confidence_score": 1.0
+      "target": "specs_2026_06_25_phase5_gpu_smart_alerting_design_decisions_captured_brainstorming"
     },
     {
       "relation": "contains",
@@ -19130,9 +19568,9 @@
       "source_file": "docs/superpowers/specs/2026-06-25-phase5-gpu-smart-alerting-design.md",
       "source_location": "L44",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "specs_2026_06_25_phase5_gpu_smart_alerting_design_feature_5a_gpu_metrics",
-      "target": "specs_2026_06_25_phase5_gpu_smart_alerting_design_collector_src_gpu_repo",
-      "confidence_score": 1.0
+      "target": "specs_2026_06_25_phase5_gpu_smart_alerting_design_collector_src_gpu_repo"
     },
     {
       "relation": "contains",
@@ -19140,9 +19578,9 @@
       "source_file": "docs/superpowers/specs/2026-06-25-phase5-gpu-smart-alerting-design.md",
       "source_location": "L50",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "specs_2026_06_25_phase5_gpu_smart_alerting_design_feature_5a_gpu_metrics",
-      "target": "specs_2026_06_25_phase5_gpu_smart_alerting_design_integration",
-      "confidence_score": 1.0
+      "target": "specs_2026_06_25_phase5_gpu_smart_alerting_design_integration"
     },
     {
       "relation": "contains",
@@ -19150,9 +19588,9 @@
       "source_file": "docs/superpowers/specs/2026-06-25-phase5-gpu-smart-alerting-design.md",
       "source_location": "L34",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "specs_2026_06_25_phase5_gpu_smart_alerting_design_feature_5a_gpu_metrics",
-      "target": "specs_2026_06_25_phase5_gpu_smart_alerting_design_model_src_models_gpu_rs",
-      "confidence_score": 1.0
+      "target": "specs_2026_06_25_phase5_gpu_smart_alerting_design_model_src_models_gpu_rs"
     },
     {
       "relation": "contains",
@@ -19160,9 +19598,9 @@
       "source_file": "docs/superpowers/specs/2026-06-25-phase5-gpu-smart-alerting-design.md",
       "source_location": "L56",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "specs_2026_06_25_phase5_gpu_smart_alerting_design_feature_5a_gpu_metrics",
-      "target": "specs_2026_06_25_phase5_gpu_smart_alerting_design_tests_verification",
-      "confidence_score": 1.0
+      "target": "specs_2026_06_25_phase5_gpu_smart_alerting_design_tests_verification"
     },
     {
       "relation": "contains",
@@ -19170,9 +19608,9 @@
       "source_file": "docs/superpowers/specs/2026-06-25-phase5-gpu-smart-alerting-design.md",
       "source_location": "L73",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "specs_2026_06_25_phase5_gpu_smart_alerting_design_feature_5b_smart_disk_health",
-      "target": "specs_2026_06_25_phase5_gpu_smart_alerting_design_collector_src_smart_repo_mod_rs",
-      "confidence_score": 1.0
+      "target": "specs_2026_06_25_phase5_gpu_smart_alerting_design_collector_src_smart_repo_mod_rs"
     },
     {
       "relation": "contains",
@@ -19180,9 +19618,9 @@
       "source_file": "docs/superpowers/specs/2026-06-25-phase5-gpu-smart-alerting-design.md",
       "source_location": "L84",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "specs_2026_06_25_phase5_gpu_smart_alerting_design_feature_5b_smart_disk_health",
-      "target": "specs_2026_06_25_phase5_gpu_smart_alerting_design_deployment",
-      "confidence_score": 1.0
+      "target": "specs_2026_06_25_phase5_gpu_smart_alerting_design_deployment"
     },
     {
       "relation": "contains",
@@ -19190,9 +19628,9 @@
       "source_file": "docs/superpowers/specs/2026-06-25-phase5-gpu-smart-alerting-design.md",
       "source_location": "L64",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "specs_2026_06_25_phase5_gpu_smart_alerting_design_feature_5b_smart_disk_health",
-      "target": "specs_2026_06_25_phase5_gpu_smart_alerting_design_model_src_models_smart_rs",
-      "confidence_score": 1.0
+      "target": "specs_2026_06_25_phase5_gpu_smart_alerting_design_model_src_models_smart_rs"
     },
     {
       "relation": "contains",
@@ -19200,9 +19638,9 @@
       "source_file": "docs/superpowers/specs/2026-06-25-phase5-gpu-smart-alerting-design.md",
       "source_location": "L89",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "specs_2026_06_25_phase5_gpu_smart_alerting_design_feature_5b_smart_disk_health",
-      "target": "specs_2026_06_25_phase5_gpu_smart_alerting_design_persistence",
-      "confidence_score": 1.0
+      "target": "specs_2026_06_25_phase5_gpu_smart_alerting_design_persistence"
     },
     {
       "relation": "contains",
@@ -19210,9 +19648,9 @@
       "source_file": "docs/superpowers/specs/2026-06-25-phase5-gpu-smart-alerting-design.md",
       "source_location": "L92",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "specs_2026_06_25_phase5_gpu_smart_alerting_design_feature_5b_smart_disk_health",
-      "target": "specs_2026_06_25_phase5_gpu_smart_alerting_design_tests_verification_92",
-      "confidence_score": 1.0
+      "target": "specs_2026_06_25_phase5_gpu_smart_alerting_design_tests_verification_92"
     },
     {
       "relation": "contains",
@@ -19220,9 +19658,9 @@
       "source_file": "docs/superpowers/specs/2026-06-25-phase5-gpu-smart-alerting-design.md",
       "source_location": "L100",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "specs_2026_06_25_phase5_gpu_smart_alerting_design_feature_5c_alerting_thresholds",
-      "target": "specs_2026_06_25_phase5_gpu_smart_alerting_design_config_alerts_alerts_webhook",
-      "confidence_score": 1.0
+      "target": "specs_2026_06_25_phase5_gpu_smart_alerting_design_config_alerts_alerts_webhook"
     },
     {
       "relation": "contains",
@@ -19230,9 +19668,9 @@
       "source_file": "docs/superpowers/specs/2026-06-25-phase5-gpu-smart-alerting-design.md",
       "source_location": "L115",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "specs_2026_06_25_phase5_gpu_smart_alerting_design_feature_5c_alerting_thresholds",
-      "target": "specs_2026_06_25_phase5_gpu_smart_alerting_design_engine_src_alerting",
-      "confidence_score": 1.0
+      "target": "specs_2026_06_25_phase5_gpu_smart_alerting_design_engine_src_alerting"
     },
     {
       "relation": "contains",
@@ -19240,9 +19678,9 @@
       "source_file": "docs/superpowers/specs/2026-06-25-phase5-gpu-smart-alerting-design.md",
       "source_location": "L126",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "specs_2026_06_25_phase5_gpu_smart_alerting_design_feature_5c_alerting_thresholds",
-      "target": "specs_2026_06_25_phase5_gpu_smart_alerting_design_new_dependency",
-      "confidence_score": 1.0
+      "target": "specs_2026_06_25_phase5_gpu_smart_alerting_design_new_dependency"
     },
     {
       "relation": "contains",
@@ -19250,9 +19688,9 @@
       "source_file": "docs/superpowers/specs/2026-06-25-phase5-gpu-smart-alerting-design.md",
       "source_location": "L132",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "specs_2026_06_25_phase5_gpu_smart_alerting_design_feature_5c_alerting_thresholds",
-      "target": "specs_2026_06_25_phase5_gpu_smart_alerting_design_tests_verification_132",
-      "confidence_score": 1.0
+      "target": "specs_2026_06_25_phase5_gpu_smart_alerting_design_tests_verification_132"
     },
     {
       "relation": "references",
@@ -20125,5 +20563,5 @@
       "source_file": ".github/workflows/ci.yml"
     }
   ],
-  "built_at_commit": "6dbcc9c9d923f108b516234ecfde068b7d0e212a"
+  "built_at_commit": "49172f0bdca9135378d6be608675386f84113f19"
 }
