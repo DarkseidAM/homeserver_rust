@@ -605,6 +605,7 @@ Runs on every push/PR to `main`:
 2. `cargo clippy --all-targets --all-features -- -D warnings`
 3. `cargo test --all-features`
 4. `cargo build --release`
+5. `cargo audit` (via the `rustsec/audit-check` action): scans `Cargo.lock` for known RustSec advisories.
 
 ### `.github/workflows/tag-version.yml`
 Runs after CI succeeds on `main`:
@@ -613,7 +614,7 @@ Runs after CI succeeds on `main`:
 
 ### `.github/workflows/docker.yml`
 Triggered by `v*.*.*` tag pushes:
-1. Builds and pushes Docker image to GHCR with semver tags (`major.minor.patch`, `major.minor`, `major`, `latest`). Targets `linux/amd64`.
+1. Builds and pushes a multi-arch Docker image to GHCR with semver tags (`major.minor.patch`, `major.minor`, `major`, `latest`). Targets `linux/amd64` and `linux/arm64` (arm64 via QEMU emulation, for Raspberry Pi / ARM SBC homeservers).
 
 ### `.github/workflows/docs.yml`
 Runs on every push to `main`:
