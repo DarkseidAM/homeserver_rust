@@ -2,7 +2,8 @@
 // These functions have no I/O side effects; all assertions are over string literals.
 
 use homeserver::sysinfo_repo::linux::{
-    disk_sysfs_base_device_name, parse_diskstats, parse_hwmon_temp, parse_loadavg, parse_operstate,
+    disk_sysfs_base_device_name, parse_diskstats, parse_hwmon_temp, parse_loadavg,
+    parse_loadavg_total_tasks, parse_operstate,
 };
 
 // ── parse_loadavg ─────────────────────────────────────────────────────────────
@@ -25,6 +26,30 @@ fn parse_loadavg_returns_none_for_invalid_content() {
 fn parse_loadavg_handles_high_load() {
     let (one, _, _) = parse_loadavg("32.00 16.50 8.25 4/100 99999").unwrap();
     assert!((one - 32.0).abs() < 0.001);
+}
+
+// ── parse_loadavg_total_tasks ─────────────────────────────────────────────────
+
+#[test]
+fn parse_loadavg_total_tasks_extracts_denominator() {
+    assert_eq!(
+        parse_loadavg_total_tasks("0.52 1.23 2.34 1/234 5678"),
+        Some(234)
+    );
+    assert_eq!(
+        parse_loadavg_total_tasks("32.00 16.50 8.25 4/100 99999"),
+        Some(100)
+    );
+}
+
+#[test]
+fn parse_loadavg_total_tasks_returns_none_for_invalid() {
+    assert!(parse_loadavg_total_tasks("not valid").is_none());
+    assert!(parse_loadavg_total_tasks("").is_none());
+    // Missing the runnable/total field entirely.
+    assert!(parse_loadavg_total_tasks("0.1 0.2 0.3").is_none());
+    // Malformed field (no slash).
+    assert!(parse_loadavg_total_tasks("0.1 0.2 0.3 234 5678").is_none());
 }
 
 // ── parse_hwmon_temp ──────────────────────────────────────────────────────────

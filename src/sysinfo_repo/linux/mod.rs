@@ -26,6 +26,41 @@ pub(super) fn read_loadavg_linux() -> Option<(f64, f64, f64)> {
     None
 }
 
+// ── Process / thread counts (cheap /proc reads) ────────────────────────────────
+
+/// Parse the 4th field of `/proc/loadavg` ("runnable/total") into the total number
+/// of kernel scheduling entities (tasks/threads). Example field: `1/234` → 234.
+pub fn parse_loadavg_total_tasks(content: &str) -> Option<u32> {
+    let field = content.split_whitespace().nth(3)?;
+    let (_runnable, total) = field.split_once('/')?;
+    total.parse::<u32>().ok()
+}
+
+/// Cheap `(process_count, thread_count)` from `/proc`, avoiding a full `sysinfo`
+/// process refresh: thread (task) count is the total scheduling-entity count from
+/// `/proc/loadavg` field 4; process count is the number of numeric `/proc/<pid>` entries.
+/// Returns `None` on non-Linux or if `/proc` is unreadable (caller falls back to sysinfo).
+pub(super) fn read_proc_entity_counts() -> Option<(u32, u32)> {
+    #[cfg(target_os = "linux")]
+    {
+        let loadavg = std::fs::read_to_string("/proc/loadavg").ok()?;
+        let threads = parse_loadavg_total_tasks(&loadavg)?;
+        let mut processes: u32 = 0;
+        for entry in std::fs::read_dir("/proc").ok()?.flatten() {
+            if entry
+                .file_name()
+                .to_str()
+                .is_some_and(|n| !n.is_empty() && n.bytes().all(|b| b.is_ascii_digit()))
+            {
+                processes = processes.saturating_add(1);
+            }
+        }
+        Some((processes, threads))
+    }
+    #[cfg(not(target_os = "linux"))]
+    None
+}
+
 // ── CPU temperature ──────────────────────────────────────────────────────────
 
 /// Parse a sysfs temperature file (millidegrees Celsius) into degrees.

@@ -5,7 +5,7 @@ use wincode::{SchemaRead, SchemaWrite};
 
 use super::{ContainerStats, NetworkStats, StorageStats};
 
-#[derive(Debug, Clone, Serialize, Deserialize, SchemaRead, SchemaWrite)]
+#[derive(Debug, Clone, Default, Serialize, Deserialize, SchemaRead, SchemaWrite)]
 #[serde(rename_all = "camelCase")]
 pub struct CpuStats {
     pub model: String,
@@ -17,7 +17,7 @@ pub struct CpuStats {
     pub core_usages: Vec<f64>,
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize, SchemaRead, SchemaWrite)]
+#[derive(Debug, Clone, Default, Serialize, Deserialize, SchemaRead, SchemaWrite)]
 #[serde(rename_all = "camelCase")]
 pub struct RamStats {
     pub total: u64,
@@ -42,7 +42,7 @@ pub struct SystemInfo {
 }
 
 /// Dynamic-only system metrics (wire + history). Static identity is GET /api/info or WS welcome.
-#[derive(Debug, Clone, Serialize, Deserialize, SchemaRead, SchemaWrite)]
+#[derive(Debug, Clone, Default, Serialize, Deserialize, SchemaRead, SchemaWrite)]
 #[serde(rename_all = "camelCase")]
 pub struct SystemStatsDynamic {
     pub uptime_secs: u64,

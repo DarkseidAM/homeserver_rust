@@ -154,7 +154,8 @@ pub async fn run_one_tick(
         .get_min_aggregated_created_at_before(cutoff_1min, RESOLUTION_1MIN)
         .await?
     else {
-        repo.prune_old_data().await?;
+        // Raw pruning is owned by the main worker's prune_tick (so it still runs when
+        // aggregation is disabled); here we only prune the aggregated table.
         repo.prune_aggregated_old_data().await?;
         return Ok(());
     };
@@ -190,7 +191,7 @@ pub async fn run_one_tick(
         );
     }
 
-    repo.prune_old_data().await?;
+    // Raw pruning is owned by the main worker's prune_tick; here we only prune the aggregated table.
     repo.prune_aggregated_old_data().await?;
 
     Ok(())

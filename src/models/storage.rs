@@ -29,7 +29,7 @@ pub struct DiskDeviceStat {
     pub iops_write: u64,
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize, SchemaRead, SchemaWrite)]
+#[derive(Debug, Clone, Default, Serialize, Deserialize, SchemaRead, SchemaWrite)]
 #[serde(rename_all = "camelCase")]
 pub struct StorageStats {
     pub partitions: Vec<PartitionStat>,
