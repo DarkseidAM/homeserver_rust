@@ -1,1 +1,1 @@
-window.SIDEBAR_ITEMS = {"fn":["disk_sysfs_base_device_name","parse_diskstats","parse_hwmon_temp","parse_loadavg","parse_operstate"],"struct":["DiskIoRaw"]};
+window.SIDEBAR_ITEMS = {"fn":["disk_sysfs_base_device_name","parse_diskstats","parse_hwmon_temp","parse_loadavg","parse_loadavg_total_tasks","parse_operstate"],"struct":["DiskIoRaw"]};

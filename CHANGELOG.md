@@ -4,9 +4,13 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
-### Features
+### Bug Fixes
 
-- Add graphify knowledge graph (416 nodes, 917 edges, 25 communities)
+- **http:** Guard /api/history against i64 overflow/underflow on extreme bounds
+
+### Performance
+
+- Phase 1 correctness & performance hardening
 
 ## [0.8.0] - 2026-06-24
 
@@ -18,6 +22,7 @@ All notable changes to this project will be documented in this file.
 
 - **homeserver:** V0.8.0 — monitoring metrics, SQLite schema versioning ([#58](https://github.com/DarkseidAM/homeserver_rust/pull/58))
 - Agent map, rustdoc on Pages, automated releases ([#71](https://github.com/DarkseidAM/homeserver_rust/pull/71))
+- Add graphify knowledge graph (416 nodes, 917 edges, 25 communities)
 
 ### Other
 
