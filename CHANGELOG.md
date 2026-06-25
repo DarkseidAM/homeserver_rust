@@ -20,6 +20,7 @@ All notable changes to this project will be documented in this file.
 - Agent map, rustdoc on Pages, automated releases ([#71](https://github.com/DarkseidAM/homeserver_rust/pull/71))
 - Add graphify knowledge graph (416 nodes, 917 edges, 25 communities)
 - **history:** Full CPU/RAM fidelity + additive schema migrations
+- **ws,ops:** Permessage-deflate via yawc, /health endpoint, gosu shutdown
 
 ### Other
 
