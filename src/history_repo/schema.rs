@@ -11,15 +11,33 @@ use sqlx::sqlite::{SqliteConnectOptions, SqlitePoolOptions};
 /// Only data-preserving DDL (e.g. `ALTER TABLE ... ADD COLUMN`) belongs here.
 /// v2 → v3: add nullable `cpu_data` / `ram_data` blobs so full CPU/RAM detail is persisted;
 /// old rows keep NULL and are read via the scalar fallback.
-const MIGRATIONS: &[(u32, &[&str])] = &[(
-    2,
-    &[
-        "ALTER TABLE system_history ADD COLUMN cpu_data BLOB",
-        "ALTER TABLE system_history ADD COLUMN ram_data BLOB",
-        "ALTER TABLE system_history_aggregated ADD COLUMN cpu_data BLOB",
-        "ALTER TABLE system_history_aggregated ADD COLUMN ram_data BLOB",
-    ],
-)];
+const MIGRATIONS: &[(u32, &[&str])] = &[
+    (
+        2,
+        &[
+            "ALTER TABLE system_history ADD COLUMN cpu_data BLOB",
+            "ALTER TABLE system_history ADD COLUMN ram_data BLOB",
+            "ALTER TABLE system_history_aggregated ADD COLUMN cpu_data BLOB",
+            "ALTER TABLE system_history_aggregated ADD COLUMN ram_data BLOB",
+        ],
+    ),
+    // v3 → v4: persist GPU metrics. Nullable; rows without it read as an empty GPU list.
+    (
+        3,
+        &[
+            "ALTER TABLE system_history ADD COLUMN gpu_data BLOB",
+            "ALTER TABLE system_history_aggregated ADD COLUMN gpu_data BLOB",
+        ],
+    ),
+    // v4 → v5: persist SMART disk health. Nullable; absent → empty list.
+    (
+        4,
+        &[
+            "ALTER TABLE system_history ADD COLUMN smart_data BLOB",
+            "ALTER TABLE system_history_aggregated ADD COLUMN smart_data BLOB",
+        ],
+    ),
+];
 
 impl HistoryRepo {
     pub async fn connect(path: &str, retention_days: u32) -> anyhow::Result<Self> {
@@ -174,7 +192,9 @@ impl HistoryRepo {
                 network_data BLOB NOT NULL,
                 system_data BLOB NOT NULL,
                 cpu_data BLOB,
-                ram_data BLOB
+                ram_data BLOB,
+                gpu_data BLOB,
+                smart_data BLOB
             )
             "#,
         )

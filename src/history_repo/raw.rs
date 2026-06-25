@@ -3,8 +3,9 @@
 use crate::history_repo::HistoryRepo;
 use crate::history_repo::blob;
 use crate::history_repo::history_merge::{
-    deserialize_container_data, deserialize_cpu_data, deserialize_network_data,
-    deserialize_ram_data, deserialize_storage_data,
+    deserialize_container_data, deserialize_cpu_data, deserialize_gpu_data,
+    deserialize_network_data, deserialize_ram_data, deserialize_smart_data,
+    deserialize_storage_data,
 };
 use crate::models::{FullSystemSnapshot, SystemInfo, SystemStats, SystemStatsDynamic};
 use sqlx::Row;
@@ -54,8 +55,16 @@ impl HistoryRepo {
                 blob::BLOB_VERSION,
                 wincode::serialize(&s.ram).map_err(|e| anyhow::anyhow!("wincode: {}", e))?,
             );
+            let gpu_data = blob::with_version_prefix(
+                blob::BLOB_VERSION,
+                wincode::serialize(&s.gpus).map_err(|e| anyhow::anyhow!("wincode: {}", e))?,
+            );
+            let smart_data = blob::with_version_prefix(
+                blob::BLOB_VERSION,
+                wincode::serialize(&s.smart).map_err(|e| anyhow::anyhow!("wincode: {}", e))?,
+            );
             sqlx::query(
-                "INSERT INTO system_history (created_at, cpu_load, memory_used, container_data, storage_data, network_data, system_data, cpu_data, ram_data) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)",
+                "INSERT INTO system_history (created_at, cpu_load, memory_used, container_data, storage_data, network_data, system_data, cpu_data, ram_data, gpu_data, smart_data) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)",
             )
             .bind(s.timestamp as i64)
             .bind(s.cpu.usage_percent)
@@ -66,6 +75,8 @@ impl HistoryRepo {
             .bind(&system_data)
             .bind(&cpu_data)
             .bind(&ram_data)
+            .bind(&gpu_data)
+            .bind(&smart_data)
             .execute(&mut *tx)
             .await?;
         }
@@ -106,7 +117,7 @@ impl HistoryRepo {
         let stored_info = self.get_stored_system_info().await?;
 
         let rows = sqlx::query(
-            "SELECT created_at, cpu_load, memory_used, container_data, storage_data, network_data, system_data, cpu_data, ram_data
+            "SELECT created_at, cpu_load, memory_used, container_data, storage_data, network_data, system_data, cpu_data, ram_data, gpu_data, smart_data
              FROM system_history ORDER BY id DESC LIMIT $1",
         )
         .bind(limit as i64)
@@ -132,7 +143,7 @@ impl HistoryRepo {
         to_ts: i64,
     ) -> anyhow::Result<Vec<FullSystemSnapshot>> {
         let rows = sqlx::query(
-            "SELECT created_at, cpu_load, memory_used, container_data, storage_data, network_data, system_data, cpu_data, ram_data
+            "SELECT created_at, cpu_load, memory_used, container_data, storage_data, network_data, system_data, cpu_data, ram_data, gpu_data, smart_data
              FROM system_history WHERE created_at >= $1 AND created_at < $2 ORDER BY created_at ASC",
         )
         .bind(from_ts)
@@ -181,15 +192,19 @@ impl HistoryRepo {
         let storage_data: Vec<u8> = row.try_get("storage_data")?;
         let network_data: Vec<u8> = row.try_get("network_data")?;
         let system_data: Vec<u8> = row.try_get("system_data")?;
-        // Nullable on rows written before schema v3 (full CPU/RAM persistence).
+        // Nullable on rows written before schema v3 (CPU/RAM) / v4 (GPU).
         let cpu_data: Option<Vec<u8>> = row.try_get("cpu_data")?;
         let ram_data: Option<Vec<u8>> = row.try_get("ram_data")?;
+        let gpu_data: Option<Vec<u8>> = row.try_get("gpu_data")?;
+        let smart_data: Option<Vec<u8>> = row.try_get("smart_data")?;
 
         let containers = deserialize_container_data(&container_data);
         let storage = deserialize_storage_data(&storage_data);
         let network = deserialize_network_data(&network_data);
         let cpu = deserialize_cpu_data(cpu_data.as_deref(), cpu_load);
         let ram = deserialize_ram_data(ram_data.as_deref(), memory_used as u64);
+        let gpus = deserialize_gpu_data(gpu_data.as_deref());
+        let smart = deserialize_smart_data(smart_data.as_deref());
 
         let system = match blob::blob_version(&system_data) {
             blob::BLOB_VERSION_SYSTEM_DYNAMIC => {
@@ -245,6 +260,8 @@ impl HistoryRepo {
             storage,
             network,
             system,
+            gpus,
+            smart,
         })
     }
 }

@@ -21,6 +21,10 @@ minute_retention_hours = 24
 vacuum_schedule = "0 3 * * *"
 # Fallback: run VACUUM every N seconds when vacuum_schedule is not set.
 vacuum_interval_secs = 86400
+# Persist GPU metrics to history (gpu_data blobs). Live WS always includes GPUs regardless.
+persist_gpu = true
+# Persist SMART disk health to history (smart_data blobs). Live WS always includes it regardless.
+persist_smart = true
 
 [publishing]
 cpu_stats_frequency_ms = 1000
@@ -30,3 +34,22 @@ broadcast_capacity = 60
 [monitoring]
 sample_interval_ms = 1000
 stats_log_interval_secs = 60
+# Collect GPU metrics each tick. NVIDIA requires building with --features gpu-nvidia; AMD/Intel via /sys.
+collect_gpu = true
+# Collect SMART disk health. Requires smartctl (smartmontools) + device privileges (e.g. --cap-add SYS_RAWIO). Off by default.
+collect_smart = false
+# How often to refresh SMART data (seconds). SMART reads are slow/privileged; poll infrequently.
+smart_poll_interval_secs = 900
+
+# Threshold alerting. Each event is logged (tracing) and, if webhook_url is set, POSTed as JSON.
+[alerts]
+# webhook_url = "https://example.com/hook"   # optional; omit to log-only
+# One [[alerts.rules]] block per rule. metric ∈ {cpu_usage, mem_usage_percent, swap_usage_percent,
+# load_avg_1, cpu_temperature, disk_usage_percent, gpu_temperature, gpu_utilization}; op ∈ >,>=,<,<=.
+# [[alerts.rules]]
+# name = "cpu hot"
+# metric = "cpu_temperature"
+# op = ">"
+# threshold = 85.0
+# duration_secs = 30      # must stay breached this long before firing (default 0)
+# cooldown_secs = 300     # min seconds between repeat notifications (default 300)

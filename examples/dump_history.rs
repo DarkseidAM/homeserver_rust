@@ -31,6 +31,8 @@ async fn main() -> anyhow::Result<()> {
             storage: s.storage,
             network: s.network,
             system: merge_system_info(stored_info.as_ref(), &s.system),
+            gpus: s.gpus,
+            smart: s.smart,
         })
         .collect();
 

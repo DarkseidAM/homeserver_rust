@@ -2,11 +2,38 @@
 
 All notable changes to this project will be documented in this file.
 
-## [Unreleased]
+## [0.9.0] - 2026-06-25
 
-### Documentation
+### CI/CD
 
-- Add CODEBASE.md agent-readable repo map
+- **docs:** Add workflow_dispatch trigger
+- **cd:** Multi-arch (amd64+arm64) images and RustSec dependency audit
+
+### Features
+
+- Agent map, rustdoc on Pages, automated releases ([#71](https://github.com/DarkseidAM/homeserver_rust/pull/71))
+- Add graphify knowledge graph (416 nodes, 917 edges, 25 communities)
+- **history:** Full CPU/RAM fidelity + additive schema migrations
+- **ws,ops:** Permessage-deflate via yawc, /health endpoint, gosu shutdown
+- **gpu:** NVIDIA(NVML)+AMD/Intel(sysfs) GPU metrics, schema v4
+- **smart:** SMART disk health via smartctl, schema v5
+- **alerting:** Threshold rules with tracing + webhook notifications
+
+### Other
+
+- Add graphify-rs MCP server config and enable it for Claude Code
+- **graphify:** Refresh knowledge graph for Phase 5 (gpu/smart/alerting)
+- **graphify:** Refresh knowledge graph for Phase 5 test additions
+- **graphify:** Refresh knowledge graph for phase5
+
+### Performance
+
+- Phase 1 correctness & performance hardening
+- **gpu:** Offload collect to spawn_blocking; avoid clone in sort; strip_prefix
+
+### Testing
+
+- **phase5:** GPU/SMART persistence round-trips, persist gating, aggregation carry-over
 
 ## [0.8.0] - 2026-06-23
 

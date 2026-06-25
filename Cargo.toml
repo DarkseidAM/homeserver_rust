@@ -1,6 +1,6 @@
 [package]
 name = "homeserver"
-version = "0.8.0"
+version = "0.9.0"
 edition = "2024"
 rust-version = "1.95"
 description = "Home server - system and Docker stats over WebSockets (Rust port)"
@@ -56,8 +56,18 @@ thiserror = "2.0"
 anyhow = "1.0"
 futures-util = "0.3"
 
+# Alert webhook HTTP client (rustls TLS; isolated to the alerting module)
+reqwest = { version = "0.13", default-features = false, features = ["rustls", "webpki-roots", "json"] }
+
 # Memory allocator
 tikv-jemallocator = "0.7"
+
+# Optional: NVIDIA GPU metrics via NVML (loaded at runtime; off by default).
+nvml-wrapper = { version = "0.10", optional = true }
+
+[features]
+# Enable NVIDIA GPU metrics (links the nvml-wrapper crate; libnvidia-ml is dlopen'd at runtime).
+gpu-nvidia = ["dep:nvml-wrapper"]
 
 [dev-dependencies]
 tokio = { version = "1", features = ["rt", "macros"] }

@@ -45,6 +45,8 @@ async fn main() -> Result<()> {
             .map_err(|e| anyhow::anyhow!("system info: {}", e))?,
     );
     let docker_repo = Arc::new(docker_repo::DockerRepo::connect()?);
+    let gpu_repo = Arc::new(gpu_repo::GpuRepo::new());
+    let smart_repo = Arc::new(smart_repo::SmartRepo::new());
     let history_repo = Arc::new(
         history_repo::HistoryRepo::connect(
             &app_config.database.path,
@@ -91,6 +93,8 @@ async fn main() -> Result<()> {
         worker::HistoryWriterConfig {
             flush_rate: app_config.database.flush_rate,
             flush_interval_secs: app_config.database.flush_interval_secs,
+            persist_gpu: app_config.database.persist_gpu,
+            persist_smart: app_config.database.persist_smart,
         },
         snapshots_saved_total.clone(),
     );
@@ -99,17 +103,24 @@ async fn main() -> Result<()> {
             sysinfo_repo: sysinfo_repo.clone(),
             system_info: system_info.clone(),
             docker_repo: docker_repo.clone(),
+            gpu_repo: gpu_repo.clone(),
+            smart_repo: smart_repo.clone(),
             history_repo: history_repo.clone(),
             tx: tx.clone(),
             write_tx,
             ws_system_connections: ws_system_connections.clone(),
             snapshots_saved_total,
+            alert_engine: alerting::AlertEngine::new(app_config.alerts.rules.clone()),
+            notifier: alerting::Notifier::new(app_config.alerts.webhook_url.clone()),
             shutdown_rx,
         },
         worker::WorkerConfig {
             sample_interval_ms: app_config.monitoring.sample_interval_ms,
             stats_log_interval_secs: app_config.monitoring.stats_log_interval_secs,
             prune_interval_secs: app_config.database.prune_interval_secs,
+            collect_gpu: app_config.monitoring.collect_gpu,
+            collect_smart: app_config.monitoring.collect_smart,
+            smart_poll_interval_secs: app_config.monitoring.smart_poll_interval_secs,
         },
     );
 

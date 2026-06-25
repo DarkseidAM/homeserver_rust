@@ -3,9 +3,12 @@
 
 mod history_writer;
 
+use crate::alerting::{AlertEngine, Notifier};
 use crate::docker_repo::DockerRepo;
+use crate::gpu_repo::GpuRepo;
 use crate::history_repo::HistoryRepo;
 use crate::models::{FullSystemSnapshot, SystemInfo};
+use crate::smart_repo::SmartRepo;
 use crate::sysinfo_repo::SysinfoRepo;
 pub use history_writer::spawn_history_writer;
 use std::sync::Arc;
@@ -26,11 +29,15 @@ pub struct WorkerDeps {
     pub sysinfo_repo: Arc<SysinfoRepo>,
     pub system_info: Arc<SystemInfo>,
     pub docker_repo: Arc<DockerRepo>,
+    pub gpu_repo: Arc<GpuRepo>,
+    pub smart_repo: Arc<SmartRepo>,
     pub history_repo: Arc<HistoryRepo>,
     pub tx: broadcast::Sender<FullSystemSnapshot>,
     pub write_tx: mpsc::Sender<FullSystemSnapshot>,
     pub ws_system_connections: Arc<AtomicUsize>,
     pub snapshots_saved_total: Arc<AtomicU64>,
+    pub alert_engine: AlertEngine,
+    pub notifier: Notifier,
     pub shutdown_rx: tokio::sync::oneshot::Receiver<()>,
 }
 
@@ -42,12 +49,22 @@ pub struct WorkerConfig {
     pub stats_log_interval_secs: u64,
     /// How often to prune old data (real seconds).
     pub prune_interval_secs: u64,
+    /// Collect GPU metrics each tick.
+    pub collect_gpu: bool,
+    /// Collect SMART disk health (slow background poll).
+    pub collect_smart: bool,
+    /// How often to refresh SMART data (real seconds).
+    pub smart_poll_interval_secs: u64,
 }
 
 /// Writer config: batching for the dedicated history writer task.
 pub struct HistoryWriterConfig {
     pub flush_rate: u64,
     pub flush_interval_secs: u64,
+    /// When false, GPU data is dropped before persisting (live WS still includes it).
+    pub persist_gpu: bool,
+    /// When false, SMART data is dropped before persisting (live WS still includes it).
+    pub persist_smart: bool,
 }
 
 pub fn spawn(deps: WorkerDeps, config: WorkerConfig) -> tokio::task::JoinHandle<()> {
@@ -55,17 +72,24 @@ pub fn spawn(deps: WorkerDeps, config: WorkerConfig) -> tokio::task::JoinHandle<
         sysinfo_repo,
         system_info: _,
         docker_repo,
+        gpu_repo,
+        smart_repo,
         history_repo,
         tx,
         write_tx,
         ws_system_connections,
         snapshots_saved_total,
+        mut alert_engine,
+        notifier,
         mut shutdown_rx,
     } = deps;
     let WorkerConfig {
         sample_interval_ms,
         stats_log_interval_secs,
         prune_interval_secs,
+        collect_gpu,
+        collect_smart,
+        smart_poll_interval_secs,
     } = config;
 
     let stats_log_interval = Duration::from_secs(stats_log_interval_secs);
@@ -78,6 +102,8 @@ pub fn spawn(deps: WorkerDeps, config: WorkerConfig) -> tokio::task::JoinHandle<
         stats_log_tick.set_missed_tick_behavior(tokio::time::MissedTickBehavior::Skip);
         let mut prune_tick = interval(prune_interval);
         prune_tick.set_missed_tick_behavior(tokio::time::MissedTickBehavior::Skip);
+        let mut smart_tick = interval(Duration::from_secs(smart_poll_interval_secs.max(1)));
+        smart_tick.set_missed_tick_behavior(tokio::time::MissedTickBehavior::Skip);
 
         let mut snapshots_pruned_total: u64 = 0;
         let mut last_no_receivers_warn: Option<Instant> = None;
@@ -123,6 +149,18 @@ pub fn spawn(deps: WorkerDeps, config: WorkerConfig) -> tokio::task::JoinHandle<
                 tracing::warn!(error = %e, operation = "get_system_stats", "system stats failed; using defaults");
                 Default::default()
             });
+            // GPU collection does blocking sysfs reads / NVML ioctls — offload to the blocking
+            // pool so it never stalls the async executor (and other tasks like WS connections).
+            let gpus = if collect_gpu {
+                let gpu_repo = gpu_repo.clone();
+                tokio::task::spawn_blocking(move || gpu_repo.collect())
+                    .await
+                    .unwrap_or_default()
+            } else {
+                Vec::new()
+            };
+            // SMART is refreshed on its own slow cadence (smart_tick); read the cached value here.
+            let smart = smart_repo.current();
 
             let snapshot = FullSystemSnapshot {
                 timestamp,
@@ -132,7 +170,17 @@ pub fn spawn(deps: WorkerDeps, config: WorkerConfig) -> tokio::task::JoinHandle<
                 storage,
                 network,
                 system,
+                gpus,
+                smart,
             };
+
+            // Evaluate alert rules and dispatch any fire/resolve events (webhook POST is detached).
+            if !alert_engine.is_empty() {
+                for ev in alert_engine.evaluate(&snapshot, std::time::Instant::now()) {
+                    let notifier = notifier.clone();
+                    tokio::spawn(async move { notifier.notify(&ev).await });
+                }
+            }
 
             // Only clone for the broadcast when someone is actually listening.
             if tx.receiver_count() > 0 {
@@ -164,6 +212,13 @@ pub fn spawn(deps: WorkerDeps, config: WorkerConfig) -> tokio::task::JoinHandle<
                         snapshots_pruned_total = snapshots_pruned_total,
                         "app stats"
                     );
+                }
+                _ = smart_tick.tick() => {
+                    // smartctl is slow/blocking; refresh in a detached task so the loop stays responsive.
+                    if collect_smart {
+                        let repo = smart_repo.clone();
+                        tokio::spawn(async move { repo.refresh().await });
+                    }
                 }
                 _ = prune_tick.tick() => {
                     if let Err(e) = history_repo.prune_old_data().await {

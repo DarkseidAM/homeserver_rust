@@ -100,16 +100,18 @@ async fn migrates_v2_to_v3_preserving_rows() {
         .fetch_one(&pool)
         .await
         .unwrap();
-    assert_eq!(version, 3, "schema version migrated to current");
-    // cpu_data column now present on both tables.
-    sqlx::query("SELECT cpu_data, ram_data FROM system_history LIMIT 1")
+    assert_eq!(version, 5, "schema version migrated to current");
+    // v3 cpu_data/ram_data, v4 gpu_data, v5 smart_data columns now present on both tables.
+    sqlx::query("SELECT cpu_data, ram_data, gpu_data, smart_data FROM system_history LIMIT 1")
         .fetch_optional(&pool)
         .await
-        .expect("cpu_data/ram_data columns exist on system_history");
-    sqlx::query("SELECT cpu_data, ram_data FROM system_history_aggregated LIMIT 1")
-        .fetch_optional(&pool)
-        .await
-        .expect("cpu_data/ram_data columns exist on aggregated table");
+        .expect("v3/v4/v5 columns exist on system_history");
+    sqlx::query(
+        "SELECT cpu_data, ram_data, gpu_data, smart_data FROM system_history_aggregated LIMIT 1",
+    )
+    .fetch_optional(&pool)
+    .await
+    .expect("v3/v4/v5 columns exist on aggregated table");
 
     // The legacy row survived the migration (no purge).
     let count: i64 = sqlx::query("SELECT COUNT(*) AS c FROM system_history")
@@ -167,6 +169,8 @@ async fn new_writes_persist_full_cpu_ram_detail() {
         storage: StorageStats::default(),
         network: NetworkStats::default(),
         system: SystemStatsDynamic::default(),
+        gpus: vec![],
+        smart: vec![],
     };
     repo.save_snapshots(std::slice::from_ref(&snap), &info)
         .await

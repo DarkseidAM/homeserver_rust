@@ -50,6 +50,8 @@ fn minimal_snapshot(timestamp: u64) -> FullSystemSnapshot {
             load_avg_5: 0.0,
             load_avg_15: 0.0,
         },
+        gpus: vec![],
+        smart: vec![],
     }
 }
 
@@ -94,6 +96,8 @@ fn minimal_aggregated_snapshot(created_at: i64) -> AggregatedSnapshot {
             load_avg_5: 0.0,
             load_avg_15: 0.0,
         },
+        gpus: vec![],
+        smart: vec![],
     }
 }
 

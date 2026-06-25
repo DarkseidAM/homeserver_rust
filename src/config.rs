@@ -18,7 +18,52 @@ pub struct AppConfig {
     pub database: DatabaseConfig,
     pub publishing: PublishingConfig,
     pub monitoring: MonitoringConfig,
+    #[serde(default)]
+    pub alerts: AlertsConfig,
 }
+
+/// Threshold-based alerting. `webhook_url` (optional) receives a JSON POST per event;
+/// every event is also logged via `tracing`.
+#[derive(Debug, Clone, Default, Deserialize)]
+pub struct AlertsConfig {
+    #[serde(default)]
+    pub webhook_url: Option<String>,
+    #[serde(default)]
+    pub rules: Vec<AlertRule>,
+}
+
+/// One alert rule: fire when `metric op threshold` holds for `duration_secs`, then debounce
+/// re-notification for `cooldown_secs`.
+#[derive(Debug, Clone, Deserialize)]
+pub struct AlertRule {
+    pub name: String,
+    /// One of: cpu_usage, mem_usage_percent, swap_usage_percent, load_avg_1, cpu_temperature,
+    /// disk_usage_percent, gpu_temperature, gpu_utilization.
+    pub metric: String,
+    /// Comparison operator: ">", ">=", "<", "<=".
+    pub op: String,
+    pub threshold: f64,
+    #[serde(default)]
+    pub duration_secs: u64,
+    #[serde(default = "default_cooldown_secs")]
+    pub cooldown_secs: u64,
+}
+
+fn default_cooldown_secs() -> u64 {
+    300
+}
+
+/// Metric names accepted in alert rules.
+pub(crate) const ALERT_METRICS: &[&str] = &[
+    "cpu_usage",
+    "mem_usage_percent",
+    "swap_usage_percent",
+    "load_avg_1",
+    "cpu_temperature",
+    "disk_usage_percent",
+    "gpu_temperature",
+    "gpu_utilization",
+];
 
 #[derive(Debug, Clone, Deserialize)]
 pub struct ServerConfig {
@@ -53,6 +98,20 @@ pub struct DatabaseConfig {
     /// Fallback: run VACUUM every N seconds when vacuum_schedule is not set. Default 86400 (24h).
     #[serde(default = "default_vacuum_interval_secs")]
     pub vacuum_interval_secs: u64,
+    /// Persist GPU metrics to history (gpu_data blobs). Live WS always includes GPUs regardless.
+    #[serde(default = "default_true")]
+    pub persist_gpu: bool,
+    /// Persist SMART disk health to history (smart_data blobs). Live WS always includes it regardless.
+    #[serde(default = "default_true")]
+    pub persist_smart: bool,
+}
+
+fn default_true() -> bool {
+    true
+}
+
+fn default_smart_poll_interval_secs() -> u64 {
+    900
 }
 
 fn default_retention_days() -> u32 {
@@ -100,6 +159,15 @@ pub struct MonitoringConfig {
     pub sample_interval_ms: u64,
     /// How often to log app stats (ws_system clients, snapshots saved/pruned) at INFO level.
     pub stats_log_interval_secs: u64,
+    /// Collect GPU metrics each tick (NVIDIA needs the `gpu-nvidia` build feature; AMD/Intel via /sys).
+    #[serde(default = "default_true")]
+    pub collect_gpu: bool,
+    /// Collect SMART disk health (requires smartctl + device privileges). Off by default.
+    #[serde(default)]
+    pub collect_smart: bool,
+    /// How often to refresh SMART data (seconds). SMART reads are slow/privileged.
+    #[serde(default = "default_smart_poll_interval_secs")]
+    pub smart_poll_interval_secs: u64,
 }
 
 impl AppConfig {
@@ -205,6 +273,22 @@ impl AppConfig {
             "monitoring.stats_log_interval_secs must be > 0, got {}",
             self.monitoring.stats_log_interval_secs
         );
+        for rule in &self.alerts.rules {
+            anyhow::ensure!(!rule.name.is_empty(), "alert rule name must be non-empty");
+            anyhow::ensure!(
+                ALERT_METRICS.contains(&rule.metric.as_str()),
+                "alert rule '{}' has unknown metric '{}' (expected one of {:?})",
+                rule.name,
+                rule.metric,
+                ALERT_METRICS
+            );
+            anyhow::ensure!(
+                matches!(rule.op.as_str(), ">" | ">=" | "<" | "<="),
+                "alert rule '{}' has invalid op '{}' (expected >, >=, <, <=)",
+                rule.name,
+                rule.op
+            );
+        }
         Ok(())
     }
 }
