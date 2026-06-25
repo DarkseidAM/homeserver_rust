@@ -80,7 +80,10 @@ fn collect_linux() -> Vec<GpuStats> {
             continue; // unknown vendor or NVIDIA (handled by NVML)
         };
 
-        let index = name.trim_start_matches("card").parse::<u32>().unwrap_or(0);
+        let index = name
+            .strip_prefix("card")
+            .and_then(|s| s.parse::<u32>().ok())
+            .unwrap_or(0);
         let utilization_percent = read_to_string(dev.join("gpu_busy_percent"))
             .ok()
             .and_then(|c| parse_busy_percent(&c))
@@ -108,7 +111,8 @@ fn collect_linux() -> Vec<GpuStats> {
             fan_percent,
         });
     }
-    out.sort_by_key(|g| (g.vendor.clone(), g.index));
+    // sort_by (not sort_by_key) to compare vendor by reference — avoids cloning the String per comparison.
+    out.sort_by(|a, b| (&a.vendor, a.index).cmp(&(&b.vendor, b.index)));
     out
 }
 

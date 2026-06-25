@@ -149,9 +149,13 @@ pub fn spawn(deps: WorkerDeps, config: WorkerConfig) -> tokio::task::JoinHandle<
                 tracing::warn!(error = %e, operation = "get_system_stats", "system stats failed; using defaults");
                 Default::default()
             });
-            // GPU collection is cheap (small sysfs reads / NVML queries) so it runs inline.
+            // GPU collection does blocking sysfs reads / NVML ioctls — offload to the blocking
+            // pool so it never stalls the async executor (and other tasks like WS connections).
             let gpus = if collect_gpu {
-                gpu_repo.collect()
+                let gpu_repo = gpu_repo.clone();
+                tokio::task::spawn_blocking(move || gpu_repo.collect())
+                    .await
+                    .unwrap_or_default()
             } else {
                 Vec::new()
             };
