@@ -1146,7 +1146,7 @@
       "label": "is_card_node()",
       "file_type": "code",
       "source_file": "src/gpu_repo/sysfs.rs",
-      "source_location": "L116",
+      "source_location": "L120",
       "_origin": "ast",
       "id": "gpu_repo_sysfs_is_card_node",
       "community": 11,
@@ -1156,7 +1156,7 @@
       "label": "read_hwmon()",
       "file_type": "code",
       "source_file": "src/gpu_repo/sysfs.rs",
-      "source_location": "L123",
+      "source_location": "L127",
       "_origin": "ast",
       "id": "gpu_repo_sysfs_read_hwmon",
       "community": 11,
@@ -9053,9 +9053,9 @@
       "source_location": "L7",
       "weight": 1.0,
       "context": "import",
+      "confidence_score": 1.0,
       "source": "tests_history_writer_tests",
-      "target": "arc",
-      "confidence_score": 1.0
+      "target": "arc"
     },
     {
       "relation": "imports_from",
@@ -9240,9 +9240,9 @@
       "source_location": "L4",
       "weight": 1.0,
       "context": "import",
+      "confidence_score": 1.0,
       "source": "tests_history_blob_roundtrip_tests",
-      "target": "historyrepo",
-      "confidence_score": 1.0
+      "target": "historyrepo"
     },
     {
       "relation": "imports_from",
@@ -9273,9 +9273,9 @@
       "source_location": "L4",
       "weight": 1.0,
       "context": "import",
+      "confidence_score": 1.0,
       "source": "tests_history_writer_tests",
-      "target": "historyrepo",
-      "confidence_score": 1.0
+      "target": "historyrepo"
     },
     {
       "relation": "imports_from",
@@ -13326,9 +13326,9 @@
       "source_location": "L8",
       "weight": 1.0,
       "context": "return_type",
+      "confidence_score": 1.0,
       "source": "tests_history_blob_roundtrip_tests_gpu",
-      "target": "models_gpu_gpustats",
-      "confidence_score": 1.0
+      "target": "models_gpu_gpustats"
     },
     {
       "relation": "imports_from",
@@ -13521,9 +13521,9 @@
       "source_location": "L22",
       "weight": 1.0,
       "context": "return_type",
+      "confidence_score": 1.0,
       "source": "tests_history_blob_roundtrip_tests_smart",
-      "target": "models_smart_smarthealth",
-      "confidence_score": 1.0
+      "target": "models_smart_smarthealth"
     },
     {
       "relation": "contains",
@@ -13994,9 +13994,9 @@
       "source_location": "L143",
       "weight": 1.0,
       "context": "return_type",
+      "confidence_score": 1.0,
       "source": "tests_aggregation_tests_rich_snapshot",
-      "target": "models_system_fullsystemsnapshot",
-      "confidence_score": 1.0
+      "target": "models_system_fullsystemsnapshot"
     },
     {
       "relation": "references",
@@ -14027,9 +14027,9 @@
       "source_location": "L34",
       "weight": 1.0,
       "context": "return_type",
+      "confidence_score": 1.0,
       "source": "tests_history_blob_roundtrip_tests_snapshot",
-      "target": "models_system_fullsystemsnapshot",
-      "confidence_score": 1.0
+      "target": "models_system_fullsystemsnapshot"
     },
     {
       "relation": "references",
@@ -14060,9 +14060,9 @@
       "source_location": "L32",
       "weight": 1.0,
       "context": "return_type",
+      "confidence_score": 1.0,
       "source": "tests_history_writer_tests_persist_and_read",
-      "target": "models_system_fullsystemsnapshot",
-      "confidence_score": 1.0
+      "target": "models_system_fullsystemsnapshot"
     },
     {
       "relation": "references",
@@ -14071,9 +14071,9 @@
       "source_location": "L11",
       "weight": 1.0,
       "context": "return_type",
+      "confidence_score": 1.0,
       "source": "tests_history_writer_tests_snapshot_with_gpu_smart",
-      "target": "models_system_fullsystemsnapshot",
-      "confidence_score": 1.0
+      "target": "models_system_fullsystemsnapshot"
     },
     {
       "relation": "references",
@@ -15894,9 +15894,9 @@
       "source_location": "L8",
       "weight": 1.0,
       "context": "import",
+      "confidence_score": 1.0,
       "source": "tests_history_writer_tests",
-      "target": "atomicu64",
-      "confidence_score": 1.0
+      "target": "atomicu64"
     },
     {
       "relation": "references",
@@ -16018,9 +16018,9 @@
       "source_file": "tests/aggregation_tests.rs",
       "source_location": "L191",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "tests_aggregation_tests",
-      "target": "tests_aggregation_tests_aggregate_snapshots_carries_full_detail_from_last_sample",
-      "confidence_score": 1.0
+      "target": "tests_aggregation_tests_aggregate_snapshots_carries_full_detail_from_last_sample"
     },
     {
       "relation": "contains",
@@ -16058,9 +16058,9 @@
       "source_file": "tests/aggregation_tests.rs",
       "source_location": "L143",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "tests_aggregation_tests",
-      "target": "tests_aggregation_tests_rich_snapshot",
-      "confidence_score": 1.0
+      "target": "tests_aggregation_tests_rich_snapshot"
     },
     {
       "relation": "contains",
@@ -16599,9 +16599,9 @@
       "source_location": "L6",
       "weight": 1.0,
       "context": "import",
+      "confidence_score": 1.0,
       "source": "tests_history_blob_roundtrip_tests",
-      "target": "tempdir",
-      "confidence_score": 1.0
+      "target": "tempdir"
     },
     {
       "relation": "contains",
@@ -16609,9 +16609,9 @@
       "source_file": "tests/history_blob_roundtrip_tests.rs",
       "source_location": "L67",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "tests_history_blob_roundtrip_tests",
-      "target": "tests_history_blob_roundtrip_tests_aggregated_snapshot_round_trip_preserves_gpu_and_smart",
-      "confidence_score": 1.0
+      "target": "tests_history_blob_roundtrip_tests_aggregated_snapshot_round_trip_preserves_gpu_and_smart"
     },
     {
       "relation": "contains",
@@ -16619,9 +16619,9 @@
       "source_file": "tests/history_blob_roundtrip_tests.rs",
       "source_location": "L8",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "tests_history_blob_roundtrip_tests",
-      "target": "tests_history_blob_roundtrip_tests_gpu",
-      "confidence_score": 1.0
+      "target": "tests_history_blob_roundtrip_tests_gpu"
     },
     {
       "relation": "contains",
@@ -16629,9 +16629,9 @@
       "source_file": "tests/history_blob_roundtrip_tests.rs",
       "source_location": "L49",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "tests_history_blob_roundtrip_tests",
-      "target": "tests_history_blob_roundtrip_tests_raw_snapshot_round_trip_preserves_gpu_and_smart",
-      "confidence_score": 1.0
+      "target": "tests_history_blob_roundtrip_tests_raw_snapshot_round_trip_preserves_gpu_and_smart"
     },
     {
       "relation": "contains",
@@ -16639,9 +16639,9 @@
       "source_file": "tests/history_blob_roundtrip_tests.rs",
       "source_location": "L22",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "tests_history_blob_roundtrip_tests",
-      "target": "tests_history_blob_roundtrip_tests_smart",
-      "confidence_score": 1.0
+      "target": "tests_history_blob_roundtrip_tests_smart"
     },
     {
       "relation": "contains",
@@ -16649,9 +16649,9 @@
       "source_file": "tests/history_blob_roundtrip_tests.rs",
       "source_location": "L34",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "tests_history_blob_roundtrip_tests",
-      "target": "tests_history_blob_roundtrip_tests_snapshot",
-      "confidence_score": 1.0
+      "target": "tests_history_blob_roundtrip_tests_snapshot"
     },
     {
       "relation": "calls",
@@ -16660,9 +16660,9 @@
       "source_file": "tests/history_blob_roundtrip_tests.rs",
       "source_location": "L56",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "tests_history_blob_roundtrip_tests_raw_snapshot_round_trip_preserves_gpu_and_smart",
-      "target": "tests_history_blob_roundtrip_tests_snapshot",
-      "confidence_score": 1.0
+      "target": "tests_history_blob_roundtrip_tests_snapshot"
     },
     {
       "relation": "imports_from",
@@ -17176,9 +17176,9 @@
       "source_location": "L9",
       "weight": 1.0,
       "context": "import",
+      "confidence_score": 1.0,
       "source": "tests_history_writer_tests",
-      "target": "tempdir",
-      "confidence_score": 1.0
+      "target": "tempdir"
     },
     {
       "relation": "contains",
@@ -17186,9 +17186,9 @@
       "source_file": "tests/history_writer_tests.rs",
       "source_location": "L32",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "tests_history_writer_tests",
-      "target": "tests_history_writer_tests_persist_and_read",
-      "confidence_score": 1.0
+      "target": "tests_history_writer_tests_persist_and_read"
     },
     {
       "relation": "contains",
@@ -17196,9 +17196,9 @@
       "source_file": "tests/history_writer_tests.rs",
       "source_location": "L67",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "tests_history_writer_tests",
-      "target": "tests_history_writer_tests_persist_flags_off_strips_gpu_and_smart",
-      "confidence_score": 1.0
+      "target": "tests_history_writer_tests_persist_flags_off_strips_gpu_and_smart"
     },
     {
       "relation": "contains",
@@ -17206,9 +17206,9 @@
       "source_file": "tests/history_writer_tests.rs",
       "source_location": "L77",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "tests_history_writer_tests",
-      "target": "tests_history_writer_tests_persist_flags_on_keeps_gpu_and_smart",
-      "confidence_score": 1.0
+      "target": "tests_history_writer_tests_persist_flags_on_keeps_gpu_and_smart"
     },
     {
       "relation": "contains",
@@ -17216,9 +17216,9 @@
       "source_file": "tests/history_writer_tests.rs",
       "source_location": "L11",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "tests_history_writer_tests",
-      "target": "tests_history_writer_tests_snapshot_with_gpu_smart",
-      "confidence_score": 1.0
+      "target": "tests_history_writer_tests_snapshot_with_gpu_smart"
     },
     {
       "relation": "calls",
@@ -17227,9 +17227,9 @@
       "source_file": "tests/history_writer_tests.rs",
       "source_location": "L55",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "tests_history_writer_tests_persist_and_read",
-      "target": "tests_history_writer_tests_snapshot_with_gpu_smart",
-      "confidence_score": 1.0
+      "target": "tests_history_writer_tests_snapshot_with_gpu_smart"
     },
     {
       "relation": "calls",
@@ -17238,9 +17238,9 @@
       "source_file": "tests/history_writer_tests.rs",
       "source_location": "L68",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "tests_history_writer_tests_persist_flags_off_strips_gpu_and_smart",
-      "target": "tests_history_writer_tests_persist_and_read",
-      "confidence_score": 1.0
+      "target": "tests_history_writer_tests_persist_and_read"
     },
     {
       "relation": "calls",
@@ -17249,9 +17249,9 @@
       "source_file": "tests/history_writer_tests.rs",
       "source_location": "L78",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "tests_history_writer_tests_persist_flags_on_keeps_gpu_and_smart",
-      "target": "tests_history_writer_tests_persist_and_read",
-      "confidence_score": 1.0
+      "target": "tests_history_writer_tests_persist_and_read"
     },
     {
       "relation": "imports_from",
@@ -20563,5 +20563,5 @@
       "source_file": ".github/workflows/ci.yml"
     }
   ],
-  "built_at_commit": "49172f0bdca9135378d6be608675386f84113f19"
+  "built_at_commit": "b06be0c70e47c001df57a9e8e24b7b772ff1535a"
 }
