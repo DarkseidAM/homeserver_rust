@@ -9,6 +9,21 @@ use serde::Deserialize;
 use super::AppState;
 use crate::version::{NAME, VERSION};
 
+/// GET /health — liveness/readiness probe. 200 when the SQLite pool is reachable, else 503.
+pub(super) async fn health_handler(State(state): State<AppState>) -> Response {
+    match state.history_repo.ping().await {
+        Ok(()) => (axum::http::StatusCode::OK, "ok").into_response(),
+        Err(e) => {
+            tracing::warn!(error = %e, "health check failed");
+            (
+                axum::http::StatusCode::SERVICE_UNAVAILABLE,
+                "database unavailable",
+            )
+                .into_response()
+        }
+    }
+}
+
 /// GET /version — returns service name and version (from Cargo.toml at build time).
 pub(super) async fn version_handler() -> impl IntoResponse {
     axum::Json(serde_json::json!({

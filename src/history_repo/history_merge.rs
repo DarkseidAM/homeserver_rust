@@ -156,4 +156,12 @@ impl HistoryRepo {
         sqlx::query("VACUUM").execute(&self.pool).await?;
         Ok(())
     }
+
+    /// Cheap liveness check: verifies a connection can be acquired and queried.
+    pub async fn ping(&self) -> anyhow::Result<()> {
+        sqlx::query_scalar::<_, i64>("SELECT 1")
+            .fetch_one(&self.pool)
+            .await?;
+        Ok(())
+    }
 }

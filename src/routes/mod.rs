@@ -42,6 +42,7 @@ pub fn app(
     };
     Router::new()
         .route("/", get(|| async { "Ktor: Hello from Rust homeserver!" })) // GET /
+        .route("/health", get(http::health_handler)) // GET /health
         .route("/version", get(http::version_handler)) // GET /version
         .route("/api/info", get(http::api_info_handler)) // GET /api/info
         .route("/api/history", get(http::api_history_handler)) // GET /api/history?from=&to=&resolution=

@@ -22,9 +22,11 @@ RUN cargo build --release --locked && \
 FROM debian:13.5-slim
 
 # Install runtime deps + tini (init for PID 1 so server doesn't get spurious signals)
+# + gosu (drop privileges by exec, so SIGTERM reaches the server for graceful shutdown).
 RUN apt-get update && apt-get install -y --no-install-recommends \
     ca-certificates \
     tini \
+    gosu \
     curl \
     && rm -rf /var/lib/apt/lists/*
 
@@ -42,6 +44,10 @@ RUN mkdir -p /app/data
 
 # Make entrypoint executable
 RUN chmod +x /usr/local/bin/docker-entrypoint.sh
+
+# Liveness/readiness probe (default port 8081; /health also verifies the SQLite pool).
+HEALTHCHECK --interval=30s --timeout=3s --start-period=10s --retries=3 \
+    CMD curl -fsS http://localhost:8081/health || exit 1
 
 # Run as root initially - entrypoint will switch to correct user
 ENTRYPOINT ["/usr/local/bin/docker-entrypoint.sh"]

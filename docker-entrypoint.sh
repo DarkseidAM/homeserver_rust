@@ -52,7 +52,9 @@ fi
 # Fix ownership of app directory
 chown -R serveruser:serveruser /app
 
-# Switch to serveruser and execute
-# Use su to switch user, then exec the command with tini
-# The 'sh' argument becomes $0, and "$@" are the actual command arguments
-exec /usr/bin/tini -- su serveruser -s /bin/sh -c 'exec "$@"' sh "$@"
+# Switch to serveruser and execute under tini.
+# gosu execs the target (unlike `su`, which forks), so the server is tini's direct child and
+# receives SIGTERM on `docker stop` — letting it flush history and shut down gracefully.
+# `gosu serveruser` (no explicit group) preserves supplementary groups, e.g. the docker group
+# added above for socket access.
+exec /usr/bin/tini -- gosu serveruser "$@"

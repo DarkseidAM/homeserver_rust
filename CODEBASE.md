@@ -381,6 +381,7 @@ history_repo:          Arc<HistoryRepo>
 | Route | Handler | Response |
 |---|---|---|
 | GET / | inline | "Hello from Rust homeserver!" (plain text) |
+| `GET /health` | `health_handler` | `200 "ok"` when the SQLite pool is reachable (cheap `SELECT 1`), else `503` |
 | `GET /version` | `version_handler` | `{"name": "homeserver", "version": "0.8.0"}` |
 | `GET /api/info` | `api_info_handler` | `SystemInfo` as JSON |
 | `GET /api/history` | `api_history_handler` | `Vec<FullSystemSnapshot>` merged from raw + aggregated |
@@ -395,7 +396,12 @@ history_repo:          Arc<HistoryRepo>
 | `WS /ws/ram` | `ws_ram` → `stream_ram` | `ram_stats_frequency_ms` |
 | `WS /ws/system` | `ws_system` → `stream_system` | driven by broadcast channel |
 
-All WS handlers send periodic pings every 30 seconds (`WS_PING_INTERVAL`) and enforce a 10-second send timeout (`WS_SEND_TIMEOUT`).
+WebSocket transport is `yawc` (not axum's native WS), so connections negotiate
+`permessage-deflate` (RFC 7692) compression. Each handler accepts a `yawc::IncomingUpgrade`
+extractor, completes the upgrade with balanced compression enabled, then splits the socket into
+a sink (sends stats/pings) and a stream (polled so client `Close` frames end the loop and pongs
+are drained). All WS handlers send periodic pings every 30 seconds (`WS_PING_INTERVAL`) and
+enforce a 10-second send timeout (`WS_SEND_TIMEOUT`).
 
 `/ws/system` sends a welcome message `{"type": "info", "systemInfo": {...}}` on connect, then re-broadcasts every `FullSystemSnapshot` from the broadcast channel. The `WsSystemGuard` RAII type decrements `ws_system_connections` on disconnect. Lagged clients receive a warning log; the stream continues.
 
@@ -548,7 +554,8 @@ CREATE INDEX idx_aggregated_created_at_resolution
 | Crate | Version | Role |
 |---|---|---|
 | `tokio` | 1 | Async runtime (full features) |
-| `axum` | 0.8 | HTTP server + WebSockets |
+| `axum` | 0.8 | HTTP server (JSON); routing |
+| `yawc` | 0.3 | WebSocket transport with `permessage-deflate` compression |
 | `tower-http` | 0.7 | CORS middleware |
 | `serde` / `serde_json` | 1 | JSON serialisation for API |
 | `wincode` | 0.5 | Binary serialisation for SQLite BLOBs |

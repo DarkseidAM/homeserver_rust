@@ -17,9 +17,13 @@ path = "src/main.rs"
 # Async runtime
 tokio = { version = "1", features = ["full"] }
 
-# HTTP + WebSockets
-axum = { version = "0.8", features = ["json", "ws"] }
+# HTTP + WebSockets (WS transport is yawc, below — axum's native ws feature is not used)
+axum = { version = "0.8", features = ["json"] }
 tower-http = { version = "0.7", features = ["cors"] }
+# WebSocket transport with permessage-deflate (RFC 7692). default-features off to avoid
+# pulling yawc's default rustls-ring TLS stack (only the client path needs it); axum
+# integration is via axum-core 0.5 + http 1, compatible with axum 0.8.
+yawc = { version = "0.3", default-features = false, features = ["axum"] }
 
 # Serialization
 serde = { version = "1.0", features = ["derive"] }

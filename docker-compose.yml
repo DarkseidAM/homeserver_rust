@@ -23,6 +23,12 @@ services:
       - ./data:/app/data
       - ./config.toml:/app/config/application.toml
       - /var/run/docker.sock:/var/run/docker.sock
+    healthcheck:
+      test: ["CMD", "curl", "-fsS", "http://localhost:8081/health"]
+      interval: 30s
+      timeout: 3s
+      start_period: 10s
+      retries: 3
     logging:
       driver: "json-file"
       options:
