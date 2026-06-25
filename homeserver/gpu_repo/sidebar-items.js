@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"fn":["parse_busy_percent","parse_power_microwatts","parse_pwm_percent","parse_u64","parse_vendor_id"],"struct":["GpuRepo"]};
