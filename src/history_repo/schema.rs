@@ -7,6 +7,20 @@ use std::str::FromStr;
 
 use sqlx::sqlite::{SqliteConnectOptions, SqlitePoolOptions};
 
+/// Ordered, additive forward migrations. Entry `(v, statements)` migrates schema `v` → `v + 1`.
+/// Only data-preserving DDL (e.g. `ALTER TABLE ... ADD COLUMN`) belongs here.
+/// v2 → v3: add nullable `cpu_data` / `ram_data` blobs so full CPU/RAM detail is persisted;
+/// old rows keep NULL and are read via the scalar fallback.
+const MIGRATIONS: &[(u32, &[&str])] = &[(
+    2,
+    &[
+        "ALTER TABLE system_history ADD COLUMN cpu_data BLOB",
+        "ALTER TABLE system_history ADD COLUMN ram_data BLOB",
+        "ALTER TABLE system_history_aggregated ADD COLUMN cpu_data BLOB",
+        "ALTER TABLE system_history_aggregated ADD COLUMN ram_data BLOB",
+    ],
+)];
+
 impl HistoryRepo {
     pub async fn connect(path: &str, retention_days: u32) -> anyhow::Result<Self> {
         if let Some(parent) = Path::new(path).parent() {
@@ -84,9 +98,14 @@ impl HistoryRepo {
                 }
             }
             Some(v) if v == i64::from(CURRENT_SCHEMA_VERSION) => {}
+            Some(found) if found > 0 && found < i64::from(CURRENT_SCHEMA_VERSION) => {
+                // Forward, data-preserving migration.
+                self.run_migrations(found as u32).await?;
+            }
             Some(found) => {
+                // Downgrade or unknown future version: no safe path, purge.
                 tracing::warn!(
-                    "schema version mismatch: found {}, expected {}; purging history",
+                    "schema version {} newer than supported {} (downgrade?); purging history",
                     found,
                     CURRENT_SCHEMA_VERSION
                 );
@@ -103,6 +122,43 @@ impl HistoryRepo {
         Ok(())
     }
 
+    /// Apply ordered, additive, data-preserving migrations from `from_version` up to
+    /// `CURRENT_SCHEMA_VERSION`. Each step runs in its own transaction (SQLite DDL is
+    /// transactional, so a crash mid-step rolls back cleanly and is retried next start).
+    /// If a step has no registered migration, falls back to a destructive purge.
+    async fn run_migrations(&self, from_version: u32) -> anyhow::Result<()> {
+        let mut version = from_version;
+        while version < CURRENT_SCHEMA_VERSION {
+            let Some((_, statements)) = MIGRATIONS.iter().find(|(v, _)| *v == version) else {
+                tracing::warn!(
+                    "no migration registered from schema v{}; purging history",
+                    version
+                );
+                let mut tx = self.pool.begin().await?;
+                Self::drop_history_user_tables(&mut tx).await?;
+                sqlx::query("UPDATE schema_version SET value = $1 WHERE key = 'schema'")
+                    .bind(i64::from(CURRENT_SCHEMA_VERSION))
+                    .execute(&mut *tx)
+                    .await?;
+                tx.commit().await?;
+                return Ok(());
+            };
+            let mut tx = self.pool.begin().await?;
+            for stmt in *statements {
+                // `*stmt` is a `&'static str` from the MIGRATIONS table (not user input).
+                sqlx::query(*stmt).execute(&mut *tx).await?;
+            }
+            sqlx::query("UPDATE schema_version SET value = $1 WHERE key = 'schema'")
+                .bind(i64::from(version + 1))
+                .execute(&mut *tx)
+                .await?;
+            tx.commit().await?;
+            tracing::info!("migrated history schema v{} -> v{}", version, version + 1);
+            version += 1;
+        }
+        Ok(())
+    }
+
     pub async fn init(&self) -> anyhow::Result<()> {
         self.ensure_schema_version().await?;
 
@@ -116,7 +172,9 @@ impl HistoryRepo {
                 container_data BLOB NOT NULL,
                 storage_data BLOB NOT NULL,
                 network_data BLOB NOT NULL,
-                system_data BLOB NOT NULL
+                system_data BLOB NOT NULL,
+                cpu_data BLOB,
+                ram_data BLOB
             )
             "#,
         )

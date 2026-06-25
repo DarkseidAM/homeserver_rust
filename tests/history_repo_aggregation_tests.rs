@@ -63,6 +63,23 @@ fn minimal_aggregated_snapshot(created_at: i64) -> AggregatedSnapshot {
         memory_used_avg: 512,
         memory_used_min: 256,
         memory_used_max: 768,
+        cpu: CpuStats {
+            model: "agg-cpu".into(),
+            physical_cores: 4,
+            logical_cores: 8,
+            usage_percent: 10.0,
+            temperature: 55.5,
+            core_usages: vec![1.0, 2.0, 3.0, 4.0],
+        },
+        ram: RamStats {
+            total: 8192,
+            used: 512,
+            available: 7680,
+            usage_percent: 6.25,
+            swap_total: 1024,
+            swap_used: 128,
+            swap_free: 896,
+        },
         containers: vec![],
         storage: StorageStats {
             partitions: vec![],

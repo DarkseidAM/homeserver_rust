@@ -1,3 +1,9 @@
+## Rust rules
+
+See @.agents/rules/rust.md for project coding rules (tests in separate files,
+300-line file limit, clippy/style, and keeping config.toml / CODEBASE.md /
+CHANGELOG.md in sync). That file is the canonical source — edit it, not this section.
+
 ## graphify
 
 This project has a knowledge graph at graphify-out/ with god nodes, community structure, and cross-file relationships.

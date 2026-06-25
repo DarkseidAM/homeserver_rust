@@ -98,6 +98,8 @@ fn aggregate_aggregated_snapshots_five_one_min_produces_5min() {
             memory_used_avg: mem_avg,
             memory_used_min: mem_avg - 10,
             memory_used_max: mem_avg + 10,
+            cpu: Default::default(),
+            ram: Default::default(),
             containers: vec![],
             storage: StorageStats {
                 partitions: vec![],

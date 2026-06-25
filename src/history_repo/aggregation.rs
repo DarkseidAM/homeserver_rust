@@ -23,7 +23,9 @@ pub async fn init_aggregated_table(pool: &SqlitePool) -> anyhow::Result<()> {
             container_data BLOB NOT NULL,
             storage_data BLOB NOT NULL,
             network_data BLOB NOT NULL,
-            system_data BLOB NOT NULL
+            system_data BLOB NOT NULL,
+            cpu_data BLOB,
+            ram_data BLOB
         )
         "#,
     )
@@ -63,6 +65,8 @@ pub fn aggregate_snapshots(
 
     let containers = aggregate_containers(snapshots);
     let last = snapshots.last().unwrap();
+    let cpu = last.cpu.clone();
+    let ram = last.ram.clone();
     let storage = last.storage.clone();
     let network = last.network.clone();
     let system = last.system.clone();
@@ -76,6 +80,8 @@ pub fn aggregate_snapshots(
         memory_used_avg,
         memory_used_min,
         memory_used_max,
+        cpu,
+        ram,
         containers,
         storage,
         network,
@@ -109,6 +115,8 @@ pub fn aggregate_aggregated_snapshots(
 
     let containers = aggregate_containers_from_aggregated(aggs);
     let last = aggs.last().unwrap();
+    let cpu = last.cpu.clone();
+    let ram = last.ram.clone();
     let storage = last.storage.clone();
     let network = last.network.clone();
     let system = last.system.clone();
@@ -122,6 +130,8 @@ pub fn aggregate_aggregated_snapshots(
         memory_used_avg,
         memory_used_min,
         memory_used_max,
+        cpu,
+        ram,
         containers,
         storage,
         network,
