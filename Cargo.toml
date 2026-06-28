@@ -72,4 +72,4 @@ gpu-nvidia = ["dep:nvml-wrapper"]
 [dev-dependencies]
 tokio = { version = "1", features = ["rt", "macros"] }
 tempfile = "3"
-axum-test = { version = "20", features = ["ws"] }
+axum-test = { version = "21", features = ["ws"] }
