@@ -2,7 +2,9 @@
 
 All notable changes to this project will be documented in this file.
 
-## [0.9.0] - 2026-06-25
+## [Unreleased]
+
+## [0.9.0] - 2026-06-29
 
 ### CI/CD
 
