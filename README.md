@@ -2,8 +2,11 @@
 
 A robust, efficient, and modern system monitoring agent and dashboard backend written in Rust. It serves as a direct, high-performance replacement for the legacy Kotlin-based homeserver.
 
-![Version](https://img.shields.io/badge/version-0.5.0-blue.svg)
-![License](https://img.shields.io/badge/license-MIT-green.svg)
+[![Rust](https://img.shields.io/badge/rust-1.94%2B-orange.svg)](https://www.rust-lang.org)
+[![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+[![Edition](https://img.shields.io/badge/edition-2024-lightgrey.svg)](https://doc.rust-lang.org/edition-guide/rust-2024/)
+[![Platforms](https://img.shields.io/badge/platform-linux%20amd64%20%7C%20arm64-informational.svg)](#building-from-source)
+[![GitHub release](https://img.shields.io/github/v/release/DarkseidAM/homeserver_rust.svg?label=release)](https://github.com/DarkseidAM/homeserver_rust/releases/latest)
 
 ## Features
 
