@@ -11,12 +11,12 @@ use tower_http::cors::{Any, CorsLayer};
 
 use crate::config::AppConfig;
 use crate::history_repo::HistoryRepo;
-use crate::models::{FullSystemSnapshot, SystemInfo};
+use crate::models::SystemInfo;
 use crate::sysinfo_repo::SysinfoRepo;
 
 #[derive(Clone)]
 pub(crate) struct AppState {
-    pub(crate) stats_tx: broadcast::Sender<FullSystemSnapshot>,
+    pub(crate) stats_tx: broadcast::Sender<Arc<str>>,
     pub(crate) sysinfo_repo: Arc<SysinfoRepo>,
     pub(crate) system_info: Arc<SystemInfo>,
     pub(crate) ws_system_connections: Arc<AtomicUsize>,
@@ -25,7 +25,7 @@ pub(crate) struct AppState {
 }
 
 pub fn app(
-    stats_tx: broadcast::Sender<FullSystemSnapshot>,
+    stats_tx: broadcast::Sender<Arc<str>>,
     sysinfo_repo: Arc<SysinfoRepo>,
     system_info: Arc<SystemInfo>,
     ws_system_connections: Arc<AtomicUsize>,

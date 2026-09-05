@@ -34,8 +34,7 @@ async fn main() -> Result<()> {
         .init();
 
     let app_config = config::AppConfig::load()?;
-    let (tx, _) =
-        broadcast::channel::<models::FullSystemSnapshot>(app_config.publishing.broadcast_capacity);
+    let (tx, _) = broadcast::channel::<Arc<str>>(app_config.publishing.broadcast_capacity);
 
     let sysinfo_repo = Arc::new(sysinfo_repo::SysinfoRepo::new());
     let system_info = Arc::new(
