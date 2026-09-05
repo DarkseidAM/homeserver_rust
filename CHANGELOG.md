@@ -6,7 +6,7 @@ All notable changes to this project will be documented in this file.
 
 ### CI/CD
 
-- Optimize security audit with pre-built binary and fix docker cache permissions
+- Switch Docker build cache to GHCR registry cache
 
 ## [0.9.0] - 2026-09-05
 
@@ -19,6 +19,7 @@ All notable changes to this project will be documented in this file.
 - Trigger checks for phase5 against main
 - Grant checks write permission to audit job
 - Use native ARM64 and AMD64 matrix runners for Docker builds
+- Optimize security audit with pre-built binary and fix docker cache permissions
 
 ### Features
 
