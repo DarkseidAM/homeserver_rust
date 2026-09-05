@@ -40,14 +40,14 @@ host = "0.0.0.0"
 
 [database]
 path = "data/server.db"
-max_pool_size = 10
+max_pool_size = 5
 flush_rate = 10        # Flush to DB every N ticks
 retention_days = 3     # Prune history older than N days
 
 [publishing]
 cpu_stats_frequency_ms = 1000
 ram_stats_frequency_ms = 1000
-broadcast_capacity = 60
+broadcast_capacity = 16
 
 [monitoring]
 sample_interval_ms = 1000

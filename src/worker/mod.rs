@@ -182,7 +182,7 @@ pub fn spawn(deps: WorkerDeps, config: WorkerConfig) -> tokio::task::JoinHandle<
                 }
             }
 
-            // Only serialize and clone for the broadcast when someone is actually listening.
+            // Only pre-serialize for WebSocket broadcast when someone is actually listening.
             if tx.receiver_count() > 0 {
                 match serde_json::to_string(&snapshot) {
                     Ok(json) => {
