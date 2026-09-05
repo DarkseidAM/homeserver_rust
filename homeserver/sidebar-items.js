@@ -1,1 +1,1 @@
-window.SIDEBAR_ITEMS = {"mod":["aggregation_worker","alerting","backfill","config","docker_repo","gpu_repo","history_repo","models","routes","smart_repo","sysinfo_repo","version","worker"]};
+window.SIDEBAR_ITEMS = {"mod":["aggregation_worker","alerting","backfill","config","docker_repo","gpu_repo","health_probe","history_repo","models","routes","smart_repo","sysinfo_repo","version","worker"]};

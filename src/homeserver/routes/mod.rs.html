@@ -11,12 +11,12 @@
 <a href=#11 id=11 data-nosnippet>11</a>
 <a href=#12 id=12 data-nosnippet>12</a><span class="kw">use </span><span class="kw">crate</span>::config::AppConfig;
 <a href=#13 id=13 data-nosnippet>13</a><span class="kw">use </span><span class="kw">crate</span>::history_repo::HistoryRepo;
-<a href=#14 id=14 data-nosnippet>14</a><span class="kw">use </span><span class="kw">crate</span>::models::{FullSystemSnapshot, SystemInfo};
+<a href=#14 id=14 data-nosnippet>14</a><span class="kw">use </span><span class="kw">crate</span>::models::SystemInfo;
 <a href=#15 id=15 data-nosnippet>15</a><span class="kw">use </span><span class="kw">crate</span>::sysinfo_repo::SysinfoRepo;
 <a href=#16 id=16 data-nosnippet>16</a>
 <a href=#17 id=17 data-nosnippet>17</a><span class="attr">#[derive(Clone)]
 <a href=#18 id=18 data-nosnippet>18</a></span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">struct </span>AppState {
-<a href=#19 id=19 data-nosnippet>19</a>    <span class="kw">pub</span>(<span class="kw">crate</span>) stats_tx: broadcast::Sender&lt;FullSystemSnapshot&gt;,
+<a href=#19 id=19 data-nosnippet>19</a>    <span class="kw">pub</span>(<span class="kw">crate</span>) stats_tx: broadcast::Sender&lt;Arc&lt;str&gt;&gt;,
 <a href=#20 id=20 data-nosnippet>20</a>    <span class="kw">pub</span>(<span class="kw">crate</span>) sysinfo_repo: Arc&lt;SysinfoRepo&gt;,
 <a href=#21 id=21 data-nosnippet>21</a>    <span class="kw">pub</span>(<span class="kw">crate</span>) system_info: Arc&lt;SystemInfo&gt;,
 <a href=#22 id=22 data-nosnippet>22</a>    <span class="kw">pub</span>(<span class="kw">crate</span>) ws_system_connections: Arc&lt;AtomicUsize&gt;,
@@ -25,7 +25,7 @@
 <a href=#25 id=25 data-nosnippet>25</a>}
 <a href=#26 id=26 data-nosnippet>26</a>
 <a href=#27 id=27 data-nosnippet>27</a><span class="kw">pub fn </span>app(
-<a href=#28 id=28 data-nosnippet>28</a>    stats_tx: broadcast::Sender&lt;FullSystemSnapshot&gt;,
+<a href=#28 id=28 data-nosnippet>28</a>    stats_tx: broadcast::Sender&lt;Arc&lt;str&gt;&gt;,
 <a href=#29 id=29 data-nosnippet>29</a>    sysinfo_repo: Arc&lt;SysinfoRepo&gt;,
 <a href=#30 id=30 data-nosnippet>30</a>    system_info: Arc&lt;SystemInfo&gt;,
 <a href=#31 id=31 data-nosnippet>31</a>    ws_system_connections: Arc&lt;AtomicUsize&gt;,

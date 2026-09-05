@@ -2,6 +2,36 @@
 
 All notable changes to this project will be documented in this file.
 
+## [Unreleased]
+
+### Bug Fixes
+
+- **db:** Wire max_pool_size into SqlitePoolOptions and reduce default to 5
+
+### Documentation
+
+- Sync CODEBASE.md and README.md with health_probe module and performance updates
+
+### Features
+
+- **cli:** Add --health probe and drop curl from docker runtime image
+
+### Other
+
+- Ignore docs/superpowers/ to keep superpower docs local
+
+### Performance
+
+- Initialize sysinfo lazily without eager process table loading
+- Constrain tokio runtime to 2 worker threads
+- **ws:** Broadcast pre-serialized Arc<str> snapshots to eliminate redundant JSON encoding
+- **config:** Reduce broadcast_capacity default to 16
+- **docker:** Enforce 128M/0.5 CPU resource limits and jemalloc 5s dirty decay
+
+### Release
+
+- Bump version to 0.10.0
+
 ## [0.9.1] - 2026-09-05
 
 ### CI/CD
