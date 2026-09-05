@@ -650,8 +650,9 @@ Runs after CI succeeds on `main`:
 2. Creates or force-pushes a `v<version>` git tag (no Docker build).
 
 ### `.github/workflows/docker.yml`
-Triggered by `v*.*.*` tag pushes:
-1. Builds and pushes a multi-arch Docker image to GHCR with semver tags (`major.minor.patch`, `major.minor`, `major`, `latest`). Targets `linux/amd64` and `linux/arm64` (arm64 via QEMU emulation, for Raspberry Pi / ARM SBC homeservers).
+Triggered on completion of the `Tag version` workflow:
+1. Builds Docker images in parallel via matrix across native runners: `linux/amd64` on `ubuntu-latest` and `linux/arm64` on `ubuntu-24.04-arm` (for Raspberry Pi / ARM SBC homeservers), pushing each by digest.
+2. Merges digests and publishes multi-arch manifest to GHCR with semver tags (`v<version>`, `<version>`, `latest`) via `docker buildx imagetools create`.
 
 ### `.github/workflows/docs.yml`
 Runs on every push to `main`:
