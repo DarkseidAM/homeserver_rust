@@ -29,7 +29,7 @@ persist_smart = true
 [publishing]
 cpu_stats_frequency_ms = 1000
 ram_stats_frequency_ms = 1000
-broadcast_capacity = 60
+broadcast_capacity = 16
 
 [monitoring]
 sample_interval_ms = 1000
