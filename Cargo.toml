@@ -73,3 +73,10 @@ gpu-nvidia = ["dep:nvml-wrapper"]
 tokio = { version = "1", features = ["rt", "macros"] }
 tempfile = "3"
 axum-test = { version = "21", features = ["ws"] }
+
+[profile.release]
+opt-level = 3
+lto = "fat"
+codegen-units = 1
+panic = "abort"
+strip = true
