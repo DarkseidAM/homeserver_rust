@@ -2,13 +2,32 @@
 
 All notable changes to this project will be documented in this file.
 
-## [Unreleased]
-
-## [0.9.0] - 2026-06-29
+## [0.9.0] - 2026-06-30
 
 ### CI/CD
 
 - Trigger checks for phase5 against main
+
+### Features
+
+- **gpu:** NVIDIA(NVML)+AMD/Intel(sysfs) GPU metrics, schema v4
+- **smart:** SMART disk health via smartctl, schema v5
+- **alerting:** Threshold rules with tracing + webhook notifications
+
+### Other
+
+- **graphify:** Refresh knowledge graph for Phase 5 (gpu/smart/alerting)
+- **graphify:** Refresh knowledge graph for Phase 5 test additions
+- **graphify:** Refresh knowledge graph for phase5
+- **release:** Bump version to 0.9.0
+
+### Performance
+
+- **gpu:** Offload collect to spawn_blocking; avoid clone in sort; strip_prefix
+
+### Testing
+
+- **phase5:** GPU/SMART persistence round-trips, persist gating, aggregation carry-over
 
 ## [0.8.0] - 2026-06-25
 
@@ -32,26 +51,14 @@ All notable changes to this project will be documented in this file.
 - Add graphify knowledge graph (416 nodes, 917 edges, 25 communities)
 - **history:** Full CPU/RAM fidelity + additive schema migrations
 - **ws,ops:** Permessage-deflate via yawc, /health endpoint, gosu shutdown
-- **gpu:** NVIDIA(NVML)+AMD/Intel(sysfs) GPU metrics, schema v4
-- **smart:** SMART disk health via smartctl, schema v5
-- **alerting:** Threshold rules with tracing + webhook notifications
 
 ### Other
 
 - Add graphify-rs MCP server config and enable it for Claude Code
-- **graphify:** Refresh knowledge graph for Phase 5 (gpu/smart/alerting)
-- **graphify:** Refresh knowledge graph for Phase 5 test additions
-- **graphify:** Refresh knowledge graph for phase5
-- **release:** Bump version to 0.9.0
 
 ### Performance
 
 - Phase 1 correctness & performance hardening
-- **gpu:** Offload collect to spawn_blocking; avoid clone in sort; strip_prefix
-
-### Testing
-
-- **phase5:** GPU/SMART persistence round-trips, persist gating, aggregation carry-over
 
 ## [0.7.1] - 2026-06-21
 
