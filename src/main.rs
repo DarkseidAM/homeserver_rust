@@ -27,6 +27,18 @@ impl FormatTime for LocalTimer {
 
 #[tokio::main(worker_threads = 2)]
 async fn main() -> Result<()> {
+    let args: Vec<String> = std::env::args().collect();
+    if args.iter().any(|a| a == "--health") {
+        let port = config::AppConfig::load()
+            .map(|c| c.server.port)
+            .unwrap_or(8081);
+        if health_probe::run_health_probe(port) {
+            std::process::exit(0);
+        } else {
+            std::process::exit(1);
+        }
+    }
+
     let filter = EnvFilter::try_from_default_env().unwrap_or_else(|_| EnvFilter::new("info"));
     tracing_subscriber::fmt()
         .with_timer(LocalTimer)
