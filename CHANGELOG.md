@@ -4,11 +4,15 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+### CI/CD
+
+- Optimize security audit with pre-built binary and fix docker cache permissions
+
+## [0.9.0] - 2026-09-05
+
 ### Bug Fixes
 
 - **ci:** Ensure lowercase repository name in Docker image references
-
-## [0.9.0] - 2026-09-05
 
 ### CI/CD
 
