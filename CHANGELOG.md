@@ -8,6 +8,10 @@ All notable changes to this project will be documented in this file.
 
 - Add optimized release profile with fat LTO and abort panic
 
+### Release
+
+- Bump version to 0.9.1
+
 ## [0.9.0] - 2026-09-05
 
 ### Bug Fixes
