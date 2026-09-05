@@ -2,15 +2,47 @@
 
 All notable changes to this project will be documented in this file.
 
-## [0.9.0] - 2026-06-25
+## [0.9.1] - 2026-09-05
+
+### Bug Fixes
+
+- **ci:** Ensure lowercase repository name in Docker image references
+
+### CI/CD
+
+- Grant checks write permission to audit job
+- Use native ARM64 and AMD64 matrix runners for Docker builds
+- Optimize security audit with pre-built binary and fix docker cache permissions
+- Switch Docker build cache to GHCR registry cache
+
+### Performance
+
+- Add optimized release profile with fat LTO and abort panic
+
+## [0.9.0] - 2026-06-30
+
+### CI/CD
+
+- Trigger checks for phase5 against main
+
+## [0.8.0] - 2026-06-25
+
+### Bug Fixes
+
+- **http:** Guard /api/history against i64 overflow/underflow on extreme bounds
 
 ### CI/CD
 
 - **docs:** Add workflow_dispatch trigger
 - **cd:** Multi-arch (amd64+arm64) images and RustSec dependency audit
 
+### Documentation
+
+- Format CI audit step to lead with `cargo audit` for consistency
+
 ### Features
 
+- **homeserver:** V0.8.0 — monitoring metrics, SQLite schema versioning ([#58](https://github.com/DarkseidAM/homeserver_rust/pull/58))
 - Agent map, rustdoc on Pages, automated releases ([#71](https://github.com/DarkseidAM/homeserver_rust/pull/71))
 - Add graphify knowledge graph (416 nodes, 917 edges, 25 communities)
 - **history:** Full CPU/RAM fidelity + additive schema migrations
@@ -25,6 +57,7 @@ All notable changes to this project will be documented in this file.
 - **graphify:** Refresh knowledge graph for Phase 5 (gpu/smart/alerting)
 - **graphify:** Refresh knowledge graph for Phase 5 test additions
 - **graphify:** Refresh knowledge graph for phase5
+- **release:** Bump version to 0.9.0
 
 ### Performance
 
@@ -34,12 +67,6 @@ All notable changes to this project will be documented in this file.
 ### Testing
 
 - **phase5:** GPU/SMART persistence round-trips, persist gating, aggregation carry-over
-
-## [0.8.0] - 2026-06-23
-
-### Features
-
-- **homeserver:** V0.8.0 — monitoring metrics, SQLite schema versioning ([#58](https://github.com/DarkseidAM/homeserver_rust/pull/58))
 
 ## [0.7.1] - 2026-06-21
 
