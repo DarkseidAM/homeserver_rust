@@ -4,9 +4,11 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
-### Performance
+### CI/CD
 
-- Add optimized release profile with fat LTO and abort panic
+- Fetch tags and pass explicit tag to git cliff in release workflow
+
+## [0.9.1] - 2026-09-05
 
 ### Release
 
@@ -42,6 +44,7 @@ All notable changes to this project will be documented in this file.
 ### Performance
 
 - **gpu:** Offload collect to spawn_blocking; avoid clone in sort; strip_prefix
+- Add optimized release profile with fat LTO and abort panic
 
 ### Testing
 
