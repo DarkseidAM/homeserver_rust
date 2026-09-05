@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+### CI/CD
+
+- Grant checks write permission to audit job
+
 ## [0.9.0] - 2026-06-30
 
 ### CI/CD
