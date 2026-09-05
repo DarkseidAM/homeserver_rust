@@ -4,9 +4,9 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
-### CI/CD
+### Bug Fixes
 
-- Use native ARM64 and AMD64 matrix runners for Docker builds
+- **ci:** Ensure lowercase repository name in Docker image references
 
 ## [0.9.0] - 2026-09-05
 
@@ -14,6 +14,7 @@ All notable changes to this project will be documented in this file.
 
 - Trigger checks for phase5 against main
 - Grant checks write permission to audit job
+- Use native ARM64 and AMD64 matrix runners for Docker builds
 
 ### Features
 
