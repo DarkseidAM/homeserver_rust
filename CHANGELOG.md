@@ -2,13 +2,11 @@
 
 All notable changes to this project will be documented in this file.
 
-## [Unreleased]
+## [0.9.1] - 2026-09-05
 
 ### CI/CD
 
 - Fetch tags and pass explicit tag to git cliff in release workflow
-
-## [0.9.1] - 2026-09-05
 
 ### Release
 
