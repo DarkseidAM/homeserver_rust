@@ -6,7 +6,7 @@ host = "0.0.0.0"
 
 [database]
 path = "data/server.db"
-max_pool_size = 10
+max_pool_size = 5
 flush_rate = 10
 flush_interval_secs = 30
 retention_days = 3

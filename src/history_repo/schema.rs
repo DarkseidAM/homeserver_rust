@@ -40,7 +40,11 @@ const MIGRATIONS: &[(u32, &[&str])] = &[
 ];
 
 impl HistoryRepo {
-    pub async fn connect(path: &str, retention_days: u32) -> anyhow::Result<Self> {
+    pub async fn connect(
+        path: &str,
+        retention_days: u32,
+        max_pool_size: u32,
+    ) -> anyhow::Result<Self> {
         if let Some(parent) = Path::new(path).parent() {
             std::fs::create_dir_all(parent)?;
         }
@@ -49,7 +53,10 @@ impl HistoryRepo {
             .journal_mode(sqlx::sqlite::SqliteJournalMode::Wal)
             .busy_timeout(std::time::Duration::from_secs(5))
             .synchronous(sqlx::sqlite::SqliteSynchronous::Normal);
-        let pool = SqlitePoolOptions::new().connect_with(opts).await?;
+        let pool = SqlitePoolOptions::new()
+            .max_connections(max_pool_size)
+            .connect_with(opts)
+            .await?;
         let retention_ms = (retention_days as i64) * 24 * 60 * 60 * 1000;
         Ok(Self { pool, retention_ms })
     }

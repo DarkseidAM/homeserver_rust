@@ -90,7 +90,7 @@ async fn migrates_v2_to_v3_preserving_rows() {
     make_v2_db(path_str).await;
 
     // Connecting + init must migrate (not purge) and bump the schema version to current.
-    let repo = HistoryRepo::connect(path_str, 3).await.unwrap();
+    let repo = HistoryRepo::connect(path_str, 3, 5).await.unwrap();
     repo.init().await.unwrap();
 
     // Verify the schema version was advanced and the new columns exist.
@@ -133,7 +133,7 @@ async fn migrates_v2_to_v3_preserving_rows() {
 async fn new_writes_persist_full_cpu_ram_detail() {
     let dir = TempDir::new().unwrap();
     let path = dir.path().join("fresh.db");
-    let repo = HistoryRepo::connect(path.to_str().unwrap(), 3)
+    let repo = HistoryRepo::connect(path.to_str().unwrap(), 3, 5)
         .await
         .unwrap();
     repo.init().await.unwrap();

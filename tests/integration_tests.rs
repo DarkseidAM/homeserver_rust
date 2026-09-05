@@ -58,6 +58,7 @@ async fn test_app() -> (
         homeserver::history_repo::HistoryRepo::connect(
             &config.database.path,
             config.database.retention_days,
+            config.database.max_pool_size,
         )
         .await
         .unwrap(),

@@ -51,6 +51,7 @@ async fn main() -> Result<()> {
         history_repo::HistoryRepo::connect(
             &app_config.database.path,
             app_config.database.retention_days,
+            app_config.database.max_pool_size,
         )
         .await?,
     );
