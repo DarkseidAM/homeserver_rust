@@ -7,3 +7,4 @@ config.toml.local
 .env
 .mcp.json
 graphify-out/cache/
+docs/superpowers/
