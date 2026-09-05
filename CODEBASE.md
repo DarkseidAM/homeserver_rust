@@ -1,6 +1,6 @@
 # Codebase Guide — homeserver-rust
 
-> Version 0.8.0 · Rust 2024 edition · MSRV 1.95
+> Version 0.10.0 · Rust 2024 edition · MSRV 1.95
 
 A Linux system-monitoring agent that streams CPU, RAM, disk, network, and Docker container metrics over WebSockets and a small HTTP API, backed by a local SQLite database with tiered retention.
 
@@ -44,7 +44,7 @@ graph TD
     history_writer --> history_repo["history_repo\nSQLite WAL\nsystem_history\nsystem_history_aggregated\nsystem_info · schema_version"]
 ```
 
-The main sampling loop runs in `worker::spawn`, which calls both `sysinfo_repo` (CPU / RAM / storage / network / system stats via `sysinfo` + Linux `/proc` & `/sys` reads) and `docker_repo` (streaming Docker stats via `bollard`). Completed snapshots are broadcast on a `tokio::sync::broadcast` channel to the `/ws/system` handler and queued on an `mpsc` channel to `history_writer`, which batches them to SQLite.
+The main sampling loop runs in `worker::spawn`, which calls both `sysinfo_repo` (CPU / RAM / storage / network / system stats via `sysinfo` + Linux `/proc` & `/sys` reads) and `docker_repo` (streaming Docker stats via `bollard`). Completed snapshots are pre-serialized to JSON (`Arc<str>`) and broadcast on a `tokio::sync::broadcast` channel to the `/ws/system` handler and queued on an `mpsc` channel to `history_writer`, which batches them to SQLite.
 
 ---
 
@@ -56,6 +56,7 @@ src/
 ├── lib.rs                      # Re-exports all public modules for tests
 ├── version.rs                  # VERSION / NAME constants from Cargo.toml
 ├── config.rs                   # AppConfig + sub-structs, TOML parsing + validation
+├── health_probe.rs             # Minimal TCP socket probe for container HEALTHCHECK
 ├── backfill.rs                 # One-shot aggregation pass at startup
 ├── aggregation_worker.rs       # Hourly raw→1-min→5-min roll-up background task
 │
@@ -361,7 +362,7 @@ Binary fields are prefixed with a version byte (`blob.rs`):
 1. Calls `sysinfo_repo.get_{cpu,ram,storage,network,system}_stats()`.
 2. Calls `docker_repo.list_running_and_refresh_stats()`.
 3. Constructs a `FullSystemSnapshot`.
-4. Broadcasts it on `broadcast::Sender<FullSystemSnapshot>` (for `/ws/system`).
+4. Pre-serializes snapshot to JSON (`Arc<str>`) and broadcasts it on `broadcast::Sender<Arc<str>>` (for `/ws/system`).
 5. Sends it on `mpsc::Sender<FullSystemSnapshot>` (for `history_writer`).
 
 Secondary timers on the same `tokio::select!`:
@@ -399,7 +400,7 @@ VACUUM is managed by an internal `vacuum_scheduler` sub-task that fires either o
 Shared state injected into every handler via Axum's `State` extractor:
 
 ```
-stats_tx:              broadcast::Sender<FullSystemSnapshot>
+stats_tx:              broadcast::Sender<Arc<str>>
 sysinfo_repo:          Arc<SysinfoRepo>
 system_info:           Arc<SystemInfo>
 ws_system_connections: Arc<AtomicUsize>
@@ -413,7 +414,7 @@ history_repo:          Arc<HistoryRepo>
 |---|---|---|
 | GET / | inline | "Hello from Rust homeserver!" (plain text) |
 | `GET /health` | `health_handler` | `200 "ok"` when the SQLite pool is reachable (cheap `SELECT 1`), else `503` |
-| `GET /version` | `version_handler` | `{"name": "homeserver", "version": "0.8.0"}` |
+| `GET /version` | `version_handler` | `{"name": "homeserver", "version": "0.10.0"}` |
 | `GET /api/info` | `api_info_handler` | `SystemInfo` as JSON |
 | `GET /api/history` | `api_history_handler` | `Vec<FullSystemSnapshot>` merged from raw + aggregated |
 
@@ -434,7 +435,7 @@ a sink (sends stats/pings) and a stream (polled so client `Close` frames end the
 are drained). All WS handlers send periodic pings every 30 seconds (`WS_PING_INTERVAL`) and
 enforce a 10-second send timeout (`WS_SEND_TIMEOUT`).
 
-`/ws/system` sends a welcome message `{"type": "info", "systemInfo": {...}}` on connect, then re-broadcasts every `FullSystemSnapshot` from the broadcast channel. The `WsSystemGuard` RAII type decrements `ws_system_connections` on disconnect. Lagged clients receive a warning log; the stream continues.
+`/ws/system` sends a welcome message `{"type": "info", "systemInfo": {...}}` on connect, then re-broadcasts every pre-serialized JSON snapshot (`Arc<str>`) directly without re-encoding. The `WsSystemGuard` RAII type decrements `ws_system_connections` on disconnect. Lagged clients receive a warning log; the stream continues.
 
 CORS is configured to allow any origin (`CorsLayer::new().allow_origin(Any)`).
 
@@ -444,18 +445,19 @@ CORS is configured to allow any origin (`CorsLayer::new().allow_origin(Any)`).
 
 `main()` orchestrates startup in this order:
 
-1. Initialise `tracing_subscriber` with local-time timestamps and `RUST_LOG` env filter.
-2. Load and validate `AppConfig`.
-3. Create `broadcast::channel<FullSystemSnapshot>` (capacity from config).
-4. Construct `Arc<SysinfoRepo>`, call `get_system_info()` once.
-5. Construct `Arc<DockerRepo>`.
-6. Construct `Arc<HistoryRepo>`, call `init()`.
-7. If `enable_aggregation`: run backfill, then spawn `aggregation_worker`.
-8. Spawn `history_writer` task.
-9. Spawn main `worker` task.
-10. Build the Axum `Router` via `routes::app(…)`.
-11. Bind `TcpListener` and serve with graceful shutdown on SIGTERM or Ctrl-C.
-12. On shutdown signal: send to worker shutdown channel, await worker and writer handles, then send to aggregation worker shutdown channel and await it.
+1. Handle `--health` CLI argument if present (runs lightweight probe and exits).
+2. Initialise `tracing_subscriber` with local-time timestamps and `RUST_LOG` env filter.
+3. Load and validate `AppConfig`.
+4. Create `broadcast::channel<Arc<str>>` (capacity from config).
+5. Construct `Arc<SysinfoRepo>`, call `get_system_info()` once.
+6. Construct `Arc<DockerRepo>`.
+7. Construct `Arc<HistoryRepo>`, call `init()`.
+8. If `enable_aggregation`: run backfill, then spawn `aggregation_worker`.
+9. Spawn `history_writer` task.
+10. Spawn main `worker` task.
+11. Build the Axum `Router` via `routes::app(…)`.
+12. Bind `TcpListener` and serve with graceful shutdown on SIGTERM or Ctrl-C.
+13. On shutdown signal: send to worker shutdown channel, await worker and writer handles, then send to aggregation worker shutdown channel and await it.
 
 `jemalloc` is used as the global allocator on non-MSVC targets.
 
@@ -679,7 +681,7 @@ host = "0.0.0.0"
 
 [database]
 path = "data/server.db"
-max_pool_size = 10
+max_pool_size = 5
 flush_rate = 10
 flush_interval_secs = 30
 retention_days = 3
@@ -696,7 +698,7 @@ persist_smart = true              # persist SMART disk health to history (live W
 [publishing]
 cpu_stats_frequency_ms = 1000
 ram_stats_frequency_ms = 1000
-broadcast_capacity = 60
+broadcast_capacity = 16
 
 [monitoring]
 sample_interval_ms = 1000

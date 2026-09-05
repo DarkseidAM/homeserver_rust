@@ -5,7 +5,7 @@ host = "0.0.0.0"
 [database]
 # Path to SQLite database (relative to container, use /app/data for persistence)
 path = "data/server.db"
-max_pool_size = 10
+max_pool_size = 5
 # Flush snapshots to database every N samples (writer task)
 flush_rate = 10
 # Flush at least every N seconds (writer task)
@@ -20,7 +20,7 @@ retention_days = 3
 cpu_stats_frequency_ms = 1000
 ram_stats_frequency_ms = 1000
 # Max snapshots in broadcast channel (for /ws/system)
-broadcast_capacity = 60
+broadcast_capacity = 16
 
 [monitoring]
 # How often to collect system snapshots (milliseconds)

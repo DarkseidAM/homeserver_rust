@@ -25,8 +25,20 @@ impl FormatTime for LocalTimer {
     }
 }
 
-#[tokio::main]
+#[tokio::main(worker_threads = 2)]
 async fn main() -> Result<()> {
+    let args: Vec<String> = std::env::args().collect();
+    if args.iter().any(|a| a == "--health") {
+        let port = config::AppConfig::load()
+            .map(|c| c.server.port)
+            .unwrap_or(8081);
+        if health_probe::run_health_probe(port) {
+            std::process::exit(0);
+        } else {
+            std::process::exit(1);
+        }
+    }
+
     let filter = EnvFilter::try_from_default_env().unwrap_or_else(|_| EnvFilter::new("info"));
     tracing_subscriber::fmt()
         .with_timer(LocalTimer)
@@ -34,8 +46,7 @@ async fn main() -> Result<()> {
         .init();
 
     let app_config = config::AppConfig::load()?;
-    let (tx, _) =
-        broadcast::channel::<models::FullSystemSnapshot>(app_config.publishing.broadcast_capacity);
+    let (tx, _) = broadcast::channel::<Arc<str>>(app_config.publishing.broadcast_capacity);
 
     let sysinfo_repo = Arc::new(sysinfo_repo::SysinfoRepo::new());
     let system_info = Arc::new(
@@ -51,6 +62,7 @@ async fn main() -> Result<()> {
         history_repo::HistoryRepo::connect(
             &app_config.database.path,
             app_config.database.retention_days,
+            app_config.database.max_pool_size,
         )
         .await?,
     );

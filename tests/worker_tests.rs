@@ -31,10 +31,10 @@ async fn worker_spawn_ticks_and_shutdown_flushes_history() {
     let dir = tempfile::TempDir::new().unwrap();
     let db_path = dir.path().join("history.db");
     let path_str = db_path.to_str().unwrap();
-    let history_repo = Arc::new(HistoryRepo::connect(path_str, 3).await.unwrap());
+    let history_repo = Arc::new(HistoryRepo::connect(path_str, 3, 5).await.unwrap());
     history_repo.init().await.unwrap();
 
-    let (tx, _rx) = broadcast::channel(10);
+    let (tx, mut rx) = broadcast::channel::<Arc<str>>(10);
     let (shutdown_tx, shutdown_rx) = tokio::sync::oneshot::channel();
     let ws_system_connections = Arc::new(AtomicUsize::new(0));
     let snapshots_saved_total = Arc::new(AtomicU64::new(0));
@@ -80,6 +80,8 @@ async fn worker_spawn_ticks_and_shutdown_flushes_history() {
 
     let worker_handle = spawn(deps, config);
     tokio::time::sleep(tokio::time::Duration::from_millis(150)).await;
+    let received = rx.recv().await.expect("broadcast message received");
+    assert!(received.contains("\"cpu\":"));
     let _ = shutdown_tx.send(());
     worker_handle.await.unwrap();
     writer_handle.await.unwrap();

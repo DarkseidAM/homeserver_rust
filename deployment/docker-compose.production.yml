@@ -8,11 +8,11 @@ services:
     deploy:
       resources:
         limits:
-          cpus: '1.0'
-          memory: 256M
+          cpus: '0.5'
+          memory: 128M
         reservations:
           cpus: '0.25'
-          memory: 128M
+          memory: 64M
     
     # Network configuration
     ports:
@@ -25,6 +25,7 @@ services:
       - RUST_LOG=${RUST_LOG:-warn}
       - PUID=${PUID:-1000}
       - PGID=${PGID:-1000}
+      - MALLOC_CONF=background_thread:true,dirty_decay_ms:5000,muzzy_decay_ms:5000
     
     # Volumes
     volumes:
@@ -43,7 +44,7 @@ services:
     
     # Health check
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8081/api/info"]
+      test: ["CMD", "/app/homeserver", "--health"]
       interval: 30s
       timeout: 10s
       retries: 3

@@ -32,7 +32,7 @@ pub struct WorkerDeps {
     pub gpu_repo: Arc<GpuRepo>,
     pub smart_repo: Arc<SmartRepo>,
     pub history_repo: Arc<HistoryRepo>,
-    pub tx: broadcast::Sender<FullSystemSnapshot>,
+    pub tx: broadcast::Sender<Arc<str>>,
     pub write_tx: mpsc::Sender<FullSystemSnapshot>,
     pub ws_system_connections: Arc<AtomicUsize>,
     pub snapshots_saved_total: Arc<AtomicU64>,
@@ -182,9 +182,16 @@ pub fn spawn(deps: WorkerDeps, config: WorkerConfig) -> tokio::task::JoinHandle<
                 }
             }
 
-            // Only clone for the broadcast when someone is actually listening.
+            // Only pre-serialize for WebSocket broadcast when someone is actually listening.
             if tx.receiver_count() > 0 {
-                let _ = tx.send(snapshot.clone());
+                match serde_json::to_string(&snapshot) {
+                    Ok(json) => {
+                        let _ = tx.send(Arc::from(json));
+                    }
+                    Err(e) => {
+                        tracing::error!(error = %e, "Failed to serialize snapshot for WebSocket broadcast");
+                    }
+                }
             } else {
                 let should_warn = last_no_receivers_warn
                     .is_none_or(|t| t.elapsed() >= NO_RECEIVERS_WARN_INTERVAL);

@@ -19,7 +19,7 @@ use yawc::frame::{Frame, OpCode};
 use yawc::{IncomingUpgrade, Options};
 
 use super::AppState;
-use crate::models::{FullSystemSnapshot, SystemInfo};
+use crate::models::SystemInfo;
 
 pub(super) const WS_PING_INTERVAL: Duration = Duration::from_secs(30);
 pub(super) const WS_SEND_TIMEOUT: Duration = Duration::from_secs(10);
@@ -35,6 +35,15 @@ struct WsSystemGuard(Arc<AtomicUsize>);
 impl Drop for WsSystemGuard {
     fn drop(&mut self) {
         self.0.fetch_sub(1, std::sync::atomic::Ordering::Relaxed);
+    }
+}
+
+/// Wrapper around `Arc<str>` enabling zero-copy conversion to `Bytes`.
+struct ArcStr(Arc<str>);
+
+impl AsRef<[u8]> for ArcStr {
+    fn as_ref(&self) -> &[u8] {
+        self.0.as_bytes()
     }
 }
 
@@ -160,7 +169,7 @@ where
 /// `/ws/system`: send a welcome with static system info, then re-broadcast every snapshot.
 async fn stream_system<Ws>(
     socket: Ws,
-    rx: &mut broadcast::Receiver<FullSystemSnapshot>,
+    rx: &mut broadcast::Receiver<Arc<str>>,
     conn_count: Arc<AtomicUsize>,
     system_info: Arc<SystemInfo>,
 ) where
@@ -190,9 +199,9 @@ async fn stream_system<Ws>(
         tokio::select! {
             result = rx.recv() => {
                 match result {
-                    Ok(snapshot) => {
-                        let Ok(json) = serde_json::to_string(&snapshot) else { break };
-                        if !send_frame(&mut sink, Frame::text(json)).await {
+                    Ok(json) => {
+                        let payload = Bytes::from_owner(ArcStr(json));
+                        if !send_frame(&mut sink, Frame::text(payload)).await {
                             break;
                         }
                     }

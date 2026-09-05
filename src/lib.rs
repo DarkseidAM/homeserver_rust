@@ -6,6 +6,7 @@ pub mod backfill;
 pub mod config;
 pub mod docker_repo;
 pub mod gpu_repo;
+pub mod health_probe;
 pub mod history_repo;
 pub mod models;
 pub mod routes;

@@ -27,7 +27,6 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     ca-certificates \
     tini \
     gosu \
-    curl \
     smartmontools \
     && rm -rf /var/lib/apt/lists/*
 
@@ -46,9 +45,9 @@ RUN mkdir -p /app/data
 # Make entrypoint executable
 RUN chmod +x /usr/local/bin/docker-entrypoint.sh
 
-# Liveness/readiness probe (default port 8081; /health also verifies the SQLite pool).
+# Liveness/readiness probe (verifies server and SQLite pool via binary probe).
 HEALTHCHECK --interval=30s --timeout=3s --start-period=10s --retries=3 \
-    CMD curl -fsS http://localhost:8081/health || exit 1
+    CMD ["/app/homeserver", "--health"]
 
 # Run as root initially - entrypoint will switch to correct user
 ENTRYPOINT ["/usr/local/bin/docker-entrypoint.sh"]

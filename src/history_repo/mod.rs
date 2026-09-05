@@ -12,6 +12,6 @@ pub const CURRENT_SCHEMA_VERSION: u32 = 5;
 use sqlx::sqlite::SqlitePool;
 
 pub struct HistoryRepo {
-    pub(in crate::history_repo) pool: SqlitePool,
+    pub pool: SqlitePool,
     pub(in crate::history_repo) retention_ms: i64,
 }

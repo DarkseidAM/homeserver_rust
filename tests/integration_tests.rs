@@ -45,11 +45,7 @@ fn test_system_info() -> Arc<SystemInfo> {
     })
 }
 
-async fn test_app() -> (
-    axum::Router,
-    broadcast::Sender<homeserver::models::FullSystemSnapshot>,
-    TempDir,
-) {
+async fn test_app() -> (axum::Router, broadcast::Sender<Arc<str>>, TempDir) {
     let dir = TempDir::new().unwrap();
     let db_path = dir.path().join("test.db");
     let config = test_app_config(db_path.to_str().unwrap());
@@ -58,6 +54,7 @@ async fn test_app() -> (
         homeserver::history_repo::HistoryRepo::connect(
             &config.database.path,
             config.database.retention_days,
+            config.database.max_pool_size,
         )
         .await
         .unwrap(),
@@ -75,10 +72,7 @@ async fn test_app() -> (
 }
 
 /// Build TestServer with http_transport (required for WebSocket tests).
-async fn test_server_with_http() -> (
-    TestServer,
-    broadcast::Sender<homeserver::models::FullSystemSnapshot>,
-) {
+async fn test_server_with_http() -> (TestServer, broadcast::Sender<Arc<str>>) {
     let (app, tx, _dir) = test_app().await;
     let server = TestServer::builder().http_transport().build(app);
     (server, tx)
@@ -259,7 +253,8 @@ async fn test_ws_system_receives_broadcast_snapshot() {
     let snapshot_clone = snapshot.clone();
     tokio::spawn(async move {
         tokio::time::sleep(tokio::time::Duration::from_millis(100)).await;
-        let _ = tx_clone.send(snapshot_clone);
+        let json = serde_json::to_string(&snapshot_clone).unwrap();
+        let _ = tx_clone.send(Arc::from(json));
     });
     let deadline = tokio::time::Instant::now() + tokio::time::Duration::from_secs(3);
     loop {
