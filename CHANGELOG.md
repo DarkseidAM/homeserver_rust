@@ -4,7 +4,15 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
-## [0.10.0] - 2026-09-05
+### Performance
+
+- Sysfs caching, database pragmas, incremental vacuum, and collect_all consolidation
+
+### Release
+
+- Bump version to 0.10.1
+
+## [0.10.0] - 2026-09-06
 
 ### Bug Fixes
 

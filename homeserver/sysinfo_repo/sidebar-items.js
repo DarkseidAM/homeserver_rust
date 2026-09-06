@@ -1,1 +1,1 @@
-window.SIDEBAR_ITEMS = {"mod":["linux"],"struct":["SysinfoRepo"]};
+window.SIDEBAR_ITEMS = {"mod":["linux"],"struct":["NetworkCounters","SysinfoRepo","SysinfoSnapshot"]};
