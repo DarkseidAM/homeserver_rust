@@ -48,7 +48,7 @@ fn snapshot(ts: u64) -> FullSystemSnapshot {
 #[tokio::test]
 async fn raw_snapshot_round_trip_preserves_gpu_and_smart() {
     let dir = TempDir::new().unwrap();
-    let repo = HistoryRepo::connect(dir.path().join("h.db").to_str().unwrap(), 3, 5)
+    let repo = HistoryRepo::connect(dir.path().join("h.db").to_str().unwrap(), 3, 5, 128)
         .await
         .unwrap();
     repo.init().await.unwrap();
@@ -66,7 +66,7 @@ async fn raw_snapshot_round_trip_preserves_gpu_and_smart() {
 #[tokio::test]
 async fn aggregated_snapshot_round_trip_preserves_gpu_and_smart() {
     let dir = TempDir::new().unwrap();
-    let repo = HistoryRepo::connect(dir.path().join("h.db").to_str().unwrap(), 3, 5)
+    let repo = HistoryRepo::connect(dir.path().join("h.db").to_str().unwrap(), 3, 5, 128)
         .await
         .unwrap();
     repo.init().await.unwrap();

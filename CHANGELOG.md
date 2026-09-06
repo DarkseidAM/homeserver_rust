@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.10.1] - 2026-09-06
+
+### CI/CD
+
+- **release:** Use git-cliff --latest to generate notes only for current release
+
+### Performance
+
+- Sysfs caching, database pragmas, incremental vacuum, and collect_all consolidation
+
 ## [0.10.0] - 2026-09-05
 
 ### Bug Fixes
@@ -31,6 +41,10 @@ All notable changes to this project will be documented in this file.
 - **ws:** Broadcast pre-serialized Arc<str> snapshots to eliminate redundant JSON encoding
 - **config:** Reduce broadcast_capacity default to 16
 - **docker:** Enforce 128M/0.5 CPU resource limits and jemalloc 5s dirty decay
+
+### Release
+
+- Bump version to 0.10.0
 
 ## [0.9.1] - 2026-09-05
 

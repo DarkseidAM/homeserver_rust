@@ -157,6 +157,9 @@ pub async fn run_one_tick(
         // Raw pruning is owned by the main worker's prune_tick (so it still runs when
         // aggregation is disabled); here we only prune the aggregated table.
         repo.prune_aggregated_old_data().await?;
+        if let Err(e) = repo.incremental_vacuum(200).await {
+            warn!(error = %e, "incremental_vacuum failed");
+        }
         return Ok(());
     };
 
@@ -193,6 +196,9 @@ pub async fn run_one_tick(
 
     // Raw pruning is owned by the main worker's prune_tick; here we only prune the aggregated table.
     repo.prune_aggregated_old_data().await?;
+    if let Err(e) = repo.incremental_vacuum(200).await {
+        warn!(error = %e, "incremental_vacuum failed");
+    }
 
     Ok(())
 }

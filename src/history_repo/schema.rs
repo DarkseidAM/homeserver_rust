@@ -44,21 +44,38 @@ impl HistoryRepo {
         path: &str,
         retention_days: u32,
         max_pool_size: u32,
+        mmap_size_mb: u64,
     ) -> anyhow::Result<Self> {
         if let Some(parent) = Path::new(path).parent() {
             std::fs::create_dir_all(parent)?;
         }
+        let mmap_bytes = (mmap_size_mb as i64) * 1024 * 1024;
         let opts = SqliteConnectOptions::from_str(&format!("sqlite:{}", path))?
             .create_if_missing(true)
             .journal_mode(sqlx::sqlite::SqliteJournalMode::Wal)
             .busy_timeout(std::time::Duration::from_secs(5))
-            .synchronous(sqlx::sqlite::SqliteSynchronous::Normal);
+            .synchronous(sqlx::sqlite::SqliteSynchronous::Normal)
+            .pragma("mmap_size", mmap_bytes.to_string())
+            .pragma("auto_vacuum", "INCREMENTAL")
+            .optimize_on_close(true, None);
         let pool = SqlitePoolOptions::new()
             .max_connections(max_pool_size)
             .connect_with(opts)
             .await?;
+        let _ = sqlx::query("PRAGMA optimize").execute(&pool).await;
         let retention_ms = (retention_days as i64) * 24 * 60 * 60 * 1000;
         Ok(Self { pool, retention_ms })
+    }
+
+    /// Reclaim up to `pages` freelist pages using incremental vacuum.
+    pub async fn incremental_vacuum(&self, pages: u32) -> anyhow::Result<()> {
+        sqlx::query(sqlx::AssertSqlSafe(format!(
+            "PRAGMA incremental_vacuum({})",
+            pages
+        )))
+        .execute(&self.pool)
+        .await?;
+        Ok(())
     }
 
     async fn drop_history_user_tables(

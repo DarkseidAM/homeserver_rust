@@ -32,7 +32,7 @@ fn snapshot_with_gpu_smart(ts: u64) -> FullSystemSnapshot {
 async fn persist_and_read(persist_gpu: bool, persist_smart: bool) -> FullSystemSnapshot {
     let dir = TempDir::new().unwrap();
     let repo = Arc::new(
-        HistoryRepo::connect(dir.path().join("h.db").to_str().unwrap(), 3, 5)
+        HistoryRepo::connect(dir.path().join("h.db").to_str().unwrap(), 3, 5, 128)
             .await
             .unwrap(),
     );

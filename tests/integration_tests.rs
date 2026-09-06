@@ -55,6 +55,7 @@ async fn test_app() -> (axum::Router, broadcast::Sender<Arc<str>>, TempDir) {
             &config.database.path,
             config.database.retention_days,
             config.database.max_pool_size,
+            config.database.mmap_size_mb,
         )
         .await
         .unwrap(),

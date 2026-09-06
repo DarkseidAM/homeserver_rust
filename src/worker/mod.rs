@@ -126,29 +126,17 @@ pub fn spawn(deps: WorkerDeps, config: WorkerConfig) -> tokio::task::JoinHandle<
                     0
                 });
 
-            // Degrade gracefully: a single failing collector falls back to defaults for that
-            // metric rather than dropping the whole tick (which would lose the healthy metrics too).
-            let cpu = sysinfo_repo.get_cpu_stats().await.unwrap_or_else(|e| {
-                tracing::warn!(error = %e, operation = "get_cpu_stats", "CPU stats failed; using defaults");
-                Default::default()
-            });
-            let ram = sysinfo_repo.get_ram_stats().await.unwrap_or_else(|e| {
-                tracing::warn!(error = %e, operation = "get_ram_stats", "RAM stats failed; using defaults");
-                Default::default()
-            });
-            let containers = docker_repo.list_running_and_refresh_stats().await;
-            let storage = sysinfo_repo.get_storage_stats().await.unwrap_or_else(|e| {
-                tracing::warn!(error = %e, operation = "get_storage_stats", "storage stats failed; using defaults");
-                Default::default()
-            });
-            let network = sysinfo_repo.get_network_stats().await.unwrap_or_else(|e| {
-                tracing::warn!(error = %e, operation = "get_network_stats", "network stats failed; using defaults");
-                Default::default()
-            });
-            let system = sysinfo_repo.get_system_stats().await.unwrap_or_else(|e| {
-                tracing::warn!(error = %e, operation = "get_system_stats", "system stats failed; using defaults");
-                Default::default()
-            });
+            let (sysinfo_snapshot, containers) = tokio::join!(
+                sysinfo_repo.collect_all(),
+                docker_repo.list_running_and_refresh_stats()
+            );
+            let crate::sysinfo_repo::SysinfoSnapshot {
+                cpu,
+                ram,
+                storage,
+                network,
+                system,
+            } = sysinfo_snapshot;
             // GPU collection does blocking sysfs reads / NVML ioctls — offload to the blocking
             // pool so it never stalls the async executor (and other tasks like WS connections).
             let gpus = if collect_gpu {

@@ -29,6 +29,7 @@ fn test_config_loads_from_str() {
     assert_eq!(config.server.host, "0.0.0.0");
     assert_eq!(config.database.path, "data/server.db");
     assert_eq!(config.database.flush_rate, 10);
+    assert_eq!(config.database.mmap_size_mb, 128);
     assert_eq!(config.publishing.broadcast_capacity, 60);
     assert_eq!(config.monitoring.sample_interval_ms, 1000);
 }

@@ -63,6 +63,7 @@ async fn main() -> Result<()> {
             &app_config.database.path,
             app_config.database.retention_days,
             app_config.database.max_pool_size,
+            app_config.database.mmap_size_mb,
         )
         .await?,
     );

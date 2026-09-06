@@ -73,7 +73,7 @@ async fn history_repo_connect_and_init() {
     let path = dir.path().join("history.db");
     let path_str = path.to_str().unwrap();
 
-    let repo = HistoryRepo::connect(path_str, 3, 5).await.unwrap();
+    let repo = HistoryRepo::connect(path_str, 3, 5, 128).await.unwrap();
     repo.init().await.unwrap();
     // Second init is no-op (IF NOT EXISTS)
     repo.init().await.unwrap();
@@ -85,7 +85,7 @@ async fn history_repo_save_and_get_recent() {
     let path = dir.path().join("history.db");
     let path_str = path.to_str().unwrap();
 
-    let repo = HistoryRepo::connect(path_str, 3, 5).await.unwrap();
+    let repo = HistoryRepo::connect(path_str, 3, 5, 128).await.unwrap();
     repo.init().await.unwrap();
 
     let snapshots = vec![
@@ -117,7 +117,7 @@ async fn history_repo_save_empty_no_op() {
     let path = dir.path().join("history.db");
     let path_str = path.to_str().unwrap();
 
-    let repo = HistoryRepo::connect(path_str, 3, 5).await.unwrap();
+    let repo = HistoryRepo::connect(path_str, 3, 5, 128).await.unwrap();
     repo.init().await.unwrap();
     repo.save_snapshots(&[], &minimal_system_info())
         .await
@@ -133,7 +133,7 @@ async fn history_repo_prune_old_data() {
     let path = dir.path().join("history.db");
     let path_str = path.to_str().unwrap();
 
-    let repo = HistoryRepo::connect(path_str, 3, 5).await.unwrap();
+    let repo = HistoryRepo::connect(path_str, 3, 5, 128).await.unwrap();
     repo.init().await.unwrap();
 
     let now_ms = std::time::SystemTime::now()
@@ -162,7 +162,7 @@ async fn schema_version_written_on_fresh_db() {
     let dir = TempDir::new().unwrap();
     let path = dir.path().join("history.db");
 
-    let repo = HistoryRepo::connect(path.to_str().unwrap(), 3, 5)
+    let repo = HistoryRepo::connect(path.to_str().unwrap(), 3, 5, 128)
         .await
         .unwrap();
     repo.init().await.unwrap();
@@ -178,7 +178,7 @@ async fn schema_version_unchanged_on_reinit() {
     let dir = TempDir::new().unwrap();
     let path = dir.path().join("history.db");
 
-    let repo = HistoryRepo::connect(path.to_str().unwrap(), 3, 5)
+    let repo = HistoryRepo::connect(path.to_str().unwrap(), 3, 5, 128)
         .await
         .unwrap();
     repo.init().await.unwrap();
@@ -196,7 +196,7 @@ async fn schema_version_mismatch_purges_tables() {
     let path = dir.path().join("history.db");
     let path_str = path.to_str().unwrap();
 
-    let repo = HistoryRepo::connect(path_str, 3, 5).await.unwrap();
+    let repo = HistoryRepo::connect(path_str, 3, 5, 128).await.unwrap();
     repo.init().await.unwrap();
 
     let pool = SqlitePool::connect(&format!("sqlite:{}", path.display()))
@@ -231,7 +231,7 @@ async fn schema_version_missing_row_with_existing_history_purges() {
     let path = dir.path().join("history.db");
     let path_str = path.to_str().unwrap();
 
-    let repo = HistoryRepo::connect(path_str, 3, 5).await.unwrap();
+    let repo = HistoryRepo::connect(path_str, 3, 5, 128).await.unwrap();
     repo.init().await.unwrap();
     repo.save_snapshots(&[minimal_snapshot(111)], &minimal_system_info())
         .await
@@ -263,7 +263,7 @@ async fn schema_version_missing_row_with_existing_history_purges() {
 async fn test_history_repo_connect_respects_max_pool_size() {
     let dir = tempfile::TempDir::new().unwrap();
     let db_path = dir.path().join("history.db");
-    let repo = HistoryRepo::connect(db_path.to_str().unwrap(), 7, 3)
+    let repo = HistoryRepo::connect(db_path.to_str().unwrap(), 7, 3, 128)
         .await
         .expect("connect");
     assert!(repo.pool.size() <= 3); // starts empty or <= 3
@@ -272,4 +272,17 @@ async fn test_history_repo_connect_respects_max_pool_size() {
     let _c3 = repo.pool.acquire().await.expect("c3");
     assert_eq!(repo.pool.size(), 3);
     assert!(repo.pool.try_acquire().is_none());
+}
+
+#[tokio::test]
+async fn test_history_repo_incremental_vacuum() {
+    let dir = tempfile::TempDir::new().unwrap();
+    let db_path = dir.path().join("history.db");
+    let repo = HistoryRepo::connect(db_path.to_str().unwrap(), 3, 2, 64)
+        .await
+        .expect("connect");
+    repo.init().await.expect("init");
+    repo.incremental_vacuum(10)
+        .await
+        .expect("incremental_vacuum");
 }
