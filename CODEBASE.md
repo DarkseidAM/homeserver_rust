@@ -1,6 +1,6 @@
 # Codebase Guide — homeserver-rust
 
-> Version 0.10.0 · Rust 2024 edition · MSRV 1.95
+> Version 0.10.1 · Rust 2024 edition · MSRV 1.95
 
 A Linux system-monitoring agent that streams CPU, RAM, disk, network, and Docker container metrics over WebSockets and a small HTTP API, backed by a local SQLite database with tiered retention.
 
@@ -419,7 +419,7 @@ history_repo:          Arc<HistoryRepo>
 |---|---|---|
 | GET / | inline | "Hello from Rust homeserver!" (plain text) |
 | `GET /health` | `health_handler` | `200 "ok"` when the SQLite pool is reachable (cheap `SELECT 1`), else `503` |
-| `GET /version` | `version_handler` | `{"name": "homeserver", "version": "0.10.0"}` |
+| `GET /version` | `version_handler` | `{"name": "homeserver", "version": "0.10.1"}` |
 | `GET /api/info` | `api_info_handler` | `SystemInfo` as JSON |
 | `GET /api/history` | `api_history_handler` | `Vec<FullSystemSnapshot>` merged from raw + aggregated |
 
