@@ -4,15 +4,15 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
-### CI/CD
-
-- **release:** Use git-cliff --latest to generate notes only for current release
-
 ## [0.10.0] - 2026-09-05
 
 ### Bug Fixes
 
 - **db:** Wire max_pool_size into SqlitePoolOptions and reduce default to 5
+
+### CI/CD
+
+- **release:** Use git-cliff --latest to generate notes only for current release
 
 ### Documentation
 
