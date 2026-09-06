@@ -69,45 +69,45 @@ pub fn parse_hwmon_temp(content: &str) -> Option<f64> {
     Some(millideg as f64 / 1000.0)
 }
 
-pub(super) fn read_cpu_temperature_linux() -> Option<f64> {
+pub(super) fn find_cpu_temperature_path_linux() -> Option<std::path::PathBuf> {
     #[cfg(target_os = "linux")]
     {
-        // Prefer coretemp / k10temp hwmon sensors
+        // Prefer coretemp / k10temp / zenpower hwmon sensors
         for i in 0..16 {
             let name_path = format!("/sys/class/hwmon/hwmon{}/name", i);
             let temp_path = format!("/sys/class/hwmon/hwmon{}/temp1_input", i);
             if let Ok(name) = std::fs::read_to_string(&name_path) {
                 let name = name.trim();
                 if matches!(name, "coretemp" | "k10temp" | "zenpower")
-                    && let Ok(c) = std::fs::read_to_string(&temp_path)
-                    && let Some(t) = parse_hwmon_temp(&c)
+                    && std::path::Path::new(&temp_path).exists()
                 {
-                    return Some(t);
+                    return Some(std::path::PathBuf::from(temp_path));
                 }
             }
         }
         // Fall back: any hwmon temp1_input
         for i in 0..16 {
             let path = format!("/sys/class/hwmon/hwmon{}/temp1_input", i);
-            if let Ok(c) = std::fs::read_to_string(&path)
-                && let Some(t) = parse_hwmon_temp(&c)
-            {
-                return Some(t);
+            if std::path::Path::new(&path).exists() {
+                return Some(std::path::PathBuf::from(path));
             }
         }
         // Fall back: thermal_zone (ARM/container)
         for i in 0..8 {
             let path = format!("/sys/class/thermal/thermal_zone{}/temp", i);
-            if let Ok(c) = std::fs::read_to_string(&path)
-                && let Some(t) = parse_hwmon_temp(&c)
-            {
-                return Some(t);
+            if std::path::Path::new(&path).exists() {
+                return Some(std::path::PathBuf::from(path));
             }
         }
         None
     }
     #[cfg(not(target_os = "linux"))]
     None
+}
+
+pub(super) fn read_cpu_temperature_from_path(path: &std::path::Path) -> Option<f64> {
+    let content = std::fs::read_to_string(path).ok()?;
+    parse_hwmon_temp(&content)
 }
 
 // ── Network interface operstate ───────────────────────────────────────────────

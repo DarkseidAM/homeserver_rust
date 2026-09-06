@@ -6,6 +6,8 @@ host = "0.0.0.0"
 # Path to SQLite database (relative to container, use /app/data for persistence)
 path = "data/server.db"
 max_pool_size = 5
+# Memory-mapped I/O size limit in MB (SQLite mmap_size pragma). 0 disables mmap.
+mmap_size_mb = 128
 # Flush snapshots to database every N samples (writer task)
 flush_rate = 10
 # Flush at least every N seconds (writer task)

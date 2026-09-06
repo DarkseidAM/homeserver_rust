@@ -55,7 +55,9 @@ src/
 ├── main.rs                     # Binary entry point, wires everything
 ├── lib.rs                      # Re-exports all public modules for tests
 ├── version.rs                  # VERSION / NAME constants from Cargo.toml
-├── config.rs                   # AppConfig + sub-structs, TOML parsing + validation
+├── config/
+│   ├── mod.rs                  # AppConfig, normalize_cron_expression, load/validate
+│   └── models.rs               # ServerConfig, DatabaseConfig, PublishingConfig, ...
 ├── health_probe.rs             # Minimal TCP socket probe for container HEALTHCHECK
 ├── backfill.rs                 # One-shot aggregation pass at startup
 ├── aggregation_worker.rs       # Hourly raw→1-min→5-min roll-up background task
@@ -72,9 +74,10 @@ src/
 │                               #   SystemStats, FullSystemSnapshot, FullSystemSnapshotDisplay
 │
 ├── sysinfo_repo/
-│   ├── mod.rs                  # SysinfoRepo struct; get_cpu_stats, get_ram_stats
-│   ├── collectors.rs           # Impl block: get_storage_stats, get_network_stats,
-│   │                           #   get_system_info, get_system_stats
+│   ├── mod.rs                  # SysinfoRepo struct; get_cpu_stats, get_ram_stats, inner helpers
+│   ├── collect_all.rs          # SysinfoSnapshot, collect_all() (single spawn_blocking dispatch)
+│   ├── collectors.rs           # get_storage_stats, get_network_stats (capacity hints & caching)
+│   ├── system_stats.rs         # get_system_info, get_system_stats
 │   └── linux/
 │       ├── mod.rs              # /proc and /sys helpers: loadavg, CPU temp, operstate,
 │       │                       #   interface speed, CPU model, OS/DMI info
@@ -221,6 +224,7 @@ Config is loaded from a TOML file at the path given by the `CONFIG_FILE` env var
 |---|---|---|
 | `path` | (required) | SQLite file path |
 | `max_pool_size` | (required) | SQLite connection pool size |
+| `mmap_size_mb` | 128 | SQLite memory-mapped I/O limit in MB (0 disables mmap) |
 | `flush_rate` | (required) | Flush to DB every N snapshots |
 | `flush_interval_secs` | 30 | Flush at least every N seconds |
 | `retention_days` | 3 | Delete history older than N days |
@@ -244,6 +248,7 @@ Wraps `sysinfo::{System, Disks, Networks}` behind `Arc<Mutex<…>>` so heavy blo
 
 | Method | What it reads |
 |---|---|
+| `collect_all()` | Consolidated collector: runs CPU, RAM, storage, network, and system dynamic reads in a single `spawn_blocking` task with cached hardware and read-through caching |
 | `get_cpu_stats()` | `sysinfo` global CPU usage (respects `MINIMUM_CPU_UPDATE_INTERVAL` to avoid stale reads), per-core usages, `/proc/cpuinfo` model name, `/sys/class/hwmon` temperature |
 | `get_ram_stats()` | `sysinfo` memory/swap |
 | `get_storage_stats()` | `sysinfo` disk list for partitions; `/proc/diskstats` for I/O counters; `/sys/block/<dev>/device/model` for model names |

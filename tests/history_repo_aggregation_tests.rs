@@ -104,7 +104,7 @@ fn minimal_aggregated_snapshot(created_at: i64) -> AggregatedSnapshot {
 #[tokio::test]
 async fn history_repo_init_creates_aggregated_table() {
     let dir = TempDir::new().unwrap();
-    let repo = HistoryRepo::connect(dir.path().join("h.db").to_str().unwrap(), 3, 5)
+    let repo = HistoryRepo::connect(dir.path().join("h.db").to_str().unwrap(), 3, 5, 128)
         .await
         .unwrap();
     repo.init().await.unwrap();
@@ -116,7 +116,7 @@ async fn history_repo_init_creates_aggregated_table() {
 #[tokio::test]
 async fn history_repo_get_raw_snapshots_by_time_range() {
     let dir = TempDir::new().unwrap();
-    let repo = HistoryRepo::connect(dir.path().join("h.db").to_str().unwrap(), 3, 5)
+    let repo = HistoryRepo::connect(dir.path().join("h.db").to_str().unwrap(), 3, 5, 128)
         .await
         .unwrap();
     repo.init().await.unwrap();
@@ -151,7 +151,7 @@ async fn history_repo_get_raw_snapshots_by_time_range() {
 #[tokio::test]
 async fn history_repo_get_min_raw_created_at_before() {
     let dir = TempDir::new().unwrap();
-    let repo = HistoryRepo::connect(dir.path().join("h.db").to_str().unwrap(), 3, 5)
+    let repo = HistoryRepo::connect(dir.path().join("h.db").to_str().unwrap(), 3, 5, 128)
         .await
         .unwrap();
     repo.init().await.unwrap();
@@ -183,7 +183,7 @@ async fn history_repo_get_min_raw_created_at_before() {
 #[tokio::test]
 async fn history_repo_delete_raw_range() {
     let dir = TempDir::new().unwrap();
-    let repo = HistoryRepo::connect(dir.path().join("h.db").to_str().unwrap(), 3, 5)
+    let repo = HistoryRepo::connect(dir.path().join("h.db").to_str().unwrap(), 3, 5, 128)
         .await
         .unwrap();
     repo.init().await.unwrap();
@@ -210,7 +210,7 @@ async fn history_repo_delete_raw_range() {
 #[tokio::test]
 async fn history_repo_get_aggregated_snapshots_by_time_range() {
     let dir = TempDir::new().unwrap();
-    let repo = HistoryRepo::connect(dir.path().join("h.db").to_str().unwrap(), 3, 5)
+    let repo = HistoryRepo::connect(dir.path().join("h.db").to_str().unwrap(), 3, 5, 128)
         .await
         .unwrap();
     repo.init().await.unwrap();
@@ -239,7 +239,7 @@ async fn history_repo_get_aggregated_snapshots_by_time_range() {
 #[tokio::test]
 async fn history_repo_delete_aggregated_range() {
     let dir = TempDir::new().unwrap();
-    let repo = HistoryRepo::connect(dir.path().join("h.db").to_str().unwrap(), 3, 5)
+    let repo = HistoryRepo::connect(dir.path().join("h.db").to_str().unwrap(), 3, 5, 128)
         .await
         .unwrap();
     repo.init().await.unwrap();

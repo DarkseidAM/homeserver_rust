@@ -7,6 +7,8 @@ host = "0.0.0.0"
 [database]
 path = "data/server.db"
 max_pool_size = 5
+# Memory-mapped I/O size limit in MB (SQLite mmap_size pragma). 0 disables mmap.
+mmap_size_mb = 128
 flush_rate = 10
 flush_interval_secs = 30
 retention_days = 3
