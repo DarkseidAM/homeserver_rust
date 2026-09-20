@@ -2330,6 +2330,12 @@ dependencies = [
 ]
 
 [[package]]
+name = "send_wrapper"
+version = "0.6.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "cd0b0ec5f1c1ca621c432a25813d8d60c88abe6d3e08a3eb9cf37d97a0fe3d73"
+
+[[package]]
 name = "serde"
 version = "1.0.229"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -3814,9 +3820,9 @@ checksum = "cfe53a6657fd280eaa890a3bc59152892ffa3e30101319d168b781ed6529b049"
 
 [[package]]
 name = "yawc"
-version = "0.3.4"
+version = "0.4.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "3d8975e321ed88697d7a99acc177682938df38dc02a30e60a31ab0f7765c4da6"
+checksum = "35e709a1923e34cf52d5b1466653b8da2f0360bccfbdd9870c5bf78732d4faad"
 dependencies = [
  "axum-core",
  "base64 0.22.1",
@@ -3831,8 +3837,10 @@ dependencies = [
  "js-sys",
  "log",
  "nom",
+ "percent-encoding",
  "pin-project",
  "rand 0.8.8",
+ "send_wrapper",
  "sha1 0.10.7",
  "thiserror 2.0.20",
  "tokio",
