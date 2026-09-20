@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+### Bug Fixes
+
+- **deps:** Update rust crate nvml-wrapper to 0.13
+
 ## [0.10.1] - 2026-09-20
 
 ### Performance
