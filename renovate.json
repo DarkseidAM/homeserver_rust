@@ -4,19 +4,14 @@
         "config:recommended"
     ],
     "osvVulnerabilityAlerts": true,
+    "vulnerabilityAlerts": {
+        "minimumReleaseAge": null
+    },
     "internalChecksFilter": "strict",
     "minimumReleaseAge": "3 days",
     "rangeStrategy": "update-lockfile",
     "prConcurrentLimit": 5,
     "packageRules": [
-        {
-            "description": "Bypass release age for security alerts to patch CVEs immediately",
-            "matchDatasources": ["crate"],
-            "matchPackagePatterns": ["*"],
-            "matchCurrentVersion": "*",
-            "isVulnerability": true,
-            "minimumReleaseAge": "0 days"
-        },
         {
             "description": "Group post-1.0 non-major Cargo updates",
             "matchManagers": ["cargo"],
