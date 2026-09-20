@@ -4,37 +4,47 @@
         "config:recommended"
     ],
     "osvVulnerabilityAlerts": true,
-    "minimumReleaseAge": "3 days",
     "internalChecksFilter": "strict",
+    "minimumReleaseAge": "3 days",
     "rangeStrategy": "update-lockfile",
     "prConcurrentLimit": 5,
     "packageRules": [
         {
-            "description": "Group all non-major Cargo updates to reduce CI churn",
-            "matchManagers": [
-                "cargo"
-            ],
-            "matchUpdateTypes": [
-                "minor",
-                "patch"
-            ],
+            "description": "Bypass release age for security alerts to patch CVEs immediately",
+            "matchDatasources": ["crate"],
+            "matchPackagePatterns": ["*"],
+            "matchCurrentVersion": "*",
+            "isVulnerability": true,
+            "minimumReleaseAge": "0 days"
+        },
+        {
+            "description": "Group post-1.0 non-major Cargo updates",
+            "matchManagers": ["cargo"],
+            "matchCurrentVersion": ">=1.0.0",
+            "matchUpdateTypes": ["minor", "patch"],
             "groupName": "rust-dependencies-minor",
             "automerge": true,
             "platformAutomerge": true
         },
         {
-            "description": "Automerge all GitHub Actions updates (minor and patch)",
-            "matchManagers": [
-                "github-actions"
-            ],
+            "description": "Group pre-1.0 patch-only updates (safe under Cargo SemVer)",
+            "matchManagers": ["cargo"],
+            "matchCurrentVersion": "^0.",
+            "matchUpdateTypes": ["patch"],
+            "groupName": "rust-dependencies-patches",
             "automerge": true,
             "platformAutomerge": true
         },
         {
-            "description": "Never automerge major updates for core async/web/data crates",
-            "matchManagers": [
-                "cargo"
-            ],
+            "description": "Never automerge breaking 0.x updates for pre-1.0 crates",
+            "matchManagers": ["cargo"],
+            "matchCurrentVersion": "^0.",
+            "matchUpdateTypes": ["minor"],
+            "automerge": false
+        },
+        {
+            "description": "Never automerge major updates for core crates",
+            "matchManagers": ["cargo"],
             "matchPackageNames": [
                 "tokio",
                 "axum",
@@ -43,10 +53,15 @@
                 "serde",
                 "tower-http"
             ],
-            "matchUpdateTypes": [
-                "major"
-            ],
+            "matchUpdateTypes": ["major"],
             "automerge": false
+        },
+        {
+            "description": "Automerge only non-major GitHub Actions",
+            "matchManagers": ["github-actions"],
+            "matchUpdateTypes": ["minor", "patch"],
+            "automerge": true,
+            "platformAutomerge": true
         }
     ],
     "lockFileMaintenance": {
