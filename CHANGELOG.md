@@ -6,10 +6,14 @@ All notable changes to this project will be documented in this file.
 
 ### Bug Fixes
 
-- **deps:** Update rust crate nvml-wrapper to 0.13
-- **deps:** Update rust crate wincode to 0.6
+- **deps:** Update rust crate yawc to 0.4
 
 ## [0.10.1] - 2026-09-20
+
+### Bug Fixes
+
+- **deps:** Update rust crate nvml-wrapper to 0.13
+- **deps:** Update rust crate wincode to 0.6
 
 ### Performance
 
