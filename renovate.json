@@ -63,6 +63,7 @@
         "enabled": true,
         "automerge": true,
         "platformAutomerge": true,
+        "minimumReleaseAge": "3 days",
         "rebaseWhen": "behind-base-branch",
         "schedule": [
             "before 5am on monday"
