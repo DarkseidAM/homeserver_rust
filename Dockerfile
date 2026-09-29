@@ -19,7 +19,7 @@ RUN cargo build --release --locked && \
     strip target/release/homeserver
 
 # Runtime stage - minimal Debian image
-FROM debian:13.6-slim
+FROM debian:13.7-slim
 
 # Install runtime deps + tini (init for PID 1 so server doesn't get spurious signals)
 # + gosu (drop privileges by exec, so SIGTERM reaches the server for graceful shutdown).
