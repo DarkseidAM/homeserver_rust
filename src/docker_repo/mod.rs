@@ -128,14 +128,20 @@ impl DockerRepo {
                 }
             }
         }
-        if !to_remove.is_empty() {
+        // Keep the cache aligned with this list. A stats task that already exited
+        // has removed itself from active_streams, so it is not in `to_remove`,
+        // and its last sample would otherwise be stored on every later snapshot.
+        // Retaining under the write lock also drops a sample inserted after abort.
+        let stats = {
             let mut live = self.live_stats.write().await;
-            for id in &to_remove {
-                live.remove(id);
-            }
-        }
-
-        self.get_cached_stats().await
+            stats_for_running_ids(&mut live, &running_set)
+        };
+        tracing::debug!(
+            operation = "get_cached_stats",
+            containers_count = stats.len(),
+            "Retrieved cached container stats"
+        );
+        stats
     }
 
     #[instrument(skip(self), fields(container_id = %id, container_name = %name))]
@@ -223,6 +229,9 @@ impl DockerRepo {
                 stats_updates_count = stats_count,
                 "Stats stream ended for container"
             );
+            // Stream EOF/error means this container is gone. If we only drop the
+            // task handle, list_running no longer knows to delete the last sample.
+            live_stats.write().await.remove(&id);
             active_streams.write().await.remove(&id);
         })
     }
@@ -236,5 +245,66 @@ impl DockerRepo {
             "Retrieved cached container stats"
         );
         stats
+    }
+}
+
+/// Drop cached samples for containers that are not in the latest running set.
+fn stats_for_running_ids(
+    live: &mut HashMap<String, ContainerStats>,
+    running: &HashSet<String>,
+) -> Vec<ContainerStats> {
+    live.retain(|id, _| running.contains(id));
+    live.values().cloned().collect()
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use crate::models::ContainerState;
+
+    fn sample(id: &str, memory: u64) -> ContainerStats {
+        ContainerStats {
+            id: id.to_string(),
+            name: id.to_string(),
+            cpu_percent: 1.0,
+            memory_usage_bytes: memory,
+            memory_limit_bytes: 100,
+            state: ContainerState::Running,
+            network_rx_bytes: 0,
+            network_tx_bytes: 0,
+            network_rx_packets: 0,
+            network_tx_packets: 0,
+            network_rx_errors: 0,
+            network_tx_errors: 0,
+            network_rx_dropped: 0,
+            network_tx_dropped: 0,
+            block_read_bytes: 0,
+            block_write_bytes: 0,
+            block_read_ops: 0,
+            block_write_ops: 0,
+            pids: 1,
+            pids_limit: 0,
+            cpu_throttled: false,
+            cpu_throttled_periods: 0,
+            cpu_throttled_time_ns: 0,
+            cpu_kernel_percent: 0.0,
+            cpu_user_percent: 0.0,
+            online_cpus: 1,
+            memory_max_usage_bytes: 0,
+        }
+    }
+
+    #[test]
+    fn stats_for_running_ids_drops_containers_whose_stream_already_ended() {
+        let mut live = HashMap::from([
+            ("alive".to_string(), sample("alive", 10)),
+            ("replaced".to_string(), sample("replaced", 99)),
+        ]);
+        let running = HashSet::from(["alive".to_string()]);
+        let reported = stats_for_running_ids(&mut live, &running);
+        assert_eq!(reported.len(), 1);
+        assert_eq!(reported[0].id, "alive");
+        assert_eq!(reported[0].memory_usage_bytes, 10);
+        assert!(!live.contains_key("replaced"));
     }
 }
